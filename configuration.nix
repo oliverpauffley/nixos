@@ -26,7 +26,7 @@
   networking.interfaces.ens18.useDHCP = true;
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "en_UK.UTF-8";
+  i18n.defaultLocale = "en_GB.UTF-8";
   console = {
     font = "Lat2-Terminus16";
     keyMap = "us";
@@ -41,11 +41,10 @@
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
     neovim
-    alacritty
-    rofi
-    polybar
     neomutt
+    home-manager
     # general
+    zsh
     spotify blueman keybase keybase-gui
     # development
     git gitkraken postman
@@ -95,9 +94,7 @@
   services.xserver.windowManager.i3.enable = true;
   services.xserver.windowManager.i3.package = pkgs.i3-gaps;
   
-  username = "ollie";
-
-  i3-config-extra = ./i3config-extra-example.nix;
+ 
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ollie = {
