@@ -20,7 +20,7 @@ in
 
     home.packages = with pkgs; [
       # TERMINAL
-      gotop zip unrar unzip xorg.xev escrotum tree gnupg
+      gotop zip unrar unzip xorg.xev escrotum tree gnupg bat
       aria2 imagemagick feh httpie
       # DEVELOPMENT
       postman
@@ -39,6 +39,17 @@ in
         enable = true;
         userName = "oliverpauffley";
         userEmail = "mrpauffley@gmail.com";
+      };
+      zsh = {
+      enable = true;
+      shellAliases =
+      {
+        vim = "nvim";
+	cat = "bat";
+      };
+      oh-my-zsh.enable = true;
+      oh-my-zsh.plugins = ["git" "python"];
+      oh-my-zsh.theme = "agnoster";
       };
     };
 

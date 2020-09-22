@@ -27,6 +27,10 @@
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_GB.UTF-8";
+  i18n.extraLocaleSettings = {
+    LC_ALL="en_GB.UTF-8";
+    LANG="en_GB.UTF-8";
+  };
   console = {
     font = "Lat2-Terminus16";
     keyMap = "us";
@@ -40,11 +44,10 @@
 
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
-    neovim
+    vim
     neomutt
     home-manager
     # general
-    zsh
     spotify blueman keybase keybase-gui
     # development
     git gitkraken postman
@@ -52,7 +55,7 @@
     wget nnn neofetch zip unzip unrar jq 
   ];
 
-  environment.variables.EDITOR = "alacritty";
+  environment.variables.EDITOR = "vim";
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
