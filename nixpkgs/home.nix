@@ -67,7 +67,10 @@ in
         };
       };
 
-      services.gnome-keyring.enable = true;
+      services.gnome-keyring = {
+        enable = true;
+        components = ["ssh" "secrets"];
+      };
 
       xsession.enable = true;
     }
