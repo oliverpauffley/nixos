@@ -5,9 +5,7 @@ let
   default-python = python3.withPackages (python-packages: with python-packages; [
     (callPackage ./pylibs/binancepy.nix { }) (callPackage ./pylibs/bit.nix { })
     # basics
-    pip pywal black setuptools wheel twine flake8 virtualenv pudb mypy
-    # utils
-    aioconsole aiohttp
+    pip pywal black setuptools wheel flake8 virtualenv mypy
   ]);
 
 in
@@ -20,7 +18,7 @@ in
 
     home.packages = with pkgs; [
       # TERMINAL
-      gotop zip unrar unzip xorg.xev escrotum tree gnupg 
+      gotop zip unrar unzip xorg.xev tree gnupg 
       aria2 imagemagick feh httpie
       # DEVELOPMENT
       postman
@@ -28,7 +26,7 @@ in
       # OFFICE
       zathura 
       # DEFAULT
-      vlc spotify blueman _1password
+      vlc spotify blueman _1password gnome3.gnome-keyring
     ];
 
 
@@ -38,13 +36,20 @@ in
       neovim = {
         enable = true;
         vimAlias = true;
+        extraConfig = 
+        ''
+          let mapleader = "\\"
+          colorscheme gruvbox
+          let g:gruvbox_contrast_dark = 1
+        '';
         plugins = with pkgs.vimPlugins; [
-          vim-nix
+          vim-nix 
+          gruvbox
         ];
       }; 
       bat = {
         enable = true;
-        config = { theme = "gruvbox";};
+        config = { theme = "zenburn";};
       };
       git = {
         enable = true;

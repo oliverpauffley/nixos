@@ -4,10 +4,6 @@
 { 
   services.picom= {
     enable = true;
-    package = pkgs.callPackage ./compton-unstable.nix { };
-    
-    blur = true;
-    blurExclude = [ "window_type = 'dock'" "window_type = 'desktop'" ];
     
     fade = true;
     fadeDelta = 5;
@@ -19,7 +15,7 @@
     noDockShadow = true;
     noDNDShadow = true;
     
-    activeOpacity = "1.0";
+    activeOpacity = "0.9";
     inactiveOpacity = "0.8";
     menuOpacity = "0.8";
     
@@ -30,8 +26,6 @@
       shadow-radius = 7;
       clear-shadow = true;
       frame-opacity = 0.7;
-      blur-method = "dual_kawase";
-      blur-strength = 5;
       alpha-step = 0.06;
       detect-client-opacity = true;
       detect-rounded-corners = true;

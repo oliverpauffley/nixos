@@ -66,11 +66,11 @@ in
           font-0 = "Roboto Mono for Powerline:size=12;3";
           font-1 = "Roboto Mono For Powerline:style=Bold:size=12;3";
 
-          modules-left = "distro-icon dulP ddrT i3 dulT";
+          modules-left = "ddulP ddrT i3 dulT";
           modules-center = "title";
           modules-right = "durT audio ddlT date";
 
-          locale = "en_US.UTF-8";
+          locale = "en_GB.UTF-8";
         };
 
         "bar/bottom" = {
@@ -125,18 +125,6 @@ in
 
   #--------------------MODULES--------------------"
 
-        "module/distro-icon" = {
-          type = "custom/script";
-          exec = "${pkgs.coreutils}/bin/uname -r | ${pkgs.coreutils}/bin/cut -d- -f1";
-          interval = 999999999;
-
-          format = " <label>";
-          format-background = primary;
-          format-foreground = secondary;
-          format-padding = 1;
-          label = "%output%";
-          label-font = 2;
-        };
 
         "module/audio" = {
           type = "internal/alsa";

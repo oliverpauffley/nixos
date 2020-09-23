@@ -17,7 +17,15 @@
   # Define on which hard drive you want to install Grub.
   boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking = {
+    hostName = "nixos"; # Define your hostname.
+    networkmanager.enable = true;
+  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
+  # Per-interface useDHCP will be mandatory in the future, so this generated config
+  # replicates the default behaviour.
+  useDHCP = false;
+  interfaces.ens18.useDHCP = true;
+  };
 
   # Autoupdate from unstable
   system.autoUpgrade.channel = "https://nixos.org/channels/nixos-unstable";
@@ -25,11 +33,6 @@
 
   # Keep only the 10 most recent generations
 
-  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-  # Per-interface useDHCP will be mandatory in the future, so this generated config
-  # replicates the default behaviour.
-  networking.useDHCP = false;
-  networking.interfaces.ens18.useDHCP = true;
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_GB.UTF-8";
@@ -114,7 +117,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ollie = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ and network managing
   };
 
   # This value determines the NixOS release from which the default
