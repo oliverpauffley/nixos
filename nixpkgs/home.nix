@@ -26,7 +26,7 @@ in
       # OFFICE
       zathura 
       # DEFAULT
-      vlc spotify blueman _1password gnome3.gnome-keyring
+      vlc spotify blueman _1password 
     ];
 
 
