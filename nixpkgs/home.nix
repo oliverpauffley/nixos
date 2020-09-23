@@ -20,7 +20,7 @@ in
 
     home.packages = with pkgs; [
       # TERMINAL
-      gotop zip unrar unzip xorg.xev escrotum tree gnupg bat
+      gotop zip unrar unzip xorg.xev escrotum tree gnupg 
       aria2 imagemagick feh httpie
       # DEVELOPMENT
       postman
@@ -32,26 +32,38 @@ in
       vlc spotify blueman 
     ];
 
+
     programs = {
       home-manager.enable = true;
       command-not-found.enable = true;
+      neovim = {
+	enable = true;
+	vimAlias = true;
+      }; 
+      bat = {
+	enable = true;
+	config = { theme = "gruvbox";};
+      };
       git = {
         enable = true;
         userName = "oliverpauffley";
         userEmail = "mrpauffley@gmail.com";
       };
       zsh = {
-      enable = true;
-      shellAliases =
-      {
-        vim = "nvim";
-	cat = "bat";
+	      enable = true;
+	      shellAliases =
+	      {
+		vim = "nvim";
+		cat = "bat";
+	      };
+	      oh-my-zsh.enable = true;
+	      oh-my-zsh.plugins = ["git" "python"];
       };
-      oh-my-zsh.enable = true;
-      oh-my-zsh.plugins = ["git" "python"];
-      oh-my-zsh.theme = "agnoster";
+      starship = {
+	enable = true;
+	enableZshIntegration = true;
       };
-    };
+   };
 
     xsession.enable = true;
   }
