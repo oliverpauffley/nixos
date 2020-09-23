@@ -37,12 +37,15 @@ in
       home-manager.enable = true;
       command-not-found.enable = true;
       neovim = {
-	enable = true;
-	vimAlias = true;
+        enable = true;
+        vimAlias = true;
+        plugins = with pkgs.vimPlugins; [
+          vim-nix
+        ];
       }; 
       bat = {
-	enable = true;
-	config = { theme = "gruvbox";};
+        enable = true;
+        config = { theme = "gruvbox";};
       };
       git = {
         enable = true;
@@ -50,20 +53,20 @@ in
         userEmail = "mrpauffley@gmail.com";
       };
       zsh = {
-	      enable = true;
-	      shellAliases =
-	      {
-		vim = "nvim";
-		cat = "bat";
-	      };
-	      oh-my-zsh.enable = true;
-	      oh-my-zsh.plugins = ["git" "python"];
+        enable = true;
+        shellAliases =
+          {
+            vim = "nvim";
+            cat = "bat";
+          };
+          oh-my-zsh.enable = true;
+          oh-my-zsh.plugins = ["git" "python"];
+        };
+        starship = {
+          enable = true;
+          enableZshIntegration = true;
+        };
       };
-      starship = {
-	enable = true;
-	enableZshIntegration = true;
-      };
-   };
 
-    xsession.enable = true;
-  }
+      xsession.enable = true;
+    }
