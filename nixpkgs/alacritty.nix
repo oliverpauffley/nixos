@@ -14,8 +14,8 @@
       };
 
       font = {
-        normal.family = "JetbrainsMono Nerd Font";
-        size = 8.0;
+        normal.family = "mononoki";
+        size = 12.0;
       };
 
       background_opacity = 0.7;

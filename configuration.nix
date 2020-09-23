@@ -19,6 +19,12 @@
 
   networking.hostName = "nixos"; # Define your hostname.
 
+  # Autoupdate from unstable
+  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-unstable";
+  system.autoUpgrade.enable= true;
+
+  # Keep only the 10 most recent generations
+
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
@@ -45,8 +51,10 @@
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
     vim
-    neomutt
     home-manager
+    font-manager
+    gnupg
+    pinentry
     # general
     spotify blueman keybase keybase-gui
     # development
@@ -54,8 +62,13 @@
     # terminal
     wget nnn neofetch zip unzip unrar jq 
   ];
-
   environment.variables.EDITOR = "vim";
+
+  # Setup fonts
+  fonts.fonts = with pkgs; [
+    powerline-fonts
+    mononoki
+    ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -68,37 +81,36 @@
 
   # List services that you want to enable:
 
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
   # Enable sound.
   sound.enable = true;
   hardware.pulseaudio.enable = true;
 
+  # Enable keybase.
+  services.keybase.enable = true;
+  services.kbfs.enable = true;
+
+  # Enable autorandr to manage plugins
+  services.autorandr.enable = true;
+
+  services.xserver = {
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
-  services.xserver.layout = "gb";
+  enable = true;
+  layout = "gb";
 
   # Enable touchpad support.
-  services.xserver.libinput.enable = true;
+  libinput.enable = true;
 
   # Enable the Desktop Environment.
-  # services.xserver.displayManager.sddm.enable = true;
-  # services.xserver.desktopManager.plasma5.enable = true;
-  services.xserver.displayManager.defaultSession = "none+i3";
-  services.xserver.desktopManager.xterm.enable = false;
-  services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.windowManager.i3.enable = true;
-  services.xserver.windowManager.i3.package = pkgs.i3-gaps;
+  displayManager.defaultSession = "none+i3";
+  desktopManager.xterm.enable = false;
+  displayManager.lightdm.enable = true;
+  windowManager.i3.enable = true;
+  windowManager.i3.package = pkgs.i3-gaps;
   
- 
+  # set resolution 
+  resolutions = [{x = 1600; y = 1200;}];
 
+  };
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ollie = {
     isNormalUser = true;

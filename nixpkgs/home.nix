@@ -24,12 +24,11 @@ in
       aria2 imagemagick feh httpie
       # DEVELOPMENT
       postman
-      default-python conda zulu8 gradle rustup gcc m4 gnumake binutils
-      gdb jedit sfml
+      default-python gcc gnumake
       # OFFICE
       zathura 
       # DEFAULT
-      vlc spotify blueman 
+      vlc spotify blueman _1password
     ];
 
 
@@ -67,6 +66,8 @@ in
           enableZshIntegration = true;
         };
       };
+
+      services.gnome-keyring.enable = true;
 
       xsession.enable = true;
     }
