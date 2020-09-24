@@ -100,10 +100,6 @@
   displayManager.lightdm.enable = true;
   windowManager.i3.enable = true;
   windowManager.i3.package = pkgs.i3-gaps;
-  windowManager.i3.extraSessionCommands = ''
-    eval $(gnome-keyring-daemon --daemonize)
-    export SSH_AUTH_SOCK
-    '';
   
   # set resolution 
   resolutions = [{x = 1600; y = 1200;}];
