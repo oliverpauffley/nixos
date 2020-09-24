@@ -19,14 +19,14 @@ in
     home.packages = with pkgs; [
       # TERMINAL
       gotop zip unrar unzip xorg.xev tree gnupg 
-      aria2 imagemagick feh httpie
+      feh
       # DEVELOPMENT
       postman
       default-python gcc gnumake
       # OFFICE
       zathura 
       # DEFAULT
-      vlc spotify blueman _1password 
+      vlc spotify blueman _1password _1password-gui firefox slack
     ];
 
 

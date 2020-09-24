@@ -12,8 +12,7 @@
       window.border = 0;
       
       gaps = {
-        inner = 15;
-        outer = 5;
+        inner = 10;
       };
       
       keybindings = lib.mkOptionDefault {
@@ -37,7 +36,7 @@
         }
 
         {
-          command = "${pkgs.feh}/bin/feh --bg-scale ~/background.jpg"; # TODO: fetch background from URL
+          command = "${pkgs.feh}/bin/feh --bg-scale ~/.config/background.png"; # TODO: fetch background from URL
           always = true;
           notification = false;
         }
