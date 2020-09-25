@@ -7,8 +7,8 @@
 {
   imports =
     [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+    ./hardware-configuration.nix
+  ];
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
@@ -25,7 +25,7 @@
   # replicates the default behaviour.
   useDHCP = false;
   interfaces.ens18.useDHCP = true;
-  };
+};
 
   # Autoupdate from unstable
   system.autoUpgrade.channel = "https://nixos.org/channels/nixos-unstable";
@@ -46,7 +46,7 @@
   };
 
   # Set your time zone.
-   time.timeZone = "Europe/London";
+  time.timeZone = "Europe/London";
 
   # Use unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -54,13 +54,10 @@
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
     vim
-    home-manager
-    font-manager
-    gnupg
-    pinentry
-    gnome3.gnome-keyring
+    # passwords
+    gnupg gnome3.gnome-keyring libsecret
     # general
-    spotify blueman keybase keybase-gui
+    spotify blueman keybase keybase-gui font-manager home-manager
     # development
     git gitkraken postman
     # terminal
@@ -72,12 +69,13 @@
   fonts.fonts = with pkgs; [
     powerline-fonts
     mononoki
-    ];
+  ];
 
   # List services that you want to enable:
   # Enable sound.
   sound.enable = true;
   hardware.pulseaudio.enable = true;
+
 
   # Enable keybase.
   services.keybase.enable = true;
@@ -86,6 +84,7 @@
   # Enable autorandr to manage plugins
   services.autorandr.enable = true;
 
+  # x server settings.
   services.xserver = {
   # Enable the X11 windowing system.
   enable = true;
@@ -100,15 +99,31 @@
   displayManager.lightdm.enable = true;
   windowManager.i3.enable = true;
   windowManager.i3.package = pkgs.i3-gaps;
-  
+
   # set resolution 
   resolutions = [{x = 1600; y = 1200;}];
 
+};
+  # Enable gnome keyring.
+  services.gnome3.gnome-keyring.enable = true;
+  programs.seahorse.enable = true;
+
+  security.pam.services.login = {
+    setEnvironment = true;
+    setLoginUid = true;
+    startSession = true;
+    enableGnomeKeyring = true;
   };
+
+
+  # start docker
+  virtualisation.docker.enable = true;
+
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ollie = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ and network managing
+    extraGroups = [ "wheel" "networkmanager" "docker" ]; # Enable corret user groups
   };
 
   # This value determines the NixOS release from which the default

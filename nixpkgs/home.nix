@@ -18,15 +18,17 @@ in
 
     home.packages = with pkgs; [
       # TERMINAL
-      gotop zip unrar unzip xorg.xev tree gnupg 
-      feh _1password
+      gotop tree gnupg 
+      feh
       # DEVELOPMENT
       postman
       default-python gcc gnumake go
       # OFFICE
       zathura 
       # DEFAULT
-      vlc spotify blueman  _1password-gui firefox slack gnome3.seahorse
+      vlc spotify blueman  firefox slack 
+      # PASSWORDS
+      _1password-gui _1password 
     ];
 
 
@@ -72,16 +74,7 @@ in
         };
       };
 
-      services.gnome-keyring = {
-        enable = true;
-        components = ["ssh" "secrets"];
-      };
-
       xsession = {
         enable = true;
-        initExtra = ''
-          eval $(gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
-          export SSH_AUTH_SOCK
-          '';
         };
     }
