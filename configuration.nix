@@ -112,6 +112,9 @@
     setEnvironment = true;
     setLoginUid = true;
     startSession = true;
+    unixAuth = true;
+    updateWtmp = true;
+
     enableGnomeKeyring = true;
   };
 

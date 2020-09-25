@@ -10,7 +10,7 @@ let
 
 in
   {
-    imports = [ ./i3.nix ./polybar.nix ./rofi.nix ./alacritty.nix ./compton.nix ];
+    imports = [ ./i3.nix ./dunst.nix ./polybar.nix ./rofi.nix ./alacritty.nix ./compton.nix ];
     nixpkgs.config.allowUnfree = true;
 
     home.keyboard.layout = "gb";
@@ -29,6 +29,8 @@ in
       vlc spotify blueman  firefox slack 
       # PASSWORDS
       _1password-gui _1password 
+      # NOTIFICATIONS
+      libnotify
     ];
 
 
