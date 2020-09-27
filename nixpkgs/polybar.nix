@@ -1,32 +1,26 @@
-{ pkgs, ... }:
-
-# Created By @icanwalkonwater
-# Edited and ported to Nix by Th0rgal
+{ pkgs,config, ... }:
 
 let
-  ac = "#1E88E5";
-  mf = "#383838";  
-
-  bg = "${xrdb:background}";
-  fg = "#FFFFFF";
+  bg = config.colours.bg;
+  fg = config.colours.text_primary;
 
   # Colored
-  primary = "#ffb973";
+  primary = config.colours.text_primary;
 
   # Dark
-  secondary = "#140e0a";
+  secondary = config.colours.bg_unfocused;
 
   # Colored (light)
-  tertiary = "#74c2d4";
+  tertiary =  config.colours.text_unfocused;
 
   # white
-  quaternary = "#ecf0f1";
+  quaternary = config.colours.text_primary;
 
   # middle gray
-  quinternary = "#384245";
+  quinternary = config.colours.bg_unfocused;
 
   # Red
-  urgency = "#e74c3c";
+  urgency = config.colours.bg_critical;
 in
   {
     services.polybar = { 
@@ -54,7 +48,8 @@ in
           border-top-color = "${bg}";
           border-bottom-size = 2;
           border-bottom-color = "${bg}";
-          font-0 = "mononoki:pixelsize=10;1";
+          font-0 = "${config.myfonts.font-1}:pixelsize=10;1";
+          font-1 = "${config.myfonts.font-0}:pixelsize=10;1";
         };
         "module/battery" = {
           type = "internal/battery";

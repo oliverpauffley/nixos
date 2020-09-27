@@ -1,4 +1,3 @@
-# credits: @LightDiscord who helped me to update to picom
 { pkgs, ... }:
 
 { 

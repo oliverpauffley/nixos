@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   programs.alacritty = {
@@ -14,7 +14,7 @@
       };
 
       font = {
-        normal.family = "mononoki";
+        normal.family = config.myfonts.font-1;
         size = 12.0;
       };
 
@@ -22,17 +22,16 @@
 
       shell = {
         program = "${pkgs.zsh}/bin/zsh";
-        args = ["-c" "echo; neofetch; echo; zsh"];
       };
 
       colors = {
         primary = {
-          background = "0x000000";
-          foreground = "0xEBEBEB";
+          background = config.colours.bg;
+          foreground = config.colours.text_primary;
         };
         cursor = {
-          text   = "0xFF261E";
-          cursor = "0xFF261E";
+          text   = config.colours.text_primary;
+          cursor = config.colours.text_unfocused;
         };
         normal = {
           black   = "0x040404";

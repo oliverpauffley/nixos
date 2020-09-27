@@ -10,7 +10,7 @@ let
 
 in
   {
-    imports = [ ./i3.nix ./dunst.nix ./polybar.nix ./rofi.nix ./alacritty.nix ./compton.nix ];
+    imports = [ ./options.nix ./i3.nix ./dunst.nix ./polybar.nix ./rofi.nix ./alacritty.nix ./compton.nix ];
     nixpkgs.config.allowUnfree = true;
 
     home.keyboard.layout = "gb";

@@ -68,6 +68,7 @@
   # Setup fonts
   fonts.fonts = with pkgs; [
     powerline-fonts
+    font-awesome
     mononoki
   ];
 

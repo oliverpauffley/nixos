@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }:
 
+
 {
   services.dunst = {
     enable = true;
@@ -13,7 +14,7 @@
         frame_width = 0;
         frame_color = "#000000";
         separator_color = "frame";
-        font = "mononoki 8";
+        font = "${config.myfonts .font-0} 10";
         line_height = 4;
         markup = "full";
         format = ''%s\n%b'';
@@ -25,19 +26,21 @@
         hide_duplicate_count = true;
       };
       urgency_low = {
-        background = "#000000";
-        forefround = "#FFFFFF";
+        background = config.colours.bg;
+        foreground = config.colours.text_primary;
+        frame_color = config.colours.bg_unfocused;
         timeout = 4;
       };
       urgency_normal = {
-        background = "#000000";
-        forefround = "#FFFFFF";
+        background = config.colours.bg;
+        foreground = config.colours.text_primary;
+        frame_color = config.colours.bg_unfocused;
         timeout = 4;
       };
       urgency_critical = {
-        background = "#000000";
-        forefround = "#FFFFFF";
-        frame_color = "#FF0000";
+        background = config.colours.bg_critical;
+        foreground = config.colours.text_critical;
+        frame_color = config.colours.bg;
         timeout = 4;
       };
     };
