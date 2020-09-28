@@ -33,6 +33,7 @@ in
           "${modifier}+Return" = "exec ${pkgs.alacritty}/bin/alacritty";
           "${modifier}+d" = "exec ${pkgs.rofi}/bin/rofi -modi drun -show drun";
           "${modifier}+Shift+d" = "exec ${pkgs.rofi}/bin/rofi -show window";
+          "${modifier}+Ctrl+d" = ''exec ${pkgs.rofi}/bin/rofi -modi "clipboard:greenclip print" -show clipboard -run command "{cmd}"'';
           "${modifier}+Shift+x" = "exec systemctl suspend";
         };
 
@@ -45,6 +46,11 @@ in
 
           {
             command = "${pkgs.feh}/bin/feh --bg-scale ~/.config/background.png"; # TODO: fetch background from URL
+            always = true;
+            notification = false;
+          }
+          {
+            command = "systemctl --user enable greenclip.service";
             always = true;
             notification = false;
           }

@@ -18,15 +18,14 @@ in
 
     home.packages = with pkgs; [
       # TERMINAL
-      gotop tree gnupg 
-      feh
+      gotop tree gnupg feh yank
       # DEVELOPMENT
       postman
       default-python gcc gnumake go
       # OFFICE
       zathura 
       # DEFAULT
-      vlc spotify blueman  firefox slack 
+      vlc spotify blueman  firefox slack haskellPackages.greenclip
       # PASSWORDS
       _1password-gui _1password 
       # NOTIFICATIONS
@@ -78,5 +77,5 @@ in
 
       xsession = {
         enable = true;
-        };
+      };
     }
