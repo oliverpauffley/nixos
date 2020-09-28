@@ -53,7 +53,7 @@
 
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
-    vim
+    vim vimHugeX
     # passwords
     gnupg gnome3.gnome-keyring libsecret
     # general
@@ -72,11 +72,12 @@
     mononoki
   ];
 
-  # List services that you want to enable:
   # Enable sound.
   sound.enable = true;
   hardware.pulseaudio.enable = true;
 
+  # Enable sound.
+  services.greenclip.enable = true;
 
   # Enable keybase.
   services.keybase.enable = true;
