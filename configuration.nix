@@ -6,9 +6,10 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
-    ./hardware-configuration.nix
-  ];
+    [
+      # Include the results of the hardware scan.
+      ./hardware-configuration.nix
+    ];
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
@@ -20,25 +21,32 @@
   networking = {
     hostName = "nixos"; # Define your hostname.
     networkmanager.enable = true;
-  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-  # Per-interface useDHCP will be mandatory in the future, so this generated config
-  # replicates the default behaviour.
-  useDHCP = false;
-  interfaces.ens18.useDHCP = true;
-};
+    # The global useDHCP flag is deprecated, therefore explicitly set to false here.
+    # Per-interface useDHCP will be mandatory in the future, so this generated config
+    # replicates the default behaviour.
+    useDHCP = false;
+    interfaces.ens18.useDHCP = true;
+  };
 
   # Autoupdate from unstable
   system.autoUpgrade.channel = "https://nixos.org/channels/nixos-unstable";
-  system.autoUpgrade.enable= true;
+  system.autoUpgrade.enable = true;
 
-  # Keep only the 10 most recent generations
+  # Add nur packages
+  nixpkgs.config.pkgOverrides = pkgs: {
+    nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+      inherit pkgs;
+    };
+  };
+
+  # TODO Keep only the 10 most recent generations
 
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_GB.UTF-8";
   i18n.extraLocaleSettings = {
-    LC_ALL="en_GB.UTF-8";
-    LANG="en_GB.UTF-8";
+    LC_ALL = "en_GB.UTF-8";
+    LANG = "en_GB.UTF-8";
   };
   console = {
     font = "Lat2-Terminus16";
@@ -53,15 +61,31 @@
 
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
-    vim vimHugeX
+    vim
+    vimHugeX
     # passwords
-    gnupg gnome3.gnome-keyring libsecret
+    gnupg
+    gnome3.gnome-keyring
+    libsecret
     # general
-    spotify blueman keybase keybase-gui font-manager home-manager
+    spotify
+    blueman
+    keybase
+    keybase-gui
+    font-manager
+    home-manager
     # development
-    git gitkraken postman
+    git
+    gitkraken
+    postman
     # terminal
-    wget nnn neofetch zip unzip unrar jq 
+    wget
+    nnn
+    neofetch
+    zip
+    unzip
+    unrar
+    jq
   ];
   environment.variables.EDITOR = "vim";
 
@@ -88,24 +112,24 @@
 
   # x server settings.
   services.xserver = {
-  # Enable the X11 windowing system.
-  enable = true;
-  layout = "gb";
+    # Enable the X11 windowing system.
+    enable = true;
+    layout = "gb";
 
-  # Enable touchpad support.
-  libinput.enable = true;
+    # Enable touchpad support.
+    libinput.enable = true;
 
-  # Enable the Desktop Environment.
-  displayManager.defaultSession = "none+i3";
-  desktopManager.xterm.enable = false;
-  displayManager.lightdm.enable = true;
-  windowManager.i3.enable = true;
-  windowManager.i3.package = pkgs.i3-gaps;
+    # Enable the Desktop Environment.
+    displayManager.defaultSession = "none+i3";
+    desktopManager.xterm.enable = false;
+    displayManager.lightdm.enable = true;
+    windowManager.i3.enable = true;
+    windowManager.i3.package = pkgs.i3-gaps;
 
-  # set resolution 
-  resolutions = [{x = 1600; y = 1200;}];
+    # set resolution 
+    resolutions = [{ x = 1600; y = 1200; }];
 
-};
+  };
   # Enable gnome keyring.
   services.gnome3.gnome-keyring.enable = true;
   programs.seahorse.enable = true;
@@ -140,4 +164,3 @@
   system.stateVersion = "20.03"; # Did you read the comment?
 
 }
-

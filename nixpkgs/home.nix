@@ -16,11 +16,10 @@ let
 
 in
 {
-  imports = [ ./options.nix ./neovim.nix ./i3.nix ./dunst.nix ./polybar.nix ./rofi.nix ./alacritty.nix ./compton.nix ];
+  imports = [ ./options.nix ./mail.nix ./neovim.nix ./i3.nix ./dunst.nix ./polybar.nix ./rofi.nix ./alacritty.nix ./compton.nix ];
   nixpkgs.config.allowUnfree = true;
 
   home.keyboard.layout = "gb";
-
 
   home.packages = with pkgs; [
     # TERMINAL
@@ -29,6 +28,12 @@ in
     gnupg
     feh
     yank
+    # EMAIL
+    mu
+    openssl
+    gnutls
+    vdirsyncer
+    khard
     # DEVELOPMENT
     postman
     default-python
@@ -43,9 +48,9 @@ in
     vlc
     spotify
     blueman
-    firefox
     slack
     haskellPackages.greenclip
+    firefox
     # PASSWORDS
     _1password-gui
     _1password
@@ -57,6 +62,9 @@ in
   programs = {
     home-manager.enable = true;
     command-not-found.enable = true;
+    firefox = {
+      enable = true;
+    };
     bat = {
       enable = true;
       config = { theme = "zenburn"; };
@@ -81,6 +89,7 @@ in
       enableZshIntegration = true;
     };
   };
+
 
   xsession = {
     enable = true;
