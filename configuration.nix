@@ -67,6 +67,8 @@
     gnupg
     gnome3.gnome-keyring
     libsecret
+    pinentry
+    pinentry-gnome
     # general
     spotify
     blueman
@@ -86,6 +88,9 @@
     unzip
     unrar
     jq
+    pass
+    xclip
+    xsel
   ];
   environment.variables.EDITOR = "vim";
 
@@ -95,6 +100,9 @@
     font-awesome
     mononoki
   ];
+
+  programs.gnupg.agent.enable = true;
+  programs.gnupg.agent.pinentryFlavor = "gnome3";
 
   # Enable sound.
   sound.enable = true;
