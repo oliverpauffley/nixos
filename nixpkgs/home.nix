@@ -73,6 +73,10 @@ in
       enable = true;
       userName = "oliverpauffley";
       userEmail = "mrpauffley@gmail.com";
+      signing = {
+        signByDefault = true;
+        key = "EOBFCBFE7ED19B38";
+      };
     };
     zsh = {
       enable = true;
