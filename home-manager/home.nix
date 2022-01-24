@@ -78,6 +78,7 @@
     # nix
     ripgrep
     nixfmt
+    rnix-lsp
 
     # rust
     rustup
@@ -85,11 +86,17 @@
     editorconfig-core-c
 
     # go
+    go-outline
     gocode
+    gocode-gomod
+    godef
+    golint
     gomodifytags
-    gotests
+    gopkgs
+    gopls
     gore
-    go-tools
+    gotests
+    gotools
 
     # kube
     kubectl
