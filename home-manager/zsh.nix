@@ -7,6 +7,9 @@
     dotDir = ".config/zsh";
     enableAutosuggestions = true;
     enableCompletion = true;
+    initExtra = ''
+      eval "$(direnv hook zsh)"
+    '';
     shellAliases = {
       k = "kubectl";
       update =

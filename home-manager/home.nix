@@ -2,6 +2,11 @@
   programs.home-manager.enable = true;
   imports = [ ./zsh.nix ./rofi.nix ./git.nix ];
 
+  nixpkgs.overlays = [
+    (import (builtins.fetchTarball {
+      url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
+    }))
+  ];
   nixpkgs.config.packageOverrides = pkgs: {
     nur = import <nur> { inherit pkgs; };
   };
@@ -46,65 +51,72 @@
 
   # Go
   programs.go.enable = true;
+  home.sessionVariables = {
+    GOPRIVATE = "github.com/utilitywarehouse/*";
+  };
 
-  home.packages = with pkgs; [
-    slack
-    _1password-gui
-    jq
-    terraform
-    gnuplot
-    fd
-    ispell
-    spotify-tui
-    direnv
+  home.packages = with pkgs;
+    [
+      slack
+      _1password-gui
+      jq
+      terraform
+      gnuplot
+      fd
+      ispell
+      spotify-tui
+      direnv
 
-    # keyboards
-    wally-cli
+      # keyboards
+      wally-cli
 
-    # games
-    cataclysm-dda
+      # games
+      cataclysm-dda
 
-    # c
-    cmake
-    shellcheck
-    coreutils
-    clang
-    cmake
-    clang-tools
+      # c
+      cmake
+      shellcheck
+      coreutils
+      clang
+      cmake
+      clang-tools
 
-    # java
-    jdk
+      # java
+      jdk
 
-    # nix
-    ripgrep
-    nixfmt
-    rnix-lsp
+      # nix
+      ripgrep
+      nixfmt
+      rnix-lsp
 
-    # rust
-    rustup
-    rust-analyzer
-    editorconfig-core-c
+      # rust
+      rustup
+      rust-analyzer
+      editorconfig-core-c
 
-    # go
-    go-outline
-    gocode
-    gocode-gomod
-    godef
-    golint
-    gomodifytags
-    gopkgs
-    gopls
-    gore
-    gotests
-    gotools
+      # go
+      go-outline
+      gocode
+      gocode-gomod
+      godef
+      golint
+      gomodifytags
+      gopkgs
+      gopls
+      gore
+      gotests
+      gotools
 
-    # kube
-    kubectl
-    k9s
+      # kube
+      kubectl
+      k9s
 
-    # json/grpc
-    evans
-  ];
+      # json/grpc
+      evans
+    ];
+
+  # a better direnv
+  services.lorri.enable = true;
 
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
