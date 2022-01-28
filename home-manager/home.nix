@@ -2,15 +2,9 @@
   programs.home-manager.enable = true;
   imports = [ ./zsh.nix ./rofi.nix ./git.nix ];
 
-  nixpkgs.overlays = [
-    (import (builtins.fetchTarball {
-      url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
-    }))
-  ];
   nixpkgs.config.packageOverrides = pkgs: {
     nur = import <nur> { inherit pkgs; };
   };
-  nixpkgs.config.allowUnfree = true;
 
   # run emacs with extra packages
   programs.emacs = {
@@ -81,9 +75,6 @@
       cmake
       clang-tools
 
-      # java
-      jdk
-
       # nix
       ripgrep
       nixfmt
@@ -131,5 +122,5 @@
   # You can update Home Manager without changing this value. See
   # the Home Manager release notes for a list of state version
   # changes in each release.
-  home.stateVersion = "21.05";
+  #home.stateVersion = "21.05";
 }
