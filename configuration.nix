@@ -46,9 +46,9 @@
   nixpkgs.config = {
     allowUnfree = true;
     packageOverrides = pkgs: {
-      steam = pkgs.steam.override {
-        extraPkgs = pkgs: with pkgs; [ pango harfbuzz libthai ];
-      };
+      # steam = pkgs.steam.override {
+      #   extraPkgs = pkgs: with pkgs; [ pango harfbuzz libthai ];
+      # };
       nur = import <nur> { inherit pkgs; };
     };
   };
