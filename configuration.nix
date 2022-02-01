@@ -53,6 +53,11 @@
     };
   };
 
+  # flatpak for steam
+  services.flatpak.enable = true;
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+
   # Configure keymap in X11
   services.xserver.layout = "gb";
 
@@ -67,7 +72,7 @@
   users.users.ollie = {
     shell = pkgs.zsh;
     isNormalUser = true;
-    extraGroups = [ "wheel" "plugdev" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "plugdev" "flatpak" ]; # Enable ‘sudo’ for the user.
   };
 
   # List packages installed in system profile. To search, run:
@@ -87,6 +92,7 @@
     gohufont
     emacs-all-the-icons-fonts
   ];
+
 
   programs.steam.enable = true;
 
