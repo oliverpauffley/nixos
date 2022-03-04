@@ -1,3 +1,21 @@
 #+TITLE: Nixos
 
 Dotfiles for nixos install
+
+** Commands
+- update
+#+begin_src shell
+nix flake update
+#+end_src
+- switch config
+#+begin_src shell
+sudo nixos-rebuild switch --flake .#
+#+end_src
+- switch homemanager
+#+begin_src shell
+nix build .#homeManagerConfigurations.ollie.activationPackage
+#+end_src
+then
+#+begin_src shell
+./result/activate
+#+end_src
