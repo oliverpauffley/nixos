@@ -1,126 +1,62 @@
-{ config, pkgs, lib, ... }: {
-  programs.home-manager.enable = true;
-  imports = [ ./zsh.nix ./rofi.nix ./git.nix ];
+# This is your home-manager configuration file
+# Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
 
-  nixpkgs.config.packageOverrides = pkgs: {
-    nur = import <nur> { inherit pkgs; };
-  };
+{ inputs, outputs, lib, config, pkgs, ... }: {
+  # You can import other home-manager modules here
+  imports = [
+    # If you want to use modules your own flake exports (from modules/home-manager):
+    # outputs.homeManagerModules.example
 
-  # run emacs with extra packages
-  programs.emacs = {
-    enable = true;
-    extraPackages = epkgs: [ epkgs.vterm ];
-  };
+    # Or modules exported from other flakes (such as nix-colors):
+    # inputs.nix-colors.homeManagerModules.default
 
-  # gpg
-  programs.gpg.enable = true;
+    # You can also split up your configuration and import pieces of it here:
+    # ./nvim.nix
+  ];
 
-  # spotifyd
-  services.spotifyd = {
-    enable = true;
-    settings = {
-      global = {
-        username = "mrpauffley@gmail.com";
-        password_cmd = "${pkgs.pass}/bin/pass spotify";
+  nixpkgs = {
+    # You can add overlays here
+    overlays = [
+      # Add overlays your own flake exports (from overlays and pkgs dir):
+      outputs.overlays.additions
+      outputs.overlays.modifications
+      outputs.overlays.unstable-packages
 
-        device_name = "spotifyd";
-        device_type = "computer";
-      };
-    };
-  };
+      # You can also add overlays exported from other flakes:
+      # neovim-nightly-overlay.overlays.default
 
-  # firefox
-  programs.firefox = {
-    enable = true;
-    extensions = with pkgs.nur.repos.rycee.firefox-addons;
-      [ onepassword-password-manager ];
-    profiles."Ollie" = {
-      isDefault = true;
-      settings = {
-        "browser.startup.homepage" = "https://nixos.org";
-        "browser.search.region" = "GB";
-      };
-    };
-  };
-
-  # Go
-  programs.go.enable = true;
-  home.sessionVariables = {
-    GOPRIVATE = "github.com/utilitywarehouse/*";
-  };
-
-  home.packages = with pkgs;
-    [
-      slack
-      _1password-gui
-      jq
-      terraform
-      gnuplot
-      fd
-      ispell
-      spotify-tui
-      direnv
-
-      # keyboards
-      wally-cli
-
-      # games
-      cataclysm-dda
-
-      # c
-      cmake
-      shellcheck
-      coreutils
-      clang
-      cmake
-      clang-tools
-
-      # nix
-      ripgrep
-      nixfmt
-      rnix-lsp
-
-      # rust
-      rustup
-      rust-analyzer
-      editorconfig-core-c
-
-      # go
-      go-outline
-      gocode
-      gocode-gomod
-      godef
-      golint
-      gomodifytags
-      gopkgs
-      gopls
-      gore
-      gotests
-      gotools
-
-      # kube
-      kubectl
-      k9s
-
-      # json/grpc
-      evans
+      # Or define it inline, for example:
+      # (final: prev: {
+      #   hi = final.hello.overrideAttrs (oldAttrs: {
+      #     patches = [ ./change-hello-to-hi.patch ];
+      #   });
+      # })
     ];
+    # Configure your nixpkgs instance
+    config = {
+      # Disable if you don't want unfree packages
+      allowUnfree = true;
+      # Workaround for https://github.com/nix-community/home-manager/issues/2942
+      allowUnfreePredicate = (_: true);
+    };
+  };
 
-  # a better direnv
-  services.lorri.enable = true;
+  home = {
+    username = "ollie";
+    homeDirectory = "/home/ollie";
+  };
 
-  # Home Manager needs a bit of information about you and the
-  # paths it should manage.
-  home.username = "ollie";
-  home.homeDirectory = "/home/ollie";
+  # Add stuff for your user as you see fit:
+  # programs.neovim.enable = true;
+  # home.packages = with pkgs; [ steam ];
 
-  # This value determines the Home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new Home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update Home Manager without changing this value. See
-  # the Home Manager release notes for a list of state version
-  # changes in each release.
-  #home.stateVersion = "21.05";
+  # Enable home-manager and git
+  programs.home-manager.enable = true;
+  programs.git.enable = true;
+
+  # Nicely reload system units when changing configs
+  systemd.user.startServices = "sd-switch";
+
+  # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+  home.stateVersion = "22.11";
 }
