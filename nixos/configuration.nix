@@ -15,7 +15,10 @@
     # ./users.nix
 
     # Import your generated (nixos-generate-config) hardware configuration
-    ./hardware-configuration.nix
+    #./hardware-configuration.nix
+    ./vm-hardware.nix
+
+    ./services/wiresteward
   ];
 
   nixpkgs = {
@@ -62,7 +65,12 @@
 
   networking.hostName = "arrakis";
 
-  boot.loader.systemd-boot.enable = true;
+  # boot.loader.systemd-boot.enable = true;
+
+  # Bootloader.
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/sda";
+  boot.loader.grub.useOSProber = true;
 
   users.users = {
     ollie = {
@@ -75,6 +83,12 @@
     };
   };
 
+  services.openssh = {
+    enable = true;
+    permitRootLogin = "yes";
+  };
+
+  services.wiresteward.enable = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.11";

@@ -9,13 +9,9 @@ nix flake update
 #+end_src
 - switch config
 #+begin_src shell
-sudo nixos-rebuild switch --flake .#
+sudo nixos-rebuild switch --flake .#<hostname>
 #+end_src
 - switch homemanager
 #+begin_src shell
-nix build .#homeManagerConfigurations.ollie.activationPackage
-#+end_src
-then
-#+begin_src shell
-./result/activate
+home-manager switch --flake .#<user>@<hostname>
 #+end_src
