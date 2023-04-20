@@ -16,12 +16,16 @@
     # TODO: Add any other flake you might need
     # hardware.url = "github:nixos/nixos-hardware";
 
+    # sops-nix for secrets
+    sops-nix.url = "github:Mic92/sops-nix";
+
+
     # Shameless plug: looking for a way to nixify your themes and make
     # everything match nicely? Try nix-colors!
     # nix-colors.url = "github:misterio77/nix-colors";
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, sops-nix, ... }@inputs:
     let
       inherit (self) outputs;
       forAllSystems = nixpkgs.lib.genAttrs [
@@ -63,6 +67,7 @@
           modules = [
             # > Our main nixos configuration file <
             ./nixos/configuration.nix
+            sops-nix.nixosModules.sops
           ];
         };
       };

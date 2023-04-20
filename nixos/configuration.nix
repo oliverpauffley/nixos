@@ -19,7 +19,14 @@
     ./vm-hardware.nix
 
     ./services/wiresteward
+
   ];
+
+  # sops secret setups
+  sops.defaultSopsFile = ../secrets/users.yaml;
+  sops.secrets."users.yaml/ollie/password".neededForUsers = true;
+
+
 
   nixpkgs = {
     # You can add overlays here
@@ -74,11 +81,8 @@
 
   users.users = {
     ollie = {
-      # TODO: You can set an initial password for your user.
-      # If you do, you can skip setting a root password by passing '--no-root-passwd' to nixos-install.
-      # Be sure to change it (using passwd) after rebooting!
-      initialPassword = "password";
       isNormalUser = true;
+      passwordFile = config.sops."users.yaml/ollie/password";
       extraGroups = [ "wheel" "docker" "networkmanager" "audio" ];
     };
   };
