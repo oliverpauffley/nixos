@@ -27,7 +27,7 @@ in
 
       fonts = [ "DejaVu Sans Mono, FontAwesome 6" ];
 
-      keybindings = lib.mkOptionDefault {
+      keybindings = lib.mkDefault {
         "${mod}+d" = "exec ${pkgs.dmenu}/bin/dmenu_run";
         "${mod}+return" = "exec ${pkgs.wezterm}/bin/wezterm";
         "${mod}+x" = "exec sh -c '${pkgs.maim}/bin/maim -s | xclip -selection clipboard -t image/png'";

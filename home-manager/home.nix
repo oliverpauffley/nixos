@@ -15,6 +15,7 @@
     ./git.nix
     ./i3.nix
     ./wezterm.nix
+    inputs.nix-doom-emacs.hmModule
   ];
 
   nixpkgs = {
@@ -48,13 +49,25 @@
     username = "ollie";
     homeDirectory = "/home/ollie";
   };
+  # fonts
+  fonts.fontconfig.enable = true;
 
   # Add stuff for your user as you see fit:
   # programs.neovim.enable = true;
-  home.packages = with pkgs; [ steam ];
+  home.packages = with pkgs; [
+    steam
+    (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" ]; })
+  ];
 
   # Enable home-manager and git
   programs.home-manager.enable = true;
+
+  programs.doom-emacs = {
+    enable = true;
+    doomPrivateDir = ./doom.d; # Directory containing your config.el, init.el
+    extraPackages = epkgs: [ epkgs.vterm ];
+    # and packages.el files
+  };
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
