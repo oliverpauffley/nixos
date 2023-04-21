@@ -29,7 +29,8 @@ with lib;
     # write default config.json
     environment.etc.wiresteward.source = ./config.json;
     environment.etc.wiresteward.target = ''wiresteward/config.json'';
+
+    networking.firewall.extraCommands = ''iptables -w 60 -t mangle -A POSTROUTING -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu'';
   };
 
-  # TODO firewall MTU settings
 }

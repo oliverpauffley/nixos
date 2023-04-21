@@ -23,9 +23,8 @@
   ];
 
   # sops secret setups
-  sops.defaultSopsFile = ../secrets/users.yaml;
-  sops.secrets."users.yaml/ollie/password".neededForUsers = true;
-
+  #sops.defaultSopsFile = ../secrets/users.yaml;
+  #sops.secrets."users.yaml/ollie/password".neededForUsers = true;
 
 
   nixpkgs = {
@@ -82,14 +81,29 @@
   users.users = {
     ollie = {
       isNormalUser = true;
-      passwordFile = config.sops."users.yaml/ollie/password";
+      initialPassword = "password";
+      # passwordFile = config.sops."users.yaml/ollie/password";
       extraGroups = [ "wheel" "docker" "networkmanager" "audio" ];
     };
   };
 
   services.openssh = {
     enable = true;
-    permitRootLogin = "yes";
+    permitRootLogin = "no";
+  };
+
+  environment.systemPackages = with pkgs; [
+    vim
+    firefox
+  ];
+
+  # Enable the X11 windowing system.
+  services.xserver = {
+    enable = true;
+    layout = "gb";
+    #    videoDrivers = [ "nvidia" ];
+    displayManager.lightdm.enable = true;
+    windowManager.i3.enable = true;
   };
 
   services.wiresteward.enable = true;
