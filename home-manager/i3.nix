@@ -25,11 +25,15 @@ in
     config = {
       modifier = mod;
 
-      fonts = [ "DejaVu Sans Mono, FontAwesome 6" ];
+      fonts = {
+        names = [ "DejaVu Sans Mono, FontAwesome 6" ];
+        style = "Bold";
+        size = 11.0;
+       };
 
-      keybindings = lib.mkDefault {
+      keybindings = lib.mkOptionDefault {
         "${mod}+d" = "exec ${pkgs.dmenu}/bin/dmenu_run";
-        "${mod}+return" = "exec ${pkgs.wezterm}/bin/wezterm";
+        "${mod}+Return" = "exec ${pkgs.wezterm}/bin/wezterm";
         "${mod}+x" = "exec sh -c '${pkgs.maim}/bin/maim -s | xclip -selection clipboard -t image/png'";
         "${mod}+Shift+x" = "exec sh -c '${pkgs.i3lock}/bin/i3lock -c 222222 & sleep 5 && xset dpms force of'";
 
@@ -44,6 +48,9 @@ in
         "${mod}+Shift+k" = "move down";
         "${mod}+Shift+l" = "move up";
         "${mod}+Shift+semicolon" = "move right";
+    
+        # Fullscreen
+        "${mod}+f" =  "fullscreen toggle";
 
         # My multi monitor setup
         "${mod}+m" = "move workspace to output DP-2";

@@ -13,8 +13,8 @@
     # You can also split up your configuration and import pieces of it here:
     # ./nvim.nix
     ./git.nix
-    ./i3.nix
     ./wezterm.nix
+    ./i3.nix
     inputs.nix-doom-emacs.hmModule
   ];
 
@@ -52,21 +52,70 @@
   # fonts
   fonts.fontconfig.enable = true;
 
-  # Add stuff for your user as you see fit:
-  # programs.neovim.enable = true;
-  home.packages = with pkgs; [
-    steam
-    (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" ]; })
-  ];
+  home.packages = with pkgs;
+    [
+      (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" ]; })
+      steam
+      slack
+      _1password-gui
+      jq
+      gnuplot
+      fd
+      ispell
+      ncspot
+      direnv
+      ripgrep
 
-  # Enable home-manager and git
+      # keyboards
+      wally-cli
+
+      # c
+      cmake
+      shellcheck
+      coreutils
+      clang
+      cmake
+      clang-tools
+
+      # nix
+      nixfmt
+      rnix-lsp
+
+      # rust
+      # rustup
+      # rust-analyzer
+      # editorconfig-core-c
+
+      # go
+      go-outline
+      gocode
+      gocode-gomod
+      godef
+      golint
+      gomodifytags
+      gopkgs
+      gopls
+      gore
+      gotests
+      gotools
+
+      # kube
+      kubectl
+      k9s
+
+      # json/grpc
+      evans
+    ];
+
+  # a better direnv
+  services.lorri.enable = true;
+
   programs.home-manager.enable = true;
 
   programs.doom-emacs = {
     enable = true;
     doomPrivateDir = ./doom.d; # Directory containing your config.el, init.el
     extraPackages = epkgs: [ epkgs.vterm ];
-    # and packages.el files
   };
 
   # Nicely reload system units when changing configs

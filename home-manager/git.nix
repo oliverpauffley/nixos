@@ -19,7 +19,7 @@
     };
     signing = {
       signByDefault = true;
-      key = "13C3AC686C7499A76DF6CD55E0BFCBFE7ED19B38";
+      key = "898E9AF3BA558BBD27CCEC76776333D265A54BED";
     };
   };
 

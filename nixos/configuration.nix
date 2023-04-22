@@ -15,8 +15,7 @@
     # ./users.nix
 
     # Import your generated (nixos-generate-config) hardware configuration
-    #./hardware-configuration.nix
-    ./vm-hardware.nix
+    ./hardware-configuration.nix
 
     ./services/wiresteward
 
@@ -70,13 +69,13 @@
   };
 
   networking.hostName = "arrakis";
+  networking.networkmanager.enable = true;
+  programs.nm-applet.enable = true;
 
-  # boot.loader.systemd-boot.enable = true;
-
-  # Bootloader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
-  boot.loader.grub.useOSProber = true;
+  # Bootloader
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
   users.users = {
     ollie = {
@@ -95,18 +94,64 @@
   environment.systemPackages = with pkgs; [
     vim
     firefox
+    gnupg
+    pinentry-curses
   ];
 
-  # Enable the X11 windowing system.
-  services.xserver = {
+   i18n.defaultLocale = "en_GB.UTF-8"; 
+
+   # Enable sound.
+  sound.enable = true;
+  
+  services.pipewire = {
     enable = true;
-    layout = "gb";
-    #    videoDrivers = [ "nvidia" ];
-    displayManager.lightdm.enable = true;
-    windowManager.i3.enable = true;
+    alsa.enable = true;
+    pulse.enable = true;
   };
 
+  # Enable zsa keyboards
+  hardware.keyboard.zsa.enable = true;
+
+  # Enable the X11 windowing system.
+   services.xserver = {
+     enable = true;
+     layout = "gb";
+     dpi = 180;
+     # videoDrivers = [ "nvidia" ];
+     displayManager.lightdm.enable = true;
+     windowManager.i3.enable = true;
+ 
+   libinput = {
+     enable = true;
+
+     touchpad = {
+     clickMethod = "buttonareas";
+     disableWhileTyping = true;
+     middleEmulation = true;
+     tapping = true;
+     additionalOptions = ''
+       Option "PalmDetection" "on"
+       Option "TappingButtonMap" "lmr"
+     '';
+    };
+   };
+   };
+
   services.wiresteward.enable = true;
+
+  security.polkit.enable = true;
+  services.fprintd.enable = true;
+  security.pam.services.login.fprintAuth = true;
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.sddm.enableGnomeKeyring = true;
+
+  services.pcscd.enable = true;
+programs.gnupg.agent = {
+   enable = true;
+   pinentryFlavor = "curses";
+   enableSSHSupport = true;
+};
+
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.11";
