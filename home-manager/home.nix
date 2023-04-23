@@ -15,7 +15,7 @@
     ./git.nix
     ./wezterm.nix
     ./i3.nix
-    inputs.nix-doom-emacs.hmModule
+    ./polybar.nix
   ];
 
   nixpkgs = {
@@ -52,71 +52,78 @@
   # fonts
   fonts.fontconfig.enable = true;
 
-  home.packages = with pkgs;
-    [
-      (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" ]; })
-      steam
-      slack
-      _1password-gui
-      jq
-      gnuplot
-      fd
-      ispell
-      ncspot
-      direnv
-      ripgrep
+  home.packages = with pkgs; [
+    (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; })
+    font-awesome_5
+    emacs-all-the-icons-fonts
+    steam
+    slack
+    _1password-gui
+    jq
+    gnuplot
+    fd
+    ispell
+    ncspot
+    direnv
+    ripgrep
 
-      # keyboards
-      wally-cli
+    # keyboards
+    wally-cli
 
-      # c
-      cmake
-      shellcheck
-      coreutils
-      clang
-      cmake
-      clang-tools
+    # c
+    cmake
+    shellcheck
+    coreutils
+    clang
+    cmake
+    clang-tools
 
-      # nix
-      nixfmt
-      rnix-lsp
+    # nix
+    nixfmt
+    rnix-lsp
 
-      # rust
-      # rustup
-      # rust-analyzer
-      # editorconfig-core-c
+    # rust
+    # rustup
+    # rust-analyzer
+    # editorconfig-core-c
 
-      # go
-      go-outline
-      gocode
-      gocode-gomod
-      godef
-      golint
-      gomodifytags
-      gopkgs
-      gopls
-      gore
-      gotests
-      gotools
+    # go
+    go-outline
+    gocode
+    gocode-gomod
+    godef
+    golint
+    gomodifytags
+    gopkgs
+    gopls
+    gore
+    gotests
+    gotools
 
-      # kube
-      kubectl
-      k9s
+    # kube
+    kubectl
+    k9s
 
-      # json/grpc
-      evans
-    ];
+    # json/grpc
+    evans
+  ];
+  programs.emacs = {
+    enable = true;
+    package = pkgs.emacs-gtk;
+    extraPackages = epkgs: [ epkgs.vterm ];
+  };
+
+  services.emacs =
+    {
+      enable = true;
+      defaultEditor = true;
+      startWithUserSession = true;
+    };
 
   # a better direnv
   services.lorri.enable = true;
 
   programs.home-manager.enable = true;
-
-  programs.doom-emacs = {
-    enable = true;
-    doomPrivateDir = ./doom.d; # Directory containing your config.el, init.el
-    extraPackages = epkgs: [ epkgs.vterm ];
-  };
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";

@@ -19,15 +19,12 @@
     # sops-nix for secrets
     sops-nix.url = "github:Mic92/sops-nix";
 
-    # doom emacs
-    nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
-   
     # Shameless plug: looking for a way to nixify your themes and make
     # everything match nicely? Try nix-colors!
     # nix-colors.url = "github:misterio77/nix-colors";
   };
 
-  outputs = { self, nixpkgs, home-manager, sops-nix, nix-doom-emacs, nixos-hardware, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, sops-nix, nixos-hardware, ... }@inputs:
     let
       inherit (self) outputs;
       forAllSystems = nixpkgs.lib.genAttrs [
