@@ -1,7 +1,7 @@
 # This is your home-manager configuration file
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
 
-{ inputs, outputs, lib, config, pkgs, ... }: {
+{ inputs, outputs, lib, config, pkgs, nix-colors, ... }: {
   # You can import other home-manager modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/home-manager):
@@ -16,6 +16,8 @@
     ./wezterm.nix
     ./i3.nix
     ./polybar.nix
+    nix-colors.homeManagerModules.default
+
   ];
 
   nixpkgs = {
@@ -52,10 +54,12 @@
   # fonts
   fonts.fontconfig.enable = true;
 
+  colorScheme = nix-colors.colorSchemes.dracula;
+
   home.packages = with pkgs; [
     (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; })
-    font-awesome_5
     emacs-all-the-icons-fonts
+
     steam
     slack
     _1password-gui
@@ -66,6 +70,7 @@
     ncspot
     direnv
     ripgrep
+    arandr
 
     # keyboards
     wally-cli

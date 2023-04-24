@@ -10,7 +10,15 @@ in
     enable = true;
     config = {
       modifier = mod;
-
+      colors =
+        {
+          focused = "#${config.colorScheme.colors.base05}";
+          focusedInactive = "#${config.colorScheme.colors.base06}";
+          unfocused = "#${config.colorScheme.colors.base00}";
+        };
+      window = {
+        titlebar = false;
+      };
       fonts = {
         names = [ "GohuFont Nerd Font" ];
         style = "Bold";
@@ -45,11 +53,7 @@ in
         "${mod}+Shift+m" = "move workspace to output DP-5";
       };
 
-      bars = [{
-        position = "top";
-        statusCommand =
-          "${pkgs.i3status-rust}/bin/i3status-rs ~/.config/i3status-rust/config-top.toml";
-      }];
+      bars = [ ];
     };
   };
 }

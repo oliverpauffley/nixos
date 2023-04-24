@@ -10,12 +10,13 @@
     };
     config = {
       "bar/top" = {
-        monitor = "eDP1";
+        monitor = "eDP-1";
         width = "100%";
-        height = "3%";
+        height = "2%";
         radius = 0;
         # Just sticking them together in the center for now
-        modules-center = "date i3";
+        modules-right = "date";
+        modules-left = "i3";
       };
       "module/date" = {
         type = "internal/date";
@@ -33,5 +34,8 @@
     script = ''
       polybar top &
     '';
+  };
+  systemd.user.services.polybar = {
+    Install.WantedBy = [ "graphical-session.target" ];
   };
 }
