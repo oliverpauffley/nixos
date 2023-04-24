@@ -92,6 +92,7 @@ in
       initialPassword = "password";
       # passwordFile = config.sops."users.yaml/ollie/password";
       extraGroups = [ "wheel" "docker" "networkmanager" "audio" ];
+      shell = pkgs.fish;
     };
   };
 

@@ -75,7 +75,7 @@
       homeConfigurations = {
         "ollie@arrakis" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
-          extraSpecialArgs = { inherit inputs outputs; };
+          extraSpecialArgs = { inherit inputs outputs nix-colors; };
           modules = [
             # > Our main home-manager configuration file <
             ./home-manager/home.nix

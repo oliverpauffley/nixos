@@ -16,8 +16,9 @@
     ./wezterm.nix
     ./i3.nix
     ./polybar.nix
+    ./emacs
+    ./fish.nix
     nix-colors.homeManagerModules.default
-
   ];
 
   nixpkgs = {
@@ -54,7 +55,7 @@
   # fonts
   fonts.fontconfig.enable = true;
 
-  colorScheme = nix-colors.colorSchemes.dracula;
+  colorScheme = nix-colors.colorSchemes.woodland;
 
   home.packages = with pkgs; [
     (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; })
@@ -76,6 +77,8 @@
     wally-cli
 
     # c
+    libtool
+    gnumake
     cmake
     shellcheck
     coreutils
@@ -112,21 +115,10 @@
     # json/grpc
     evans
   ];
-  programs.emacs = {
-    enable = true;
-    package = pkgs.emacs-gtk;
-    extraPackages = epkgs: [ epkgs.vterm ];
-  };
 
-  services.emacs =
-    {
-      enable = true;
-      defaultEditor = true;
-      startWithUserSession = true;
-    };
-
-  # a better direnv
+  # a better direnv with fish integration
   services.lorri.enable = true;
+  programs.direnv.enableFishIntegration = true;
 
   programs.home-manager.enable = true;
 
