@@ -1,7 +1,7 @@
 # This is your home-manager configuration file
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
 
-{ inputs, outputs, lib, config, pkgs, nix-colors, ... }: {
+{ inputs, outputs, lib, config, pkgs, nix-colors, rust-overlay, ... }: {
   # You can import other home-manager modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/home-manager):
@@ -18,6 +18,7 @@
     ./polybar.nix
     ./emacs
     ./fish.nix
+    ./autorandr.nix
     nix-colors.homeManagerModules.default
   ];
 
@@ -68,10 +69,12 @@
     gnuplot
     fd
     ispell
+    (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
     ncspot
     direnv
     ripgrep
     arandr
+    exa
 
     # keyboards
     wally-cli
@@ -91,11 +94,11 @@
     rnix-lsp
 
     # rust
-    # rustup
-    # rust-analyzer
-    # editorconfig-core-c
+    rustup
+    rust-analyzer
 
     # go
+    go
     go-outline
     gocode
     gocode-gomod

@@ -1,10 +1,9 @@
 { config, lib, pkgs, ... }:
 {
-  home.packages = with pkgs; [ grc ];
   programs.fish = {
     enable = true;
     shellAbbrs = {
-      hms = "home-manage switch --flake .#";
+      hms = "home-manager switch --flake .#";
       nos = "sudo nixos-rebuild switch --flake .#";
     };
     interactiveShellInit = ''
@@ -12,7 +11,7 @@
     '';
     plugins = [
       # Enable a plugin (here grc for colorized command output) from nixpkgs
-      { name = "grc"; src = pkgs.fishPlugins.grc.src; }
+      #{ name = "grc"; src = pkgs.fishPlugins.grc.src; }
     ];
   };
 }

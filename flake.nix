@@ -19,10 +19,13 @@
     # sops-nix for secrets
     sops-nix.url = "github:Mic92/sops-nix";
 
+    # reproducible rust
+    rust-overlay.url = "github:oxalica/rust-overlay";
+
     nix-colors.url = "github:misterio77/nix-colors";
   };
 
-  outputs = { self, nixpkgs, home-manager, sops-nix, nixos-hardware, nix-colors, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, sops-nix, nixos-hardware, nix-colors, rust-overlay, ... }@inputs:
     let
       inherit (self) outputs;
       forAllSystems = nixpkgs.lib.genAttrs [
