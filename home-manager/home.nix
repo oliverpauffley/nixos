@@ -55,7 +55,7 @@
   # fonts
   fonts.fontconfig.enable = true;
 
-  colorScheme = nix-colors.colorSchemes.woodland;
+  colorScheme = nix-colors.colorSchemes.rose-pine-moon;
 
   home.packages = with pkgs; [
     (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; })
@@ -74,6 +74,7 @@
     ripgrep
     arandr
     exa
+    postman
 
     # keyboards
     wally-cli

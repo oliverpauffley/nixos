@@ -105,7 +105,7 @@
     vim
     firefox
     gnupg
-    pinentry-curses
+    pinentry-qt
     strongbox
     gtk3
     pavucontrol
@@ -201,6 +201,8 @@
 
   services.wiresteward.enable = true;
 
+
+  # TODO figure out saving the password for emacs logins
   security.polkit.enable = true;
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = true;
@@ -210,7 +212,7 @@
   services.pcscd.enable = true;
   programs.gnupg.agent = {
     enable = true;
-    pinentryFlavor = "curses";
+    pinentryFlavor = "qt";
     enableSSHSupport = true;
   };
 

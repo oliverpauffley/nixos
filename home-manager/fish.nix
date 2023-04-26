@@ -1,5 +1,4 @@
-{ config, lib, pkgs, ... }:
-{
+{ config, lib, pkgs, ... }: {
   programs.fish = {
     enable = true;
     shellAbbrs = {
@@ -8,10 +7,13 @@
     };
     interactiveShellInit = ''
       set fish_greeting # Disable greeting
+      set -Ux GOPRIVATE "github.com/utilitywarehouse/*"
     '';
+    functions = { ec = { body = "emacsclient --create-frame $argv &"; }; };
     plugins = [
       # Enable a plugin (here grc for colorized command output) from nixpkgs
       #{ name = "grc"; src = pkgs.fishPlugins.grc.src; }
     ];
   };
+  services.gpg-agent.enableFishIntegration = true;
 }

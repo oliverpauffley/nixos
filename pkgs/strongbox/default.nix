@@ -10,8 +10,7 @@ buildGoModule rec {
     rev = "v${version}";
     sha256 = "sha256-ovuW/la0sRrIVCyxmdmSjxlhQT3duJrlebaTIJ9IxCs=";
   };
-  modSha256 = "sha256-E59VhZQQrzEgbD+ZVHvO0Dq4ytYJIjG+V+629l4B+YB=";
-  vendorSha256 = "sha256-E59VhZQQrzEgbD+ZVHvO0Dq4ytYJIjG+V+629l4B+YC=";
+  vendorSha256 = "sha256-huEkc3XWbRE/9IFEM4HpTaIU4GBqqBPH0/xmFVaY/5s=";
 
   meta = with lib; {
     description = "Encryption for git users";

@@ -1,11 +1,17 @@
 { config, lib, pkgs, ... }:
 {
+
+  home.packages = with pkgs; [ strongbox libsecret ];
   programs.git = {
     enable = true;
     userEmail = "mrpauffley@gmail.com";
-    userName = "Ollie";
+    userName = "oliverpauffley";
     attributes = [ "go.mod linguist-generated" "go.sum linguist-generated" ];
     extraConfig = {
+      github.user = "oliverpauffley";
+      credential.helper = "${
+          pkgs.git.override { withLibsecret = true; }
+        }/bin/git-credential-libsecret";
       filter = {
         strongbox = {
           clean = "strongbox -clean %f";
