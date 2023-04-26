@@ -14,8 +14,8 @@
 
     # Or modules from other flakes (such as nixos-hardware):
     inputs.hardware.nixosModules.common-cpu-amd
-    # inputs.hardware.nixosModules.common-gpu-intel
-    #inputs.hardware.nixosModules.common-gpu-nvidia
+    #   inputs.hardware.nixosModules.common-gpu-intel
+    inputs.hardware.nixosModules.common-gpu-nvidia
     inputs.hardware.nixosModules.common-pc-ssd
     inputs.hardware.nixosModules.common-hidpi
     inputs.hardware.nixosModules.common-pc-laptop
@@ -27,7 +27,6 @@
     ./hardware-configuration.nix
 
     ./services/wiresteward
-
   ];
 
   # sops secret setups
@@ -102,24 +101,53 @@
   };
 
   environment.systemPackages = with pkgs; [
-    # nvidia-offload
+    #nvidia-offload
     vim
     firefox
     gnupg
     pinentry-curses
+    strongbox
     gtk3
+    pavucontrol
   ];
 
   i18n.defaultLocale = "en_GB.UTF-8";
 
   # Enable sound.
   sound.enable = true;
-
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     pulse.enable = true;
+    media-session.config.bluez-monitor.rules = [
+      {
+        # Matches all cards
+        matches = [{ "device.name" = "~bluez_card.*"; }];
+        actions = {
+          "update-props" = {
+            "bluez5.reconnect-profiles" = [ "hfp_hf" "hsp_hs" "a2dp_sink" ];
+            # mSBC is not expected to work on all headset + adapter combinations.
+            "bluez5.msbc-support" = true;
+            # SBC-XQ is not expected to work on all headset + adapter combinations.
+            "bluez5.sbc-xq-support" = true;
+          };
+        };
+      }
+      {
+        matches = [
+          # Matches all sources
+          { "node.name" = "~bluez_input.*"; }
+          # Matches all outputs
+          { "node.name" = "~bluez_output.*"; }
+        ];
+      }
+    ];
   };
+
+  # bluetooth
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
+
 
   # Enable zsa keyboards
   hardware.keyboard.zsa.enable = true;
@@ -150,17 +178,25 @@
   };
 
   # nvidia prime settings
-  #hardware.nvidia.modesetting.enable = true;
+  hardware.nvidia.modesetting.enable = true;
+  hardware.nvidia.prime = {
+    offload.enable = true;
 
-  # hardware.nvidia.prime = {
-  #   offload.enable = true;
+    # Bus ID of the Intel GPU. You can find it using lspci, either under 3D or VGA
+    intelBusId = "PCI:0:2:0";
 
-  #    # Bus ID of the Intel GPU. You can find it using lspci, either under 3D or VGA
-  #    intelBusId = "PCI:0:2:0";
+    # Bus ID of the NVIDIA GPU. You can find it using lspci, either under 3D or VGA
+    nvidiaBusId = "PCI:1:0:0";
+  };
 
-  #    # Bus ID of the NVIDIA GPU. You can find it using lspci, either under 3D or VGA
-  #    nvidiaBusId = "PCI:1:0:0";
-  # };
+  # boot with graphics card for external display
+  specialisation = {
+    external-display.configuration = {
+      system.nixos.tags = [ "external-display" ];
+      hardware.nvidia.prime.offload.enable = lib.mkForce false;
+      hardware.nvidia.powerManagement.enable = lib.mkForce false;
+    };
+  };
   hardware = { opengl = { enable = true; }; };
 
   services.wiresteward.enable = true;

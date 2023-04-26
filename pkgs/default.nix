@@ -3,4 +3,5 @@
 
 { pkgs ? (import ../nixpkgs.nix) { } }: {
   wiresteward = pkgs.callPackage ./wiresteward { };
+  strongbox = pkgs.callPackage ./strongbox { };
 }

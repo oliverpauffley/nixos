@@ -18,7 +18,6 @@
     ./polybar.nix
     ./emacs
     ./fish.nix
-    ./autorandr.nix
     nix-colors.homeManagerModules.default
   ];
 
