@@ -5,6 +5,9 @@
       hms = "home-manager switch --flake .#";
       nos = "sudo nixos-rebuild switch --flake .#";
     };
+    shellAliases = {
+      ls = "exa";
+    };
     interactiveShellInit = ''
       set fish_greeting # Disable greeting
       set -Ux GOPRIVATE "github.com/utilitywarehouse/*"

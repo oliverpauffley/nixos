@@ -75,6 +75,7 @@
     arandr
     exa
     postman
+    buf
 
     # keyboards
     wally-cli

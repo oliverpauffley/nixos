@@ -1,5 +1,4 @@
-{ config, lib, pkgs, ... }:
-{
+{ config, lib, pkgs, ... }: {
 
   home.packages = with pkgs; [ strongbox libsecret ];
   programs.git = {
@@ -7,6 +6,7 @@
     userEmail = "mrpauffley@gmail.com";
     userName = "oliverpauffley";
     attributes = [ "go.mod linguist-generated" "go.sum linguist-generated" ];
+    ignores = [ ".envrc" ];
     extraConfig = {
       github.user = "oliverpauffley";
       credential.helper = "${

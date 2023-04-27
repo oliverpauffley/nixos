@@ -2,11 +2,10 @@
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
 
 { inputs, outputs, lib, config, pkgs, ... }:
-# let
-#   nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload"
-#     "  export __NV_PRIME_RENDER_OFFLOAD=1\n  export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0\n  export __GLX_VENDOR_LIBRARY_NAME=nvidia\n  export __VK_LAYER_NV_optimus=NVIDIA_only\n  exec \"$@\"\n";
-# in
-{
+let
+  nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload"
+    "  export __NV_PRIME_RENDER_OFFLOAD=1\n  export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0\n  export __GLX_VENDOR_LIBRARY_NAME=nvidia\n  export __VK_LAYER_NV_optimus=NVIDIA_only\n  exec \"$@\"\n";
+in {
   # You can import other NixOS modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/nixos):
@@ -101,7 +100,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    #nvidia-offload
+    nvidia-offload
     vim
     firefox
     gnupg
@@ -112,6 +111,7 @@
   ];
 
   i18n.defaultLocale = "en_GB.UTF-8";
+  time.timeZone = "Europe/London";
 
   # Enable sound.
   sound.enable = true;
@@ -136,7 +136,9 @@
       {
         matches = [
           # Matches all sources
-          { "node.name" = "~bluez_input.*"; }
+          {
+            "node.name" = "~bluez_input.*";
+          }
           # Matches all outputs
           { "node.name" = "~bluez_output.*"; }
         ];
@@ -148,7 +150,6 @@
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
 
-
   # Enable zsa keyboards
   hardware.keyboard.zsa.enable = true;
 
@@ -158,8 +159,7 @@
     layout = "gb";
     dpi = 180;
     videoDrivers = [ "nvidia" ];
-    displayManager.lightdm.enable = true;
-    windowManager.i3.enable = true;
+    xkbOptions = "caps:ctrl_modifier";
 
     libinput = {
       enable = true;
@@ -177,6 +177,13 @@
     };
   };
 
+  services.dbus = {
+    enable = true;
+    socketActivated = true;
+    packages = [ pkgs.gnome3.dconf ];
+  };
+
+  # TODO dual monitors?
   # nvidia prime settings
   hardware.nvidia.modesetting.enable = true;
   hardware.nvidia.prime = {
@@ -200,7 +207,6 @@
   hardware = { opengl = { enable = true; }; };
 
   services.wiresteward.enable = true;
-
 
   # TODO figure out saving the password for emacs logins
   security.polkit.enable = true;
@@ -229,6 +235,8 @@
     };
   };
 
+  # docker
+  virtualisation.docker.enable = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.11";
