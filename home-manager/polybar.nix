@@ -66,7 +66,7 @@ in
       };
     };
     script = ''
-      polybar top &
+      polybar &
     '';
   };
 }
