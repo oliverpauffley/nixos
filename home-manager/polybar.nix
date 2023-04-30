@@ -1,7 +1,6 @@
 { config, lib, pkgs, nix-colors, ... }:
 let colors = config.colorScheme.colors;
-in
-{
+in {
   services.polybar = {
     enable = true;
     package = pkgs.polybar.override {
@@ -14,6 +13,7 @@ in
       "bar/top" = {
         font-0 = "GohuFont Nerd Font:size=16";
         monitor = "eDP-1";
+        monitor-fallback = "HDMI-0";
         width = "100%";
         height = "2%";
         radius = 0;
@@ -23,7 +23,7 @@ in
         background-4 = "#dd${colors.base03}";
         background-5 = "#dd${colors.base04}";
         background-6 = "#dd${colors.base05}";
-        background = "#dd${colors.base00}";
+        background = "#dd${colors.base01}";
         foreground = "#ff${colors.base07}";
 
         modules-right = "date";
@@ -42,19 +42,19 @@ in
 
         label-focused = "%index%";
         label-focused-foreground = "#${colors.base08}";
-        label-focused-background = "#${colors.base01}";
+        label-focused-background = "#${colors.base00}";
         label-focused-underline = "#${colors.base08}";
         label-focused-padding = 1;
 
         label-unfocused = "%index%";
         label-unfocused-foreground = "#${colors.base06}";
-        label-unfocused-background = "#${colors.base00}";
+        label-unfocused-background = "#${colors.base01}";
         label-unfocused-underline = "#${colors.base08}";
         label-unfocused-padding = 1;
 
         label-urgent = "%index%";
         label-urgent-foreground = "#${colors.base0E}";
-        label-urgent-background = "#${colors.base05}";
+        label-urgent-background = "#${colors.base08}";
         label-urgent-underline = "#${colors.base08}";
         label-urgent-padding = 1;
 

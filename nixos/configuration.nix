@@ -108,8 +108,14 @@ in {
     strongbox
     gtk3
     pavucontrol
+    unzip
   ];
 
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+  };
   i18n.defaultLocale = "en_GB.UTF-8";
   time.timeZone = "Europe/London";
 
@@ -177,11 +183,7 @@ in {
     };
   };
 
-  services.dbus = {
-    enable = true;
-    socketActivated = true;
-    packages = [ pkgs.gnome3.dconf ];
-  };
+  services.dbus.enable = true;
 
   # TODO dual monitors?
   # nvidia prime settings

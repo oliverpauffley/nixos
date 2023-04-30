@@ -55,13 +55,11 @@
   # fonts
   fonts.fontconfig.enable = true;
 
-  colorScheme = nix-colors.colorSchemes.rose-pine-moon;
+  colorScheme = nix-colors.colorSchemes.darkmoss;
 
   home.packages = with pkgs; [
     (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; })
     emacs-all-the-icons-fonts
-
-    steam
     slack
     _1password-gui
     jq
@@ -124,6 +122,11 @@
   services.lorri.enable = true;
   programs.direnv.enableFishIntegration = true;
 
+  # auto mount removable disks
+  services.udiskie = {
+    enable = true;
+    tray = "always";
+  };
   programs.home-manager.enable = true;
 
   # Nicely reload system units when changing configs

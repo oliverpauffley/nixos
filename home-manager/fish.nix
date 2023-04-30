@@ -5,12 +5,31 @@
       hms = "home-manager switch --flake .#";
       nos = "sudo nixos-rebuild switch --flake .#";
     };
-    shellAliases = {
-      ls = "exa";
-    };
+    shellAliases = { ls = "exa"; };
     interactiveShellInit = ''
-      set fish_greeting # Disable greeting
+
+      # Disable greeting
+      set fish_greeting
+
+      # Work go export
       set -Ux GOPRIVATE "github.com/utilitywarehouse/*"
+
+      # direnv nix shell setup
+      function fish_prompt
+          set -l nix_shell_info (
+              if test -n "$IN_NIX_SHELL"
+                  echo -n "<nix-shell>"
+              end
+          )
+
+          set_color $fish_color_cwd
+          echo -n (prompt_pwd)
+          set_color normal
+          echo -n -s "$nix_shell_info ~> "
+      end
+
+      # suppress direnv logging
+      set -gx DIRENV_LOG_FORMAT ""
     '';
     functions = { ec = { body = "emacsclient --create-frame $argv &"; }; };
     plugins = [
