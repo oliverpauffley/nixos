@@ -166,6 +166,8 @@ in {
     dpi = 180;
     videoDrivers = [ "nvidia" ];
     xkbOptions = "caps:ctrl_modifier";
+    displayManager.lightdm.enable = true;
+    windowManager.i3.enable = true;
 
     libinput = {
       enable = true;
