@@ -16,8 +16,11 @@
     ./wezterm.nix
     ./i3.nix
     ./polybar.nix
+    ./picom.nix
+    #./xmonad.nix
     ./emacs
     ./fish.nix
+    ./rofi.nix
     nix-colors.homeManagerModules.default
   ];
 
@@ -55,7 +58,7 @@
   # fonts
   fonts.fontconfig.enable = true;
 
-  colorScheme = nix-colors.colorSchemes.darkmoss;
+  colorScheme = nix-colors.colorSchemes.apathy;
 
   home.packages = with pkgs; [
     (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; })
@@ -119,8 +122,10 @@
   ];
 
   # a better direnv with fish integration
-  services.lorri.enable = true;
-  programs.direnv.enableFishIntegration = true;
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
 
   # auto mount removable disks
   services.udiskie = {
