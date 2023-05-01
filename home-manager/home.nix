@@ -13,7 +13,8 @@
     # You can also split up your configuration and import pieces of it here:
     # ./nvim.nix
     ./git.nix
-    ./wezterm.nix
+    #./wezterm.nix
+    ./alacritty.nix
     ./i3.nix
     ./polybar.nix
     ./picom.nix
