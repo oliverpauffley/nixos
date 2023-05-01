@@ -1,7 +1,7 @@
 # This is your home-manager configuration file
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
 
-{ inputs, outputs, lib, config, pkgs, nix-colors, rust-overlay, ... }: {
+{ inputs, outputs, lib, config, pkgs, rust-overlay, ... }: {
   # You can import other home-manager modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/home-manager):
@@ -21,7 +21,7 @@
     ./emacs
     ./fish.nix
     ./rofi.nix
-    nix-colors.homeManagerModules.default
+
   ];
 
   nixpkgs = {
@@ -57,8 +57,6 @@
   };
   # fonts
   fonts.fontconfig.enable = true;
-
-  colorScheme = nix-colors.colorSchemes.apathy;
 
   home.packages = with pkgs; [
     (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; })

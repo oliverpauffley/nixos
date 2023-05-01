@@ -15,17 +15,13 @@
 
     hardware.url = "github:nixos/nixos-hardware";
 
-    # TODO get this working
-    # sops-nix for secrets
-    sops-nix.url = "github:Mic92/sops-nix";
-
     # reproducible rust
     rust-overlay.url = "github:oxalica/rust-overlay";
 
-    nix-colors.url = "github:misterio77/nix-colors";
+    stylix.url = "github:danth/stylix";
   };
 
-  outputs = { self, nixpkgs, home-manager, sops-nix, nixos-hardware, nix-colors, rust-overlay, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, nixos-hardware, stylix, rust-overlay, ... }@inputs:
     let
       inherit (self) outputs;
       forAllSystems = nixpkgs.lib.genAttrs [
@@ -67,21 +63,11 @@
           modules = [
             # > Our main nixos configuration file <
             ./nixos/configuration.nix
-            sops-nix.nixosModules.sops
-            nixos-hardware.nixosModules.lenovo-thinkpad-x1-extreme-gen2
-          ];
-        };
-      };
-
-      # Standalone home-manager configuration entrypoint
-      # Available through 'home-manager --flake .#your-username@your-hostname'
-      homeConfigurations = {
-        "ollie@arrakis" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
-          extraSpecialArgs = { inherit inputs outputs nix-colors; };
-          modules = [
-            # > Our main home-manager configuration file <
-            ./home-manager/home.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.extraSpecialArgs = { inherit inputs outputs; };
+              home-manager.users.ollie = import ./home-manager/home.nix;
+            }
           ];
         };
       };

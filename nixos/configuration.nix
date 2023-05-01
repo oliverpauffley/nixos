@@ -18,7 +18,10 @@ in {
     inputs.hardware.nixosModules.common-pc-ssd
     inputs.hardware.nixosModules.common-hidpi
     inputs.hardware.nixosModules.common-pc-laptop
+    inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-extreme-gen2
 
+    inputs.stylix.nixosModules.stylix
+    inputs.home-manager.nixosModules.home-manager
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
 
@@ -103,12 +106,14 @@ in {
     nvidia-offload
     vim
     firefox
+    chromium
     gnupg
     pinentry-qt
     strongbox
     gtk3
     pavucontrol
     unzip
+    feh
   ];
 
   programs.steam = {
@@ -239,6 +244,27 @@ in {
     settings = {
       CPU_SCALING_GOVERNOR_ON_AC = "performance";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+    };
+  };
+
+  # stylix themeing
+  stylix = {
+    autoEnable = true;
+    polarity = "dark";
+    image = pkgs.fetchurl {
+      url = "https://images.alphacoders.com/958/958190.png";
+      sha256 = "vDwUEHZJPm3Zsm0lQwn79aOa1JcWy3Cp83yXgg95oX0=";
+    };
+    fonts = {
+      monospace = {
+        package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
+        name = "mononoki Nerd Font";
+      };
+      serif = config.stylix.fonts.monospace;
+
+      sansSerif = config.stylix.fonts.monospace;
+
+      emoji = config.stylix.fonts.monospace;
     };
   };
 
