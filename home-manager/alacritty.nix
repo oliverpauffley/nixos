@@ -1,5 +1,5 @@
 { config, lib, pkgs, ... }:
 
 {
-  programx.alacritty = { enable = true; };
+  programs.alacritty = { enable = true; };
 }
