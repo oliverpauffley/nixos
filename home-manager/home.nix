@@ -73,6 +73,7 @@
     ripgrep
     arandr
     exa
+    bat
     postman
     buf
 

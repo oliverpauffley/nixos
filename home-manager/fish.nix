@@ -5,7 +5,10 @@
       hms = "home-manager switch --flake .#";
       nos = "sudo nixos-rebuild switch --flake .#";
     };
-    shellAliases = { ls = "exa"; };
+    shellAliases = {
+      ls = "exa";
+      cat = "bat";
+    };
     interactiveShellInit = ''
 
       # Disable greeting

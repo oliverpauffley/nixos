@@ -251,10 +251,12 @@ in {
   stylix = {
     autoEnable = true;
     polarity = "dark";
-    image = pkgs.fetchurl {
-      url = "https://images.alphacoders.com/958/958190.png";
-      sha256 = "vDwUEHZJPm3Zsm0lQwn79aOa1JcWy3Cp83yXgg95oX0=";
-    };
+    image = ./serra.jpg;
+    # image = pkgs.fetchurl {
+    #   url =
+    #     "https://c4.wallpaperflare.com/wallpaper/212/579/800/graphic-design-fantasy-landscape-retro-wave-pixeles-wallpaper-preview.jpg";
+    #   sha256 = "JJcYfrB+lfqQPiQHoBDE3LVps86MjBj6XZyv06Rv6PI=";
+    # };
     fonts = {
       monospace = {
         package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
