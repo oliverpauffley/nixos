@@ -5,7 +5,8 @@
 let
   nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload"
     "  export __NV_PRIME_RENDER_OFFLOAD=1\n  export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0\n  export __GLX_VENDOR_LIBRARY_NAME=nvidia\n  export __VK_LAYER_NV_optimus=NVIDIA_only\n  exec \"$@\"\n";
-in {
+in
+{
   # You can import other NixOS modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/nixos):
@@ -106,7 +107,6 @@ in {
     nvidia-offload
     vim
     firefox
-    chromium
     gnupg
     pinentry-qt
     strongbox

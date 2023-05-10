@@ -76,7 +76,7 @@
     exa
     bat
     postman
-    buf
+    pandoc
 
     # keyboards
     wally-cli
