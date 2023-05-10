@@ -5,8 +5,7 @@
 let
   nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload"
     "  export __NV_PRIME_RENDER_OFFLOAD=1\n  export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0\n  export __GLX_VENDOR_LIBRARY_NAME=nvidia\n  export __VK_LAYER_NV_optimus=NVIDIA_only\n  exec \"$@\"\n";
-in
-{
+in {
   # You can import other NixOS modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/nixos):
@@ -21,11 +20,11 @@ in
     inputs.hardware.nixosModules.common-pc-laptop
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-extreme-gen2
 
-    inputs.stylix.nixosModules.stylix
-    inputs.home-manager.nixosModules.home-manager
+    #    inputs.stylix.nixosModules.stylix
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
 
+    inputs.hyprland.nixosModules.default
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware-configuration.nix
 
@@ -164,6 +163,8 @@ in
   # Enable zsa keyboards
   hardware.keyboard.zsa.enable = true;
 
+  programs.hyprland.enable = true;
+
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;
@@ -171,12 +172,12 @@ in
     dpi = 180;
     videoDrivers = [ "nvidia" ];
     xkbOptions = "caps:ctrl_modifier";
-    displayManager.lightdm.enable = true;
-    windowManager.i3.enable = true;
-    windowManager.xmonad = {
-      enable = true;
-      enableContribAndExtras = true;
-    };
+    # displayManager.lightdm.enable = true;
+    # windowManager.i3.enable = true;
+    # windowManager.xmonad = {
+    #   enable = true;
+    #   enableContribAndExtras = true;
+    # };
     libinput = {
       enable = true;
 
@@ -248,27 +249,27 @@ in
   };
 
   # stylix themeing
-  stylix = {
-    autoEnable = true;
-    polarity = "dark";
-    image = ./serra.jpg;
-    # image = pkgs.fetchurl {
-    #   url =
-    #     "https://c4.wallpaperflare.com/wallpaper/212/579/800/graphic-design-fantasy-landscape-retro-wave-pixeles-wallpaper-preview.jpg";
-    #   sha256 = "JJcYfrB+lfqQPiQHoBDE3LVps86MjBj6XZyv06Rv6PI=";
-    # };
-    fonts = {
-      monospace = {
-        package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
-        name = "mononoki Nerd Font";
-      };
-      serif = config.stylix.fonts.monospace;
+  # stylix = {
+  #   autoEnable = true;
+  #   polarity = "dark";
+  #   image = ./serra.jpg;
+  #   # image = pkgs.fetchurl {
+  #   #   url =
+  #   #     "https://c4.wallpaperflare.com/wallpaper/212/579/800/graphic-design-fantasy-landscape-retro-wave-pixeles-wallpaper-preview.jpg";
+  #   #   sha256 = "JJcYfrB+lfqQPiQHoBDE3LVps86MjBj6XZyv06Rv6PI=";
+  #   # };
+  #   fonts = {
+  #     monospace = {
+  #       package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
+  #       name = "mononoki Nerd Font";
+  #     };
+  #     serif = config.stylix.fonts.monospace;
 
-      sansSerif = config.stylix.fonts.monospace;
+  #     sansSerif = config.stylix.fonts.monospace;
 
-      emoji = config.stylix.fonts.monospace;
-    };
-  };
+  #     emoji = config.stylix.fonts.monospace;
+  #   };
+  # };
 
   # docker
   virtualisation.docker.enable = true;
