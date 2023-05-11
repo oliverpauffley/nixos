@@ -5,14 +5,14 @@
   # You can import other home-manager modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/home-manager):
-    # outputs.homeManagerModules.example
+    outputs.homeManagerModules.fonts
 
     # Or modules exported from other flakes (such as nix-colors):
     # inputs.nix-colors.homeManagerModules.default
     inputs.hyprland.homeManagerModules.default
+    inputs.nix-colors.homeManagerModules.default
 
     # You can also split up your configuration and import pieces of it here:
-    # ./nvim.nix
     ./git.nix
     ./alacritty.nix
     ./i3.nix
@@ -55,6 +55,19 @@
   };
   # fonts
   fonts.fontconfig.enable = true;
+  colorScheme = inputs.nix-colors.colorSchemes.rose-pine;
+
+  fontProfiles = {
+    enable = true;
+    monospace = {
+      family = "mononoki Nerd Font";
+      package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
+    };
+    regular = {
+      family = "mononoki Nerd Font";
+      package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
+    };
+  };
 
   home.packages = with pkgs; [
     (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; })
