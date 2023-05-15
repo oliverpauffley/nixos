@@ -20,6 +20,7 @@
 
     hyprland.url = "github:hyprwm/Hyprland";
     nix-colors.url = "github:misterio77/nix-colors";
+    nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
   };
 
   outputs =
@@ -31,6 +32,7 @@
     , rust-overlay
     , hyprland
     , nix-colors
+    , nixpkgs-wayland
     , ...
     }@inputs:
     let

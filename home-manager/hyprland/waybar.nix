@@ -1,21 +1,22 @@
-{ config, lib, pkgs, ... }:
-
-{
+{ config, lib, pkgs, ... }: {
   programs.waybar = {
     enable = true;
-    style = let inherit (config.colorscheme) colors; in /* css */ ''
+    style = let
+      inherit (config.colorscheme) colors;
+      # css
+    in ''
       * {
         font-family: ${config.fontProfiles.regular.family}, ${config.fontProfiles.monospace.family};
-        font-size: 12pt;
-        padding: 0 8px;
+        font-size: 8pt;
+        padding: 0 4px;
       }
 
       .modules-right {
-        margin-right: -15px;
+        margin-right: -8px;
       }
 
       .modules-left {
-        margin-left: -15px;
+        margin-left: -8px;
       }
 
       window#waybar.top {
@@ -23,13 +24,13 @@
         padding: 0;
         background-color: #${colors.base00};
         border: 2px solid #${colors.base0C};
-        border-radius: 10px;
+        border-radius: 5px;
       }
       window#waybar.bottom {
         opacity: 0.90;
         background-color: #${colors.base00};
         border: 2px solid #${colors.base0C};
-        border-radius: 10px;
+        border-radius: 5px;
       }
 
       window#waybar {
@@ -54,11 +55,11 @@
       #clock {
         background-color: #${colors.base0C};
         color: #${colors.base00};
-        padding-left: 15px;
-        padding-right: 15px;
+        padding-left: 8px;
+        padding-right: 8px;
         margin-top: 0;
         margin-bottom: 0;
-        border-radius: 10px;
+        border-radius: 5px;
       }
 
       #custom-menu {
@@ -87,20 +88,17 @@
       }
     '';
     settings = [{
-      height = 30;
+      height = 34;
       layer = "top";
       position = "top";
       tray = { spacing = 10; };
-      "wlr/workspaces" = {
-        on-click = "activate";
-      };
+      "wlr/workspaces" = { on-click = "activate"; };
       modules-left = [ "wlr/workspaces" ];
-      modules-right =
-        [ "pulseaudio" "network" "cpu" "memory" "battery" "clock" ];
+      modules-right = [ "pulseaudio" "network" "battery" "clock" ];
       battery = {
-        format = "{capacity}% {icon}";
+        format = "{capacity}% {icon}   ";
         format-alt = "{time} {icon}";
-        format-charging = "{capacity}% ";
+        format-charging = "{capacity}%     ";
         format-icons = [ "" "" "" "" "" ];
         format-plugged = "{capacity}% ";
         states = {
@@ -112,24 +110,18 @@
         format-alt = "{:%Y-%m-%d}";
         tooltip-format = "{:%Y-%m-%d | %H:%M}";
       };
-      cpu = {
-        format = "{usage}% ";
-        tooltip = false;
-      };
-      memory = { format = "{}% "; };
       network = {
         interval = 1;
         format-alt = "{ifname}: {ipaddr}/{cidr}";
         format-disconnected = "Disconnected ⚠";
-        format-ethernet =
-          "{ifname}: {ipaddr}/{cidr}   up: {bandwidthUpBits} down: {bandwidthDownBits}";
-        format-linked = "{ifname} (No IP) ";
-        format-wifi = "{essid} ({signalStrength}%) ";
+        format-ethernet = "{ifname}";
+        format-linked = "{ifname} ";
+        format-wifi = "{essid} ";
       };
       pulseaudio = {
-        format = "{volume}% {icon} {format_source}";
-        format-bluetooth = "{volume}% {icon} {format_source}";
-        format-bluetooth-muted = " {icon} {format_source}";
+        format = "{volume}%  {icon}  {format_source}";
+        format-bluetooth = "{volume}%  {icon}  {format_source}";
+        format-bluetooth-muted = "  {icon}  {format_source}";
         format-icons = {
           car = "";
           default = [ "" "" "" ];
@@ -143,11 +135,6 @@
         format-source = "{volume}% ";
         format-source-muted = "";
         on-click = "pavucontrol";
-      };
-      temperature = {
-        critical-threshold = 80;
-        format = "{temperatureC}°C {icon}";
-        format-icons = [ "" "" "" ];
       };
     }];
   };

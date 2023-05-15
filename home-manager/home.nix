@@ -1,7 +1,12 @@
 # This is your home-manager configuration file
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
 
-{ inputs, outputs, lib, config, pkgs, rust-overlay, ... }: {
+{ inputs, outputs, lib, config, pkgs, rust-overlay, ... }:
+
+let
+  nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
+in
+{
   # You can import other home-manager modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/home-manager):
@@ -55,7 +60,12 @@
   };
   # fonts
   fonts.fontconfig.enable = true;
-  colorScheme = inputs.nix-colors.colorSchemes.rose-pine;
+
+  # colors
+  colorScheme = nix-colors-lib.colorSchemeFromPicture {
+    path = ../wallpapers/wallpaper.gif;
+    kind = "dark";
+  };
 
   fontProfiles = {
     enable = true;
@@ -68,7 +78,6 @@
       package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
     };
   };
-
   home.packages = with pkgs; [
     (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; })
     emacs-all-the-icons-fonts

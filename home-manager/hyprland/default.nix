@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }: {
-  imports = [ ./waybar.nix ];
+  imports = [ ./waybar.nix ./mako.nix ./gtk.nix ./swww.nix ];
 
-  home.packages = with pkgs; [ mako wofi waybar swaylock ];
+  home.packages = with pkgs; [ wofi waybar mako swaylock ];
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -10,15 +10,15 @@
        general {
          gaps_in=2
          gaps_out=6
-         border_size=2.7
+         border_size=0.5
          cursor_inactive_timeout=4
        }
 
-      monitor = eDP-1,preferred,0x0,auto
-      monitor =,preferred,auto,1
+      monitor=eDP-1,3840x2160,0x0,auto
+      monitor=,preferred,auto,auto
 
        decoration {
-         active_opacity=0.94
+         active_opacity=.95
          inactive_opacity=0.84
          fullscreen_opacity=1.0
          rounding=5
@@ -80,7 +80,9 @@
        # Startup
        exec-once=waybar
        exec-once=mako
-       # exec-once=swayidle -w
+       exec-once=swww init
+       # TODO fix this
+       exec=swww img /home/ollie/nixos/wallpapers/wallpaper.gif
 
        # Mouse binding
        bindm=SUPER,mouse:272,movewindow
