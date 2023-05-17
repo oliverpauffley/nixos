@@ -4,9 +4,14 @@
   programs.alacritty = {
     enable = true;
     settings = {
+      selection =
+        {
+          save_to_clipboard = true;
+        };
       colors =
         let
-          inherit (config.colorscheme) colors; in
+          inherit (config.colorscheme) colors;
+        in
         {
           primary = {
             background = "#${colors.base00}";
