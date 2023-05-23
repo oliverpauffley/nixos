@@ -8,6 +8,7 @@
     shellAliases = {
       ls = "exa";
       cat = "bat";
+      giff-product-id = "uuidgen -n 01d6ade7-f2eb-5e7d-b36d-9468f7bae3fb -s -N";
     };
     interactiveShellInit = ''
 
@@ -16,6 +17,9 @@
 
       # Work go export
       set -Ux GOPRIVATE "github.com/utilitywarehouse/*"
+
+      # Cargo use git to fetch
+      set -Ux CARGO_NET_GIT_FETCH_WITH_CLI true
 
       # direnv nix shell setup
       function fish_prompt

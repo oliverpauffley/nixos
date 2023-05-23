@@ -95,6 +95,8 @@ in
     bat
     postman
     pandoc
+    util-linux
+    xsv
 
     # keyboards
     wally-cli

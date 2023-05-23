@@ -19,7 +19,7 @@
        }
 
       monitor=eDP-1,3840x2160,0x0,auto
-      monitor=,preferred,auto,auto
+      monitor=,preferred,auto,auto,mirror,eDP-1
 
        decoration {
          active_opacity=.95
@@ -63,6 +63,9 @@
          split_width_multiplier=1.35
        }
 
+       windowrulev2 = move 0 0 float,title:^(Firefox — Sharing Indicator)$
+       windowrulev2 = float,title:^(Firefox — Sharing Indicator)$
+
        misc {
          vfr=on
        }
@@ -85,7 +88,6 @@
        exec-once=waybar
        exec-once=mako
        exec-once=swww init
-       # TODO fix this
        exec=swww img /home/ollie/nixos/wallpapers/wallpaper.gif
 
        # Mouse binding
