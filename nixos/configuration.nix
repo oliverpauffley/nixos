@@ -108,7 +108,7 @@ in
     vim
     firefox
     gnupg
-    pinentry-qt
+    pinentry-gtk2
     strongbox
     gtk3
     pavucontrol

@@ -88,7 +88,7 @@
        exec-once=waybar
        exec-once=mako
        exec-once=swww init
-       exec=swww img /home/ollie/nixos/wallpapers/wallpaper.gif
+       exec=swww img /home/ollie/nixos/wallpapers/wallpaper.jpg
 
        # Mouse binding
        bindm=SUPER,mouse:272,movewindow

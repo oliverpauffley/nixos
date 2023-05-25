@@ -63,7 +63,7 @@ in
 
   # colors
   colorScheme = nix-colors-lib.colorSchemeFromPicture {
-    path = ../wallpapers/wallpaper.gif;
+    path = ../wallpapers/wallpaper.jpg;
     kind = "dark";
   };
 
@@ -100,6 +100,10 @@ in
 
     # keyboards
     wally-cli
+
+
+    # common lisp
+    sbcl
 
     # c
     libtool
