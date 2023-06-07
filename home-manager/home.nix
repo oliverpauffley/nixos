@@ -97,6 +97,7 @@ in
     pandoc
     util-linux
     xsv
+    postgresql
 
     # keyboards
     wally-cli
@@ -143,6 +144,10 @@ in
 
     # json/grpc
     evans
+
+    # debugger dependencies
+    nodejs
+    lldb
   ];
 
   # a better direnv with fish integration

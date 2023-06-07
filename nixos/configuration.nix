@@ -14,7 +14,6 @@ in
 
     # Or modules from other flakes (such as nixos-hardware):
     inputs.hardware.nixosModules.common-cpu-amd
-    #   inputs.hardware.nixosModules.common-gpu-intel
     inputs.hardware.nixosModules.common-gpu-nvidia
     inputs.hardware.nixosModules.common-pc-ssd
     inputs.hardware.nixosModules.common-hidpi
@@ -172,6 +171,9 @@ in
     layout = "gb";
     dpi = 180;
     displayManager.gdm.enable = true;
+    displayManager.gdm.wayland = true;
+    displayManager.sessionPackages =
+      [ inputs.hyprland.packages.${pkgs.system}.default ];
     videoDrivers = [ "nvidia" ];
     xkbOptions = "caps:ctrl_modifier";
     libinput = {
@@ -191,9 +193,6 @@ in
   };
 
   services.dbus.enable = true;
-
-  # TODO dual monitors?
-  # nvidia prime settings
   hardware.nvidia.modesetting.enable = true;
   hardware.nvidia.prime = {
     offload.enable = true;
@@ -204,7 +203,8 @@ in
     # Bus ID of the NVIDIA GPU. You can find it using lspci, either under 3D or VGA
     nvidiaBusId = "PCI:1:0:0";
   };
-
+  programs.xwayland.enable = true;
+  hardware.opengl.enable = true;
   # boot with graphics card for external display
   specialisation = {
     external-display.configuration = {
@@ -213,7 +213,6 @@ in
       hardware.nvidia.powerManagement.enable = lib.mkForce false;
     };
   };
-  hardware = { opengl = { enable = true; }; };
 
   services.wiresteward.enable = true;
 
