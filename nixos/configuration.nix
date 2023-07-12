@@ -242,29 +242,6 @@ in
     };
   };
 
-  # stylix themeing
-  # stylix = {
-  #   autoEnable = true;
-  #   polarity = "dark";
-  #   image = ./serra.jpg;
-  #   # image = pkgs.fetchurl {
-  #   #   url =
-  #   #     "https://c4.wallpaperflare.com/wallpaper/212/579/800/graphic-design-fantasy-landscape-retro-wave-pixeles-wallpaper-preview.jpg";
-  #   #   sha256 = "JJcYfrB+lfqQPiQHoBDE3LVps86MjBj6XZyv06Rv6PI=";
-  #   # };
-  #   fonts = {
-  #     monospace = {
-  #       package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
-  #       name = "mononoki Nerd Font";
-  #     };
-  #     serif = config.stylix.fonts.monospace;
-
-  #     sansSerif = config.stylix.fonts.monospace;
-
-  #     emoji = config.stylix.fonts.monospace;
-  #   };
-  # };
-
   # docker
   virtualisation.docker.enable = true;
 
