@@ -164,7 +164,6 @@ in
   hardware.keyboard.zsa.enable = true;
 
   programs.hyprland.enable = true;
-
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;

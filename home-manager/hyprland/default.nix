@@ -6,8 +6,8 @@
   # wayland slack
   home.sessionVariables.NIXOS_OZONE_WL = "1";
 
-
   wayland.windowManager.hyprland = {
+    systemdIntegration = true;
     enable = true;
     nvidiaPatches = true;
     extraConfig = ''
@@ -18,8 +18,8 @@
          cursor_inactive_timeout=4
        }
 
-      monitor=eDP-1,3840x2160,0x0,auto
-      monitor=,preferred,auto,auto,mirror,eDP-1
+      # monitor=HDMI-A-1,1920x1080,1920x0,1
+      monitor=eDP-1,1920x1080,0x0,1
 
        decoration {
          active_opacity=.95
@@ -72,6 +72,8 @@
 
        input {
          kb_layout=gb
+         follow_mouse = 2 # 0|1|2|3
+         kb_options = caps:escape
          touchpad {
            disable_while_typing=true
          }

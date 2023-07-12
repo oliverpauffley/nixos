@@ -3,8 +3,7 @@
 
 { inputs, outputs, lib, config, pkgs, rust-overlay, ... }:
 
-let
-  nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
+let nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
 in
 {
   # You can import other home-manager modules here
@@ -20,7 +19,6 @@ in
     # You can also split up your configuration and import pieces of it here:
     ./git.nix
     ./alacritty.nix
-    ./i3.nix
     ./emacs
     ./fish.nix
     ./rofi.nix
@@ -102,7 +100,6 @@ in
     # keyboards
     wally-cli
 
-
     # common lisp
     sbcl
 
@@ -136,7 +133,6 @@ in
     gopls
     gore
     gotests
-    gotools
 
     # kube
     kubectl
@@ -148,6 +144,30 @@ in
     # debugger dependencies
     nodejs
     lldb
+
+    # latex
+    texlive.combined.scheme-full
+
+    # clojure
+    clojure
+    clj-kondo
+    clojure-lsp
+    leiningen
+    neil
+    jet
+    openjdk8
+
+    # Open ssl
+    openssl
+    openssl.dev
+    pkg-config
+
+    # Ruby
+    ruby
+
+    # Janet
+    janet
+    jpm
   ];
 
   # a better direnv with fish integration
