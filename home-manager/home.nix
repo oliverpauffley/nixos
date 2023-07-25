@@ -96,6 +96,8 @@ in
     util-linux
     xsv
     postgresql
+    xclip
+    yaml-language-server
 
     # keyboards
     wally-cli
@@ -168,6 +170,9 @@ in
     # Janet
     janet
     jpm
+
+    # Painting
+    krita
   ];
 
   # a better direnv with fish integration

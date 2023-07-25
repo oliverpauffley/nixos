@@ -163,6 +163,13 @@ in
   # Enable zsa keyboards
   hardware.keyboard.zsa.enable = true;
 
+  # tablet
+  hardware.opentabletdriver =
+    {
+      enable = true;
+      daemon.enable = true;
+    };
+
   programs.hyprland.enable = true;
   # Enable the X11 windowing system.
   services.xserver = {
