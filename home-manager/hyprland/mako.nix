@@ -1,5 +1,10 @@
-{ config, lib, pkgs, ... }:
-let inherit (config.colorscheme) colors;
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
+  inherit (config.colorscheme) colors;
 in {
   programs.mako = {
     enable = true;

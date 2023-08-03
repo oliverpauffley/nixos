@@ -1,12 +1,17 @@
 # This is your system's configuration file.
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
-
-{ inputs, outputs, lib, config, pkgs, ... }:
-let
-  nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload"
-    "  export __NV_PRIME_RENDER_OFFLOAD=1\n  export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0\n  export __GLX_VENDOR_LIBRARY_NAME=nvidia\n  export __VK_LAYER_NV_optimus=NVIDIA_only\n  exec \"$@\"\n";
-in
 {
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
+  nvidia-offload =
+    pkgs.writeShellScriptBin "nvidia-offload"
+    "  export __NV_PRIME_RENDER_OFFLOAD=1\n  export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0\n  export __GLX_VENDOR_LIBRARY_NAME=nvidia\n  export __VK_LAYER_NV_optimus=NVIDIA_only\n  exec \"$@\"\n";
+in {
   # You can import other NixOS modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/nixos):
@@ -63,11 +68,12 @@ in
   nix = {
     # This will add each flake input as a registry
     # To make nix3 commands consistent with your flake
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
 
     # This will additionally add your inputs to the system's legacy channels
     # Making legacy nix commands consistent as well, awesome!
-    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}")
+    nixPath =
+      lib.mapAttrsToList (key: value: "${key}=${value.to.path}")
       config.nix.registry;
 
     settings = {
@@ -92,7 +98,7 @@ in
       isNormalUser = true;
       initialPassword = "password";
       # passwordFile = config.sops."users.yaml/ollie/password";
-      extraGroups = [ "wheel" "docker" "networkmanager" "audio" ];
+      extraGroups = ["wheel" "docker" "networkmanager" "audio"];
       shell = pkgs.fish;
     };
   };
@@ -132,10 +138,10 @@ in
     media-session.config.bluez-monitor.rules = [
       {
         # Matches all cards
-        matches = [{ "device.name" = "~bluez_card.*"; }];
+        matches = [{"device.name" = "~bluez_card.*";}];
         actions = {
           "update-props" = {
-            "bluez5.reconnect-profiles" = [ "hfp_hf" "hsp_hs" "a2dp_sink" ];
+            "bluez5.reconnect-profiles" = ["hfp_hf" "hsp_hs" "a2dp_sink"];
             # mSBC is not expected to work on all headset + adapter combinations.
             "bluez5.msbc-support" = true;
             # SBC-XQ is not expected to work on all headset + adapter combinations.
@@ -150,7 +156,7 @@ in
             "node.name" = "~bluez_input.*";
           }
           # Matches all outputs
-          { "node.name" = "~bluez_output.*"; }
+          {"node.name" = "~bluez_output.*";}
         ];
       }
     ];
@@ -164,11 +170,10 @@ in
   hardware.keyboard.zsa.enable = true;
 
   # tablet
-  hardware.opentabletdriver =
-    {
-      enable = true;
-      daemon.enable = true;
-    };
+  hardware.opentabletdriver = {
+    enable = true;
+    daemon.enable = true;
+  };
 
   programs.hyprland.enable = true;
   # Enable the X11 windowing system.
@@ -178,9 +183,8 @@ in
     dpi = 180;
     displayManager.gdm.enable = true;
     displayManager.gdm.wayland = true;
-    displayManager.sessionPackages =
-      [ inputs.hyprland.packages.${pkgs.system}.default ];
-    videoDrivers = [ "nvidia" ];
+    displayManager.sessionPackages = [inputs.hyprland.packages.${pkgs.system}.default];
+    videoDrivers = ["nvidia"];
     xkbOptions = "caps:ctrl_modifier";
     libinput = {
       enable = true;
@@ -214,7 +218,7 @@ in
   # boot with graphics card for external display
   specialisation = {
     external-display.configuration = {
-      system.nixos.tags = [ "external-display" ];
+      system.nixos.tags = ["external-display"];
       hardware.nvidia.prime.offload.enable = lib.mkForce false;
       hardware.nvidia.powerManagement.enable = lib.mkForce false;
     };

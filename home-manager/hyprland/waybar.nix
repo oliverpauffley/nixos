@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   programs.waybar = {
     enable = true;
     style = let
@@ -87,55 +92,57 @@
         color: #${colors.base05};
       }
     '';
-    settings = [{
-      height = 34;
-      layer = "top";
-      position = "top";
-      tray = { spacing = 10; };
-      "wlr/workspaces" = { on-click = "activate"; };
-      modules-left = [ "wlr/workspaces" ];
-      modules-right = [ "pulseaudio" "network" "battery" "clock" ];
-      battery = {
-        format = "{capacity}% {icon}   ";
-        format-alt = "{time} {icon}";
-        format-charging = "{capacity}%     ";
-        format-icons = [ "" "" "" "" "" ];
-        format-plugged = "{capacity}% ";
-        states = {
-          critical = 15;
-          warning = 30;
+    settings = [
+      {
+        height = 34;
+        layer = "top";
+        position = "top";
+        tray = {spacing = 10;};
+        "wlr/workspaces" = {on-click = "activate";};
+        modules-left = ["wlr/workspaces"];
+        modules-right = ["pulseaudio" "network" "battery" "clock"];
+        battery = {
+          format = "{capacity}% {icon}   ";
+          format-alt = "{time} {icon}";
+          format-charging = "{capacity}%     ";
+          format-icons = ["" "" "" "" ""];
+          format-plugged = "{capacity}% ";
+          states = {
+            critical = 15;
+            warning = 30;
+          };
         };
-      };
-      clock = {
-        format-alt = "{:%Y-%m-%d}";
-        tooltip-format = "{:%Y-%m-%d | %H:%M}";
-      };
-      network = {
-        interval = 1;
-        format-alt = "{ifname}: {ipaddr}/{cidr}";
-        format-disconnected = "Disconnected ⚠";
-        format-ethernet = "{ifname}";
-        format-linked = "{ifname} ";
-        format-wifi = "{essid} ";
-      };
-      pulseaudio = {
-        format = "{volume}%  {icon}  {format_source}";
-        format-bluetooth = "{volume}%  {icon}  {format_source}";
-        format-bluetooth-muted = "  {icon}  {format_source}";
-        format-icons = {
-          car = "";
-          default = [ "" "" "" ];
-          handsfree = "";
-          headphones = "";
-          headset = "";
-          phone = "";
-          portable = "";
+        clock = {
+          format-alt = "{:%Y-%m-%d}";
+          tooltip-format = "{:%Y-%m-%d | %H:%M}";
         };
-        format-muted = " {format_source}";
-        format-source = "{volume}% ";
-        format-source-muted = "";
-        on-click = "pavucontrol";
-      };
-    }];
+        network = {
+          interval = 1;
+          format-alt = "{ifname}: {ipaddr}/{cidr}";
+          format-disconnected = "Disconnected ⚠";
+          format-ethernet = "{ifname}";
+          format-linked = "{ifname} ";
+          format-wifi = "{essid} ";
+        };
+        pulseaudio = {
+          format = "{volume}%  {icon}  {format_source}";
+          format-bluetooth = "{volume}%  {icon}  {format_source}";
+          format-bluetooth-muted = "  {icon}  {format_source}";
+          format-icons = {
+            car = "";
+            default = ["" "" ""];
+            handsfree = "";
+            headphones = "";
+            headset = "";
+            phone = "";
+            portable = "";
+          };
+          format-muted = " {format_source}";
+          format-source = "{volume}% ";
+          format-source-muted = "";
+          on-click = "pavucontrol";
+        };
+      }
+    ];
   };
 }

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   programs.fish = {
     enable = true;
     shellAbbrs = {
@@ -38,7 +43,7 @@
       # suppress direnv logging
       set -gx DIRENV_LOG_FORMAT ""
     '';
-    functions = { ec = { body = "emacsclient --create-frame $argv &"; }; };
+    functions = {ec = {body = "emacsclient --create-frame $argv &";};};
     plugins = [
       # Enable a plugin (here grc for colorized command output) from nixpkgs
       #{ name = "grc"; src = pkgs.fishPlugins.grc.src; }
