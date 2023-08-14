@@ -1,16 +1,17 @@
 # This is your home-manager configuration file
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
+{ inputs
+, outputs
+, lib
+, config
+, pkgs
+, rust-overlay
+, ...
+}:
+let
+  nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
+in
 {
-  inputs,
-  outputs,
-  lib,
-  config,
-  pkgs,
-  rust-overlay,
-  ...
-}: let
-  nix-colors-lib = inputs.nix-colors.lib.contrib {inherit pkgs;};
-in {
   # You can import other home-manager modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/home-manager):
@@ -74,15 +75,15 @@ in {
     enable = true;
     monospace = {
       family = "mononoki Nerd Font";
-      package = pkgs.nerdfonts.override {fonts = ["Mononoki"];};
+      package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
     };
     regular = {
       family = "mononoki Nerd Font";
-      package = pkgs.nerdfonts.override {fonts = ["Mononoki"];};
+      package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
     };
   };
   home.packages = with pkgs; [
-    (pkgs.nerdfonts.override {fonts = ["Mononoki" "DroidSansMono" "Gohu"];})
+    (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; })
     emacs-all-the-icons-fonts
     slack
     _1password-gui
@@ -90,7 +91,7 @@ in {
     gnuplot
     fd
     ispell
-    (aspellWithDicts (dicts: with dicts; [en en-computers en-science]))
+    (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
     ncspot
     direnv
     ripgrep
@@ -179,6 +180,9 @@ in {
 
     # Painting
     krita
+
+    # Games
+    cataclysm-dda
   ];
 
   # a better direnv with fish integration

@@ -1,12 +1,11 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }: {
-  imports = [./waybar.nix ./mako.nix ./gtk.nix ./swww.nix];
+  imports = [ ./waybar.nix ./mako.nix ./gtk.nix ./swww.nix ];
 
-  home.packages = with pkgs; [wofi waybar mako swaylock grim slurp];
+  home.packages = with pkgs; [ wofi waybar mako swaylock grim slurp ];
 
   # wayland slack
   home.sessionVariables.NIXOS_OZONE_WL = "1";
@@ -23,19 +22,16 @@
          cursor_inactive_timeout=4
        }
 
-      monitor=eDP-1,1920x1080,auto,1
-      monitor=HDMI-A-1,1920x1080,auto,1
+      monitor=eDP-1,preferred,auto,2
+      workspace=eDP-1,1
+      monitor=HDMI-A-1,preferred,auto,2
+      workspace=HDMI-A-1,2
 
        decoration {
          active_opacity=.95
          inactive_opacity=0.84
          fullscreen_opacity=1.0
          rounding=5
-         blur=true
-         blur_size=5
-         blur_passes=3
-         blur_new_optimizations=true
-         blur_ignore_opacity=true
          drop_shadow=true
          shadow_range=12
          shadow_offset=3 3
