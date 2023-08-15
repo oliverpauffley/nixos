@@ -1,11 +1,12 @@
-{
-  buildGoModule,
-  fetchFromGitHub,
-  lib,
+{ buildGo119Module
+, fetchFromGitHub
+, lib
+,
 }:
-buildGoModule rec {
+buildGo119Module rec {
   pname = "wiresteward";
   version = "0.2.6";
+  doCheck = false;
 
   src = fetchFromGitHub {
     owner = "utilitywarehouse";

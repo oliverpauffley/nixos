@@ -14,18 +14,16 @@
     # outputs.nixosModules.example
 
     # Or modules from other flakes (such as nixos-hardware):
+    inputs.hardware.nixosModules.common-gpu-intel
+    inputs.hardware.nixosModules.common-gpu-nvidia
     inputs.hardware.nixosModules.common-cpu-amd
-    #    inputs.hardware.nixosModules.common-gpu-nvidia
     inputs.hardware.nixosModules.common-pc-ssd
-    inputs.hardware.nixosModules.common-hidpi
     inputs.hardware.nixosModules.common-pc-laptop
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-extreme-gen2
 
-    #inputs.stylix.nixosModules.stylix
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
 
-    inputs.hyprland.nixosModules.default
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware-configuration.nix
 
@@ -89,6 +87,9 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
+  # some i3 needed thing
+  environment.pathsToLink = [ "/libexec" ]; # links /libexec from derivations to /run/current-system/sw
+
   users.users = {
     ollie = {
       isNormalUser = true;
@@ -99,9 +100,11 @@
     };
   };
 
+  programs.fish.enable = true;
+
   services.openssh = {
     enable = true;
-    permitRootLogin = "no";
+    settings.PermitRootLogin = "no";
   };
 
   environment.systemPackages = with pkgs; [
@@ -114,6 +117,7 @@
     pavucontrol
     unzip
     feh
+    arandr
   ];
 
   i18n.defaultLocale = "en_GB.UTF-8";
@@ -121,36 +125,8 @@
 
   # Enable sound.
   sound.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    pulse.enable = true;
-    media-session.config.bluez-monitor.rules = [
-      {
-        # Matches all cards
-        matches = [{ "device.name" = "~bluez_card.*"; }];
-        actions = {
-          "update-props" = {
-            "bluez5.reconnect-profiles" = [ "hfp_hf" "hsp_hs" "a2dp_sink" ];
-            # mSBC is not expected to work on all headset + adapter combinations.
-            "bluez5.msbc-support" = true;
-            # SBC-XQ is not expected to work on all headset + adapter combinations.
-            "bluez5.sbc-xq-support" = true;
-          };
-        };
-      }
-      {
-        matches = [
-          # Matches all sources
-          {
-            "node.name" = "~bluez_input.*";
-          }
-          # Matches all outputs
-          { "node.name" = "~bluez_output.*"; }
-        ];
-      }
-    ];
-  };
+  services.pipewire.wireplumber.enable = true;
+  hardware.pulseaudio.enable = true;
 
   # bluetooth
   hardware.bluetooth.enable = true;
@@ -165,20 +141,20 @@
     daemon.enable = true;
   };
 
-  programs.hyprland = {
-    enable = true;
-    nvidiaPatches = true;
-  };
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;
     layout = "gb";
     dpi = 180;
-    displayManager.gdm.enable = true;
-    displayManager.gdm.wayland = true;
-    displayManager.sessionPackages = [ inputs.hyprland.packages.${pkgs.system}.default ];
+    upscaleDefaultCursor = true;
     videoDrivers = [ "nvidia" ];
     xkbOptions = "caps:ctrl_modifier";
+    displayManager.lightdm = {
+      enable = true;
+      greeters.slick.enable = true;
+    };
+    windowManager.i3.enable = true;
+
     libinput = {
       enable = true;
 
@@ -194,15 +170,23 @@
       };
     };
   };
-
   services.dbus.enable = true;
   hardware.nvidia.modesetting.enable = true;
+  hardware.nvidia.prime =
+    {
+      offload.enable = true;
+
+      # Bus ID of the Intel GPU. You can find it using lspci, either under 3D or VGA
+      intelBusId = "PCI:0:2:0";
+
+      # Bus ID of the NVIDIA GPU. You can find it using lspci, either under 3D or VGA
+      nvidiaBusId = "PCI:1:0:0";
+    };
 
   hardware.opengl.enable = true;
 
   services.wiresteward.enable = true;
 
-  # TODO figure out saving the password for emacs logins
   security.polkit.enable = true;
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = true;
@@ -233,5 +217,5 @@
   virtualisation.docker.enable = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  system.stateVersion = "22.11";
+  system.stateVersion = "23.05";
 }
