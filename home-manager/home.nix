@@ -1,17 +1,6 @@
 # This is your home-manager configuration file
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
-{ inputs
-, outputs
-, lib
-, config
-, pkgs
-, rust-overlay
-, ...
-}:
-let
-  nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
-in
-{
+{ inputs, outputs, lib, config, pkgs, rust-overlay, nix-colors, ... }: {
   # You can import other home-manager modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/home-manager):
@@ -28,7 +17,6 @@ in
     ./fish.nix
     ./rofi.nix
     ./i3
-    ./polybar.nix
   ];
 
   nixpkgs = {
@@ -66,16 +54,12 @@ in
   fonts.fontconfig.enable = true;
 
   # colors
-  colorScheme = nix-colors-lib.colorSchemeFromPicture {
-    path = ../wallpapers/wallpaper.jpg;
-    kind = "dark";
-  };
-
+  colorScheme = nix-colors.colorSchemes.tokyo-night-dark;
   fontProfiles = {
     enable = true;
     monospace = {
-      family = "mononoki Nerd Font";
-      package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
+      family = "GohuFont 14 Nerd Font";
+      package = pkgs.nerdfonts.override { fonts = [ "Gohu" ]; };
     };
     regular = {
       family = "mononoki Nerd Font";
@@ -183,6 +167,37 @@ in
     # Games
     cataclysm-dda
   ];
+
+  programs.autorandr = {
+    enable = true;
+    profiles = {
+      "work" = {
+        fingerprint = {
+          HDMI-1-0 =
+            "00ffffffffffff001e6d805bb42d0000041f0103803c2278ea8cb5af4f43ab260e5054254b007140818081c0a9c0b300d1c08100d1cf5aa000a0a0a0465030203a0055502100001a000000fd0030781ee63c000a202020202020000000fc004c4720554c545241474541520a000000ff003130344e54514430423730300a015a020344f1230907074d100403011f13123f5d5e5f60616d030c001000b83c20006001020367d85dc401788003e30f0018681a00000101307800e305c000e6060501605928d97600a0a0a0345030203a0055502100001a565e00a0a0a029503020350055502100001a000000000000000000000000000000000000000000000027";
+          eDP-1 =
+            "00ffffffffffff0009e5ec0800000000011d0104b523137802df50a35435b5260f50540000000101010101010101010101010101010152d000a0f0703e803020350058c21000001a00000000000000000000000000000000001a000000fe00424f452048460a202020202020000000fe004e4531353651554d2d4e36410a017702030f00e3058000e6060501737321000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008b";
+        };
+        config = {
+          HDMI-1-0 = {
+            dpi = 100;
+            enable = true;
+            mode = "2560x1440";
+            position = "2560x0";
+            rate = "99.95";
+          };
+          eDP-1 = {
+            dpi = 118;
+            enable = true;
+            mode = "2560x1440";
+            position = "0x0";
+            primary = true;
+            rate = "60.00";
+          };
+        };
+      };
+    };
+  };
 
   # a better direnv with fish integration
   programs.direnv = {

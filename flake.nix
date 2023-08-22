@@ -75,7 +75,7 @@
             ./nixos/configuration.nix
             home-manager.nixosModules.home-manager
             {
-              home-manager.extraSpecialArgs = { inherit inputs outputs; };
+              home-manager.extraSpecialArgs = { inherit inputs outputs nix-colors; };
               home-manager.users.ollie = import ./home-manager/home.nix;
             }
           ];
