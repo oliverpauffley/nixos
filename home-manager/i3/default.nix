@@ -137,6 +137,48 @@ in {
       workspaceAutoBackAndForth = true;
       window.titlebar = false;
       defaultWorkspace = "workspace number 1"; # defaults to 10 for some reason
+      workspaceOutputAssign = [
+        {
+          workspace = "1";
+          output = "primary";
+        }
+        {
+          workspace = "2";
+          output = "primary";
+        }
+        {
+          workspace = "3";
+          output = "primary";
+        }
+        {
+          workspace = "4";
+          output = "primary";
+        }
+        {
+          workspace = "5";
+          output = "primary";
+        }
+        {
+          workspace = "6";
+          output = "eDP-1 primary";
+        }
+        {
+          workspace = "7";
+          output = "eDP-1 primary";
+        }
+        {
+          workspace = "8";
+          output = "eDP-1 primary";
+        }
+        {
+          workspace = "9";
+          output = "eDP-1 primary";
+        }
+        {
+          workspace = "10";
+          output = "eDP-1 primary";
+        }
+      ];
       modifier = mod;
       colors = {
         focused = {
