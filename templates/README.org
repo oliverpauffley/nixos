@@ -1,0 +1,3 @@
+* Templates
+
+Nix templates to use with =nix flake init=

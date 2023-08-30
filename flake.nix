@@ -19,17 +19,11 @@
     rust-overlay.url = "github:oxalica/rust-overlay";
 
     nix-colors.url = "github:misterio77/nix-colors";
+    mytemplates.url = "path:./templates/";
   };
 
-  outputs =
-    { self
-    , nixpkgs
-    , home-manager
-    , nixos-hardware
-    , rust-overlay
-    , nix-colors
-    , ...
-    } @ inputs:
+  outputs = { self, nixpkgs, home-manager, nixos-hardware, rust-overlay
+    , nix-colors, mytemplates, ... }@inputs:
     let
       inherit (self) outputs;
       forAllSystems = nixpkgs.lib.genAttrs [
@@ -39,22 +33,17 @@
         "aarch64-darwin"
         "x86_64-darwin"
       ];
-    in
-    rec {
+    in rec {
       # Your custom packages
       # Acessible through 'nix build', 'nix shell', etc
       packages = forAllSystems (system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        import ./pkgs { inherit pkgs; });
+        let pkgs = nixpkgs.legacyPackages.${system};
+        in import ./pkgs { inherit pkgs; });
       # Devshell for bootstrapping
       # Acessible through 'nix develop' or 'nix-shell' (legacy)
       devShells = forAllSystems (system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        import ./shell.nix { inherit pkgs; });
+        let pkgs = nixpkgs.legacyPackages.${system};
+        in import ./shell.nix { inherit pkgs; });
 
       # Your custom packages and modifications, exported as overlays
       overlays = import ./overlays { inherit inputs; };
@@ -75,7 +64,9 @@
             ./nixos/configuration.nix
             home-manager.nixosModules.home-manager
             {
-              home-manager.extraSpecialArgs = { inherit inputs outputs nix-colors; };
+              home-manager.extraSpecialArgs = {
+                inherit inputs outputs nix-colors;
+              };
               home-manager.users.ollie = import ./home-manager/home.nix;
             }
           ];

@@ -1,13 +1,6 @@
 # This is your system's configuration file.
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
-{ inputs
-, outputs
-, lib
-, config
-, pkgs
-, ...
-}:
-{
+{ inputs, outputs, lib, config, pkgs, ... }: {
   # You can import other NixOS modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/nixos):
@@ -29,10 +22,6 @@
 
     ./services/wiresteward
   ];
-
-  # sops secret setups
-  #sops.defaultSopsFile = ../secrets/users.yaml;
-  #sops.secrets."users.yaml/ollie/password".neededForUsers = true;
 
   nixpkgs = {
     # You can add overlays here
@@ -66,9 +55,8 @@
 
     # This will additionally add your inputs to the system's legacy channels
     # Making legacy nix commands consistent as well, awesome!
-    nixPath =
-      lib.mapAttrsToList (key: value: "${key}=${value.to.path}")
-        config.nix.registry;
+    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}")
+      config.nix.registry;
 
     settings = {
       # Enable flakes and new 'nix' command
@@ -76,6 +64,7 @@
       # Deduplicate and optimize nix store
       auto-optimise-store = true;
     };
+
   };
 
   networking.hostName = "arrakis";
@@ -88,7 +77,8 @@
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
   # some i3 needed thing
-  environment.pathsToLink = [ "/libexec" ]; # links /libexec from derivations to /run/current-system/sw
+  environment.pathsToLink =
+    [ "/libexec" ]; # links /libexec from derivations to /run/current-system/sw
 
   users.users = {
     ollie = {
@@ -172,16 +162,15 @@
   };
   services.dbus.enable = true;
   hardware.nvidia.modesetting.enable = true;
-  hardware.nvidia.prime =
-    {
-      offload.enable = true;
+  hardware.nvidia.prime = {
+    offload.enable = true;
 
-      # Bus ID of the Intel GPU. You can find it using lspci, either under 3D or VGA
-      intelBusId = "PCI:0:2:0";
+    # Bus ID of the Intel GPU. You can find it using lspci, either under 3D or VGA
+    intelBusId = "PCI:0:2:0";
 
-      # Bus ID of the NVIDIA GPU. You can find it using lspci, either under 3D or VGA
-      nvidiaBusId = "PCI:1:0:0";
-    };
+    # Bus ID of the NVIDIA GPU. You can find it using lspci, either under 3D or VGA
+    nvidiaBusId = "PCI:1:0:0";
+  };
 
   hardware.opengl.enable = true;
 
