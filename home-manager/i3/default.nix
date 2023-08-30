@@ -160,23 +160,23 @@ in {
         }
         {
           workspace = "6";
-          output = "eDP-1 primary";
+          output = "nonprimary primary";
         }
         {
           workspace = "7";
-          output = "eDP-1 primary";
+          output = "nonprimary primary";
         }
         {
           workspace = "8";
-          output = "eDP-1 primary";
+          output = "nonprimary primary";
         }
         {
           workspace = "9";
-          output = "eDP-1 primary";
+          output = "nonprimary primary";
         }
         {
           workspace = "10";
-          output = "eDP-1 primary";
+          output = "nonprimary primary";
         }
       ];
       modifier = mod;
