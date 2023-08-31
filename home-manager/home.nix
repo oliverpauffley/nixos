@@ -15,6 +15,7 @@
     ./alacritty.nix
     ./emacs
     ./fish.nix
+    ./nushell.nix
     ./rofi.nix
     ./i3
   ];
@@ -240,7 +241,6 @@
     };
   };
 
-  # a better direnv with fish integration
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;

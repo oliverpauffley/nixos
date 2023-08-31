@@ -11,7 +11,3 @@ nix flake update
 #+begin_src shell
 sudo nixos-rebuild switch --flake .#<hostname>
 #+end_src
-- switch homemanager
-#+begin_src shell
-home-manager switch --flake .#<user>@<hostname>
-#+end_src
