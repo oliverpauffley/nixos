@@ -67,7 +67,6 @@
     };
   };
   home.packages = with pkgs; [
-    (pkgs.nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; })
     emacs-all-the-icons-fonts
     slack
     _1password-gui
@@ -224,7 +223,7 @@
           eDP-1 = {
             dpi = 180;
             enable = true;
-            mode = "1920x1080";
+            mode = "2560x1440";
             primary = true;
             position = "1920x0";
             rate = "60.00";

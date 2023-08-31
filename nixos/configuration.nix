@@ -109,6 +109,8 @@
     feh
     arandr
   ];
+  fonts.fonts = with pkgs;
+    [ (nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; }) ];
 
   i18n.defaultLocale = "en_GB.UTF-8";
   time.timeZone = "Europe/London";

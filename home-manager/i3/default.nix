@@ -68,6 +68,8 @@ in {
       "*" = {
         color-enabled = true;
         color-window = mkLiteral "#${colors.base01}";
+        color-separator = mkLiteral "#${colors.base05}";
+        color-background = mkLiteral "#${colors.base01}";
 
         # ! Property Name     BG       FG       BG-alt   Head-BG  Head-FG
         # rofi.color-normal:  #3a3432, #a5a2a2, #3a3432, #3a3432, #f7f7f7
