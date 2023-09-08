@@ -12,24 +12,30 @@
           [ (final: prev: { go = prev."go_1_${toString goVersion}"; }) ];
         pkgs = nixpkgs.legacyPackages.${system};
         tusker = import ./tusker.nix { inherit pkgs; };
-      in with pkgs; {
-        devShells.default = mkShell {
-          packages = [
-            # go 1.20 (specified by overlay)
-            go
+        packages = [
+          # go 1.20 (specified by overlay)
+          pkgs.go
 
-            # goimports, godoc, etc.
-            gotools
+          # goimports, godoc, etc.
+          pkgs.gotools
 
-            # https://github.com/golangci/golangci-lint
-            golangci-lint
+          # https://github.com/golangci/golangci-lint
+          pkgs.golangci-lint
 
-            # fancy way of handling migrations
-            tusker
+          # fancy way of handling migrations
+          tusker
 
-            # for protos
-            buf
-          ];
+          # for protos
+          pkgs.buf
+        ];
+        dockerImage = pkgs.dockerTools.buildImage {
+          name = "devenv";
+          tag = "latest";
+          copyToRoot = [ packages ];
+          config = { Cmd = [ "usr/bin/nu" ]; };
         };
+      in with pkgs; {
+        devShells.default = mkShell { inputsFrom = [ packages ]; };
+        packages = { inherit dockerImage; };
       });
 }

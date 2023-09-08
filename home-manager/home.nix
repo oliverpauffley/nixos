@@ -169,6 +169,8 @@
     cataclysm-dda
   ];
 
+  services.picom.enable = true;
+
   programs.autorandr = {
     enable = true;
     profiles = {
