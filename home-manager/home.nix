@@ -17,6 +17,7 @@
     ./fish.nix
     ./nushell.nix
     ./rofi.nix
+    ./rust.nix
     ./i3
   ];
 
@@ -111,9 +112,6 @@
     rnix-lsp
     alejandra
 
-    # rust
-    rustup
-
     # go
     go
     go-outline
@@ -199,7 +197,7 @@
           };
         };
       };
-      "home" = {
+      "default" = {
         fingerprint = {
           eDP-1 =
             "00ffffffffffff0009e5ec0800000000011d0104b523137802df50a35435b5260f50540000000101010101010101010101010101010152d000a0f0703e803020350058c21000001a00000000000000000000000000000000001a000000fe00424f452048460a202020202020000000fe004e4531353651554d2d4e36410a017702030f00e3058000e6060501737321000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008b";
@@ -239,6 +237,32 @@
             rate = "99.95";
           };
         };
+      };
+    };
+    hooks = {
+      postswitch = {
+        "notify-i3" = "${pkgs.i3}/bin/i3-msg restart";
+        "change-dpi" = ''
+          case "$AUTORANDR_CURRENT_PROFILE" in
+            default)
+              DPI=180
+              ;;
+            home)
+              DPI=180
+              ;;
+            work)
+              DPI=180
+              ;;
+            tosh)
+              DPI=180
+              ;;
+            *)
+              echo "Unknown profile: $AUTORANDR_CURRENT_PROFILE"
+              exit 1
+          esac
+
+          echo "Xft.dpi: $DPI" | ${pkgs.xorg.xrdb}/bin/xrdb -merge
+        '';
       };
     };
   };
