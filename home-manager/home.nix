@@ -153,6 +153,9 @@
     openssl.dev
     pkg-config
 
+    # rust
+    rust-analyzer
+
     # Ruby
     ruby
 

@@ -20,7 +20,7 @@
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware-configuration.nix
 
-    ./services/wiresteward
+    ../../services/wiresteward
   ];
 
   nixpkgs = {
@@ -113,7 +113,6 @@
   i18n.defaultLocale = "en_GB.UTF-8";
   console = {
     font = "Lat2-Terminus16";
-    keyMap = "uk";
     useXkbConfig = true; # use xkbOptions in tty.
   };
   time.timeZone = "Europe/London";

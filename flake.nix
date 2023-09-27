@@ -20,6 +20,7 @@
 
     nix-colors.url = "github:misterio77/nix-colors";
     mytemplates.url = "path:./templates/";
+
   };
 
   outputs = { self, nixpkgs, home-manager, nixos-hardware, rust-overlay
@@ -54,6 +55,30 @@
       # These are usually stuff you would upstream into home-manager
       homeManagerModules = import ./modules/home-manager;
 
+      colmena = {
+        meta = { nixpkgs = import nixpkgs { system = "x86_64-linux"; }; };
+
+        caladan = { name, nodes, pkgs, ... }: {
+          deployment = {
+            targetHost = "192.168.0.100";
+            targetUser = "root";
+          };
+          imports = [ ./hosts/caladan/configuration.nix ];
+          # upgrade automatically
+          system.autoUpgrade = {
+            enable = true;
+            flake = inputs.self.outPath;
+            flags = [
+              "--update-input"
+              "nixpkgs"
+              "-L" # print build logs
+            ];
+            dates = "1month";
+            randomizedDelaySec = "45min";
+          };
+        };
+      };
+
       # NixOS configuration entrypoint
       # Available through 'nixos-rebuild --flake .#your-hostname'
       nixosConfigurations = {
@@ -61,7 +86,7 @@
           specialArgs = { inherit inputs outputs; };
           modules = [
             # > Our main nixos configuration file <
-            ./nixos/configuration.nix
+            ./hosts/arrakis/configuration.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
