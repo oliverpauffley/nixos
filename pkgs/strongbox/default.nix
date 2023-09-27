@@ -17,7 +17,7 @@ buildGoModule rec {
 
   meta = with lib; {
     description = "Encryption for git users";
-    homepage = https://github.com/uw-labs/strongbox;
+    homepage = "https://github.com/uw-labs/strongbox";
     platforms = platforms.all;
   };
 }

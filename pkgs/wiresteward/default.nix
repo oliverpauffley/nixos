@@ -19,7 +19,7 @@ buildGo119Module rec {
 
   meta = with lib; {
     description = "connects to utilitywarehouse vpn using wireguard";
-    homepage = https://github.com/utilitywarehouse/wiresteward;
+    homepage = "https://github.com/utilitywarehouse/wiresteward";
     platforms = platforms.all;
   };
 }

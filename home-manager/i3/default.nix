@@ -4,7 +4,7 @@
   lib,
   ...
 }: let
-  colors = config.colorscheme.colors;
+  inherit (config.colorscheme) colors;
   mod = "Mod4";
 in {
   # Dependencies

@@ -5,7 +5,7 @@
   nix-colors,
   ...
 }: let
-  colors = config.colorscheme.colors;
+  inherit (config.colorscheme) colors;
 in {
   programs.rofi = {
     enable = true;
