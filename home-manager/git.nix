@@ -1,15 +1,16 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }: {
-  home.packages = with pkgs; [ strongbox libsecret ];
+  home.packages = with pkgs; [strongbox libsecret];
   programs.git = {
     enable = true;
     userEmail = "mrpauffley@gmail.com";
     userName = "oliverpauffley";
-    attributes = [ "go.mod linguist-generated" "go.sum linguist-generated" ];
-    ignores = [ ".envrc" ".direnv/*" ];
+    attributes = ["go.mod linguist-generated" "go.sum linguist-generated"];
+    ignores = [".envrc" ".direnv/*"];
     extraConfig = {
       github.user = "oliverpauffley";
       credential.helper = "${
@@ -22,9 +23,9 @@
           required = "true";
         };
       };
-      diff = { strongbox = { textconv = "strongbox -diff"; }; };
-      init = { defaultBranch = "main"; };
-      url = { "git@github.com:" = { insteadOf = "https://github.com/"; }; };
+      diff = {strongbox = {textconv = "strongbox -diff";};};
+      init = {defaultBranch = "main";};
+      url = {"git@github.com:" = {insteadOf = "https://github.com/";};};
     };
     signing = {
       signByDefault = true;

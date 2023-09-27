@@ -1,5 +1,11 @@
-{ config, lib, pkgs, nix-colors, ... }:
-let colors = config.colorscheme.colors;
+{
+  config,
+  lib,
+  pkgs,
+  nix-colors,
+  ...
+}: let
+  colors = config.colorscheme.colors;
 in {
   programs.rofi = {
     enable = true;
@@ -28,7 +34,6 @@ in {
         # ! Set the desired separator style
         # rofi.separator-style: solid
       };
-
     };
   };
 }

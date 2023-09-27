@@ -1,15 +1,17 @@
-{ config, lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
+  users.groups.multimedia = {};
+  users.users.ollie.extraGroups = ["multimedia"];
 
-  users.groups.multimedia = { };
-  users.users.ollie.extraGroups = [ "multimedia" ];
-
-  systemd.tmpfiles.rules = [ "d /mnt/media 0770 - multimedia - -" ];
+  systemd.tmpfiles.rules = ["d /mnt/media 0770 - multimedia - -"];
 
   # jellyfin config
   nixpkgs.config.packageOverrides = pkgs: {
-    vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+    vaapiIntel = pkgs.vaapiIntel.override {enableHybridCodec = true;};
   };
   hardware.opengl = {
     enable = true;
@@ -23,7 +25,6 @@
   };
 
   services = {
-
     jellyfin = {
       enable = true;
       openFirewall = true;
@@ -58,5 +59,5 @@
       group = "multimedia";
     };
   };
-  networking.firewall.allowedTCPPorts = [ 8080 ];
+  networking.firewall.allowedTCPPorts = [8080];
 }

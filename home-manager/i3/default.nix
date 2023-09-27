@@ -1,6 +1,9 @@
-{ config, pkgs, lib, ... }:
-
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
   colors = config.colorscheme.colors;
   mod = "Mod4";
 in {
@@ -20,7 +23,7 @@ in {
     bars = {
       default = {
         blocks = [
-          { block = "sound"; }
+          {block = "sound";}
           {
             block = "battery";
             format = " $icon $percentage ";
@@ -141,26 +144,23 @@ in {
           childBorder = "#${colors.base02}";
         };
       };
-      startup = [{
-        command = "nm-applet &";
-        always = true;
-        notification = false;
-      }];
+      startup = [
+        {
+          command = "nm-applet &";
+          always = true;
+          notification = false;
+        }
+      ];
       keybindings = lib.mkOptionDefault {
         "${mod}+Return" = "exec alacritty";
-        "${mod}+Shift+e" =
-          "exec i3-msg exit"; # bypass default session exit confirmation menu
+        "${mod}+Shift+e" = "exec i3-msg exit"; # bypass default session exit confirmation menu
         "${mod}+space" = "exec i3-msg open"; # Open blank space
 
         # Audio controls
-        "XF86AudioRaiseVolume" =
-          "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10%";
-        "XF86AudioLowerVolume" =
-          "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%";
-        "XF86AudioMute" =
-          "exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle";
-        "XF86AudioMicMute" =
-          "exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle";
+        "XF86AudioRaiseVolume" = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10%";
+        "XF86AudioLowerVolume" = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%";
+        "XF86AudioMute" = "exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle";
+        "XF86AudioMicMute" = "exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle";
 
         # Media player controls
         "XF86AudioPlay" = "exec playerctl play-pause";
@@ -183,28 +183,29 @@ in {
         # Remove dmenu
         "${mod}+d" = "exec rofi -show drun -theme";
       };
-      bars = [{
-        position = "top";
-        statusCommand =
-          "${pkgs.i3status-rust}/bin/i3status-rs config-default.toml";
-        command = "${pkgs.i3}/bin/i3bar -t";
-        fonts = {
-          names = [ config.fontProfiles.monospace.family ];
-          size = 8.0;
-        };
-
-        trayOutput = "primary";
-        colors = {
-          background = "#${colors.base00}";
-          statusline = "#${colors.base01}";
-          separator = "#${colors.base0B}";
-          focusedWorkspace = {
-            border = "#${colors.base0A}";
-            background = "#${colors.base02}";
-            text = "#${colors.base05}";
+      bars = [
+        {
+          position = "top";
+          statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs config-default.toml";
+          command = "${pkgs.i3}/bin/i3bar -t";
+          fonts = {
+            names = [config.fontProfiles.monospace.family];
+            size = 8.0;
           };
-        };
-      }];
+
+          trayOutput = "primary";
+          colors = {
+            background = "#${colors.base00}";
+            statusline = "#${colors.base01}";
+            separator = "#${colors.base0B}";
+            focusedWorkspace = {
+              border = "#${colors.base0A}";
+              background = "#${colors.base02}";
+              text = "#${colors.base05}";
+            };
+          };
+        }
+      ];
     };
   };
 }

@@ -1,7 +1,7 @@
-{ buildGo119Module
-, fetchFromGitHub
-, lib
-,
+{
+  buildGo119Module,
+  fetchFromGitHub,
+  lib,
 }:
 buildGo119Module rec {
   pname = "wiresteward";
