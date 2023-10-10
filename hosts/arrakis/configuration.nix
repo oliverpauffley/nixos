@@ -52,6 +52,7 @@
     config = {
       # Disable if you don't want unfree packages
       allowUnfree = true;
+      # nix user repo
     };
   };
 
@@ -72,6 +73,14 @@
       # Deduplicate and optimize nix store
       auto-optimise-store = true;
     };
+
+    # Binary Cache for Haskell.nix
+    settings.trusted-public-keys = [
+      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+    ];
+    settings.substituters = [
+      "https://cache.iog.io"
+    ];
   };
 
   networking.hostName = "arrakis";
@@ -114,6 +123,8 @@
     arandr
   ];
   fonts.fonts = with pkgs; [(nerdfonts.override {fonts = ["Mononoki" "DroidSansMono" "Gohu"];})];
+  fonts.fontDir.enable = true;
+  fonts.fontDir.decompressFonts = true;
 
   i18n.defaultLocale = "en_GB.UTF-8";
   console = {
