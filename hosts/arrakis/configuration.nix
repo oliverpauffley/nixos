@@ -1,12 +1,11 @@
 # This is your system's configuration file.
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
-{
-  inputs,
-  outputs,
-  lib,
-  config,
-  pkgs,
-  ...
+{ inputs
+, outputs
+, lib
+, config
+, pkgs
+, ...
 }: {
   # You can import other NixOS modules here
   imports = [
@@ -59,13 +58,13 @@
   nix = {
     # This will add each flake input as a registry
     # To make nix3 commands consistent with your flake
-    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
+    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
 
     # This will additionally add your inputs to the system's legacy channels
     # Making legacy nix commands consistent as well, awesome!
     nixPath =
       lib.mapAttrsToList (key: value: "${key}=${value.to.path}")
-      config.nix.registry;
+        config.nix.registry;
 
     settings = {
       # Enable flakes and new 'nix' command
@@ -93,14 +92,14 @@
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
   # some i3 needed thing
-  environment.pathsToLink = ["/libexec"]; # links /libexec from derivations to /run/current-system/sw
+  environment.pathsToLink = [ "/libexec" ]; # links /libexec from derivations to /run/current-system/sw
 
   users.users = {
     ollie = {
       isNormalUser = true;
       initialPassword = "password";
       # passwordFile = config.sops."users.yaml/ollie/password";
-      extraGroups = ["wheel" "docker" "networkmanager" "audio"];
+      extraGroups = [ "wheel" "docker" "networkmanager" "audio" ];
       shell = pkgs.nushell;
     };
   };
@@ -121,8 +120,9 @@
     unzip
     feh
     arandr
+    syncthing
   ];
-  fonts.fonts = with pkgs; [(nerdfonts.override {fonts = ["Mononoki" "DroidSansMono" "Gohu"];})];
+  fonts.fonts = with pkgs; [ (nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; }) ];
   fonts.fontDir.enable = true;
   fonts.fontDir.decompressFonts = true;
 
@@ -157,7 +157,7 @@
     layout = "gb";
     dpi = 180;
     upscaleDefaultCursor = true;
-    videoDrivers = ["nvidia"];
+    videoDrivers = [ "nvidia" ];
     xkbOptions = "caps:ctrl_modifier";
     displayManager.lightdm = {
       enable = true;
@@ -224,7 +224,31 @@
 
   # docker
   virtualisation.docker.enable = true;
+  services.syncthing = let user = "ollie"; in
+    {
+      enable = true;
+      openDefaultPorts = true;
+      user = "${user}";
+      dataDir = "/home/${user}/.local/share/syncthing";
+      configDir = "/home/${user}/.config/syncthing";
+      guiAddress = "127.0.0.1:8384";
+      overrideFolders = true;
+      overrideDevices = true;
 
+      devices = {
+        "Phone" = {
+          id = "FBLIQCA-TQRYBUC-DOKDMM5-BFGUS7F-BQBXZ5N-L4XFL7S-HYN4I4K-T66HSQZ";
+          autoAcceptFolders = true;
+        };
+      };
+      folders = {
+        "Org" = {
+          id = "csuap-tld6q";
+          path = "/home/${user}/org/";
+          devices = [ "Phone" ];
+        };
+      };
+    };
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.05";
 }
