@@ -104,6 +104,11 @@
     };
   };
 
+  # 1password setup
+  programs._1password.enable = true;
+  programs._1password-gui.enable = true;
+  programs._1password-gui.polkitPolicyOwners = [ "ollie" ];
+
   services.openssh = {
     enable = true;
     settings.PermitRootLogin = "no";
@@ -121,6 +126,8 @@
     feh
     arandr
     syncthing
+    polkit_gnome
+    mu
   ];
   fonts.fonts = with pkgs; [ (nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; }) ];
   fonts.fontDir.enable = true;
@@ -196,6 +203,23 @@
 
   services.wiresteward.enable = true;
 
+  # start gnome polkit in i3
+  systemd = {
+    user.services.polkit-gnome-authentication-agent-1 = {
+      description = "polkit-gnome-authentication-agent-1";
+      wantedBy = [ "graphical-session.target" ];
+      wants = [ "graphical-session.target" ];
+      after = [ "graphical-session.target" ];
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+        Restart = "on-failure";
+        RestartSec = 1;
+        TimeoutStopSec = 10;
+      };
+    };
+  };
+
   security.polkit.enable = true;
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = true;
@@ -238,7 +262,6 @@
       devices = {
         "Phone" = {
           id = "FBLIQCA-TQRYBUC-DOKDMM5-BFGUS7F-BQBXZ5N-L4XFL7S-HYN4I4K-T66HSQZ";
-          autoAcceptFolders = true;
         };
       };
       folders = {

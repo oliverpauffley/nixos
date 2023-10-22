@@ -150,6 +150,11 @@ in {
           always = true;
           notification = false;
         }
+        {
+          command = "1password --silent";
+          always = true;
+          notification = false;
+        }
       ];
       keybindings = lib.mkOptionDefault {
         "${mod}+Return" = "exec alacritty";

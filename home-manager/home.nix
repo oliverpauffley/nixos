@@ -1,13 +1,14 @@
 # This is your home-manager configuration file
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
-{ inputs
-, outputs
-, lib
-, config
-, pkgs
-, rust-overlay
-, nix-colors
-, ...
+{
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  rust-overlay,
+  nix-colors,
+  ...
 }: {
   # You can import other home-manager modules here
   imports = [
@@ -27,6 +28,7 @@
     ./rofi.nix
     ./rust.nix
     ./i3
+    ./email.nix
   ];
 
   nixpkgs = {
@@ -69,22 +71,22 @@
     enable = true;
     monospace = {
       family = "GohuFont 14 Nerd Font";
-      package = pkgs.nerdfonts.override { fonts = [ "Gohu" ]; };
+      package = pkgs.nerdfonts.override {fonts = ["Gohu"];};
     };
     regular = {
       family = "mononoki Nerd Font";
-      package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
+      package = pkgs.nerdfonts.override {fonts = ["Mononoki"];};
     };
   };
+
   home.packages = with pkgs; [
     emacs-all-the-icons-fonts
-    slack
-    _1password-gui
+    unstable.slack
     jq
     gnuplot
     fd
     ispell
-    (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
+    (aspellWithDicts (dicts: with dicts; [en en-computers en-science]))
     ncspot
     direnv
     ripgrep
@@ -99,6 +101,9 @@
     yaml-language-server
     pkg-config
     dive # docker image viewer
+    procs # replacement for ps
+    imagemagick
+    hyperfine # measure cli speed
 
     # keyboards
     wally-cli
@@ -162,7 +167,6 @@
     # Open ssl
     openssl
     openssl.dev
-    pkg-config
 
     # rust
     rust-analyzer
