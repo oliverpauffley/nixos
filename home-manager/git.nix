@@ -7,6 +7,7 @@
   home.packages = with pkgs; [strongbox libsecret];
   programs.git = {
     enable = true;
+    lfs.enable = true;
     userEmail = "mrpauffley@gmail.com";
     userName = "oliverpauffley";
     attributes = ["go.mod linguist-generated" "go.sum linguist-generated"];

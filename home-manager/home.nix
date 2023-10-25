@@ -104,6 +104,7 @@
     procs # replacement for ps
     imagemagick
     hyperfine # measure cli speed
+    du-dust # see hard disk usage
 
     # keyboards
     wally-cli
