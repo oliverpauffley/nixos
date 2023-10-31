@@ -15,11 +15,8 @@
 
     # Or modules from other flakes (such as nixos-hardware):
     inputs.hardware.nixosModules.common-gpu-intel
-    inputs.hardware.nixosModules.common-gpu-nvidia
-    inputs.hardware.nixosModules.common-cpu-amd
-    inputs.hardware.nixosModules.common-pc-ssd
-    inputs.hardware.nixosModules.common-pc-laptop
-    inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-extreme-gen2
+    inputs.hardware.nixosModules.common-cpu-intel
+    inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
@@ -37,9 +34,6 @@
       outputs.overlays.additions
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
-
-      # You can also add overlays exported from other flakes:
-      # neovim-nightly-overlay.overlays.default
 
       # Or define it inline, for example:
       # (final: prev: {
@@ -86,7 +80,6 @@
   # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
   # some i3 needed thing
   environment.pathsToLink = ["/libexec"]; # links /libexec from derivations to /run/current-system/sw
@@ -161,13 +154,14 @@
     layout = "gb";
     dpi = 180;
     upscaleDefaultCursor = true;
-    videoDrivers = ["nvidia"];
+    videoDrivers = ["modesetting"];
     xkbOptions = "caps:ctrl_modifier";
-    displayManager.lightdm = {
-      enable = true;
-      greeters.slick.enable = true;
-    };
+    displayManager.gdm.enable = true;
     windowManager.i3.enable = true;
+
+    desktopManager = {
+      xterm.enable = false;
+    };
 
     libinput = {
       enable = true;
@@ -185,16 +179,6 @@
     };
   };
   services.dbus.enable = true;
-  hardware.nvidia.modesetting.enable = true;
-  hardware.nvidia.prime = {
-    offload.enable = true;
-
-    # Bus ID of the Intel GPU. You can find it using lspci, either under 3D or VGA
-    intelBusId = "PCI:0:2:0";
-
-    # Bus ID of the NVIDIA GPU. You can find it using lspci, either under 3D or VGA
-    nvidiaBusId = "PCI:1:0:0";
-  };
 
   hardware.opengl.enable = true;
 

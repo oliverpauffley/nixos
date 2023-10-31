@@ -16,7 +16,7 @@
         $env.CARGO_NET_GIT_FETCH_WITH_CLI = true
         $env.DIRENV_LOG_FORMAT = "";
         $env.EDITOR = "emacsclient -nw"
-        $env.PATH = ($env.PATH | split row (char esep) | append "/home/ollie/.emacs.d/bin/")
+        $env.PATH = ($env.PATH | split row (char esep) | append "/home/ollie/.config/emacs/bin/")
       '';
     };
     configFile = {
