@@ -147,6 +147,7 @@
     gopls
     gore
     gotests
+    gotestsum
 
     # kube
     kubectl
