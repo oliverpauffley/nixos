@@ -206,7 +206,7 @@
   security.pam.services.login.fprintAuth = true;
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.sddm.enableGnomeKeyring = true;
-
+  services.fwupd.enable = true;
   services.pcscd.enable = true;
   programs.gnupg.agent = {
     enable = true;
@@ -244,6 +244,7 @@
     devices = {
       "Phone" = {
         id = "FBLIQCA-TQRYBUC-DOKDMM5-BFGUS7F-BQBXZ5N-L4XFL7S-HYN4I4K-T66HSQZ";
+        autoAcceptFolders = true;
       };
     };
     folders = {
@@ -255,6 +256,12 @@
       "Phone Images" = {
         id = "moto_g62_5g_rzur-photos";
         path = "/home/${user}/images/";
+        devices = ["Phone"];
+      };
+      "Downloads" = {
+        id = "cpdlo-g4olc";
+        path = "/home/${user}/Downloads/";
+        type = "receiveonly";
         devices = ["Phone"];
       };
     };
