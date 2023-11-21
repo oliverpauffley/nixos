@@ -18,7 +18,7 @@
     },
     {
       "name": "wg-dev-gcp",
-      "mtu": 1380,
+      "mtu": 138,
       "peers": [
         {
           "url": "https://0.wiresteward.dev.gcp.uw.systems"
@@ -52,7 +52,7 @@
     },
     {
       "name": "wg-prod-gcp",
-      "mtu": 1380,
+      "mtu": 138,
       "peers": [
         {
           "url": "https://0.wiresteward.prod.gcp.uw.systems"

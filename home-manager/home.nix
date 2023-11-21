@@ -1,15 +1,7 @@
 # This is your home-manager configuration file
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
-{
-  inputs,
-  outputs,
-  lib,
-  config,
-  pkgs,
-  rust-overlay,
-  nix-colors,
-  ...
-}: {
+{ inputs, outputs, lib, config, pkgs, rust-overlay, emacs-community, nix-colors
+, ... }: {
   # You can import other home-manager modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/home-manager):
@@ -39,6 +31,7 @@
       outputs.overlays.additions
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
+      inputs.emacs-community.overlay
 
       # You can also add overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
@@ -49,6 +42,7 @@
       #     patches = [ ./change-hello-to-hi.patch ];
       #   });
       # })
+      #
     ];
     # Configure your nixpkgs instance
     config = {
@@ -72,11 +66,11 @@
     enable = true;
     monospace = {
       family = "GohuFont 14 Nerd Font";
-      package = pkgs.nerdfonts.override {fonts = ["Gohu"];};
+      package = pkgs.nerdfonts.override { fonts = [ "Gohu" ]; };
     };
     regular = {
       family = "mononoki Nerd Font";
-      package = pkgs.nerdfonts.override {fonts = ["Mononoki"];};
+      package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
     };
   };
 
@@ -87,7 +81,7 @@
     gnuplot
     fd
     ispell
-    (aspellWithDicts (dicts: with dicts; [en en-computers en-science]))
+    (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
     ncspot
     direnv
     ripgrep
@@ -100,8 +94,8 @@
     postgresql
     xclip
     yaml-language-server
-    pkg-config
     dive # docker image viewer
+    dockfmt
     procs # replacement for ps
     imagemagick
     hyperfine # measure cli speed
@@ -112,6 +106,12 @@
     ffmpeg
     python311Packages.pygments # syntax highlighter
     zathura # pdf viewer
+    pkg-config
+    openssl
+    openssl.dev
+    terraform
+    shfmt
+    eclint
 
     # keyboards
     wally-cli
@@ -144,10 +144,11 @@
     golint
     gomodifytags
     gopkgs
-    gopls
+    unstable.gopls
     gore
     gotests
     gotestsum
+    golangci-lint
 
     # kube
     kubectl
@@ -173,10 +174,6 @@
     jet
     openjdk8
 
-    # Open ssl
-    openssl
-    openssl.dev
-
     # rust
     rust-analyzer
 
@@ -188,18 +185,26 @@
     jpm
 
     # haskell
-    unstable.stack
-    unstable.cabal-install
-    unstable.ghc
-    unstable.haskell-language-server
+    stack
+    cabal-install
+    ghc
+    haskellPackages.haskell-language-server
+    haskellPackages.hoogle
+    hlint
+    stylish-haskell
 
     # Painting
     krita
 
     # python
-    python312
+    python3
     black
     pyright
+    python311Packages.pyflakes
+    isort
+    pipenv
+    python311Packages.nose
+    python311Packages.pytest
 
     # Games
     cataclysm-dda
@@ -217,6 +222,16 @@
     nix-direnv.enable = true;
   };
 
+  # default programs
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "application/pdf" = [ "zathura.desktop" "firefox.desktop" ];
+      "image/png" = [ "feh.desktop" ];
+      "text/plain" = [ "emacs.desktop" ];
+    };
+  };
+
   # auto mount removable disks
   services.udiskie = {
     enable = true;
@@ -228,5 +243,5 @@
   systemd.user.startServices = "sd-switch";
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  home.stateVersion = "22.11";
+  home.stateVersion = "23.05";
 }

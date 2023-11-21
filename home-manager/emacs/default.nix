@@ -1,13 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
+{ config, lib, pkgs, ... }: {
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs-gtk;
-    extraPackages = epkgs: with epkgs; [vterm];
+    package = pkgs.emacs-unstable;
+    extraPackages = epkgs: with epkgs; [ vterm pdf-tools ];
   };
 
   services.emacs = {

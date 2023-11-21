@@ -1,10 +1,5 @@
-{
-  config,
-  lib,
-  pkgs,
-  inputs,
-  ...
-}: let
+{ config, lib, pkgs, inputs, ... }:
+let
   # Seems it reject missing fields.
   # https://github.com/rustsec/rustsec/blob/5058319167c0a86eae7bf25ebc820a8eefeb1c55/cargo-audit/audit.toml.example
   cargoAudit = {
@@ -24,21 +19,24 @@
   '';
 in {
   home.packages = with pkgs;
-  with inputs.rust-overlay.packages.${pkgs.system}; [
-    (lib.hiPrio rust-nightly.availableComponents.rustfmt)
-    (rust.override {
-      extensions = ["rust-src"];
-      targets = ["x86_64-unknown-linux-gnu"];
-    })
+    with inputs.rust-overlay.packages.${pkgs.system}; [
+      (lib.hiPrio rust-nightly.availableComponents.rustfmt)
+      (rust.override {
+        extensions = [ "rust-src" ];
+        targets = [ "x86_64-unknown-linux-gnu" ];
+      })
 
-    cargo-audit
-    cargo-bloat
-    cargo-flamegraph
-    cargo-hack
-    cargo-insta
-    cargo-license
-    cargo-machete
-    cargo-outdated
-    cargo-show-asm
-  ];
+      pkg-config
+      openssl
+      openssl.dev
+      cargo-audit
+      cargo-bloat
+      cargo-flamegraph
+      cargo-hack
+      cargo-insta
+      cargo-license
+      cargo-machete
+      cargo-outdated
+      cargo-show-asm
+    ];
 }
