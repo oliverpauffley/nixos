@@ -216,7 +216,14 @@
   ];
 
   services.picom.enable = true;
-
+  gtk = {
+    enable = true;
+    font.name = "${config.fontProfiles.regular.family} 12";
+    theme = {
+      name = "Tokyonight-Dark-B";
+      package = pkgs.tokyo-night-gtk;
+    };
+  };
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
