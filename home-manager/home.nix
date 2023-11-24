@@ -22,6 +22,7 @@
     ./i3
     ./autorandr.nix
     ./email.nix
+    ./k9s.nix
   ];
 
   nixpkgs = {
@@ -152,7 +153,6 @@
 
     # kube
     kubectl
-    k9s
     kustomize
 
     # json/grpc

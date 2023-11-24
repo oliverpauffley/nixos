@@ -94,6 +94,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    dict
     vim
     firefox
     gnupg
@@ -119,6 +120,9 @@
     useXkbConfig = true; # use xkbOptions in tty.
   };
   time.timeZone = "Europe/London";
+
+  # enable dictionary{
+  environment.etc."dict.conf".text = "server dict.org";
 
   # Enable sound.
   sound.enable = true;
