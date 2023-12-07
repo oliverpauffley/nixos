@@ -16,9 +16,9 @@
     ./alacritty.nix
     ./emacs
     ./fish.nix
-    ./nushell.nix
     ./rofi.nix
     ./rust.nix
+    ./starship.nix
     ./i3
     ./autorandr.nix
     ./email.nix
@@ -86,9 +86,9 @@
     ncspot
     direnv
     ripgrep
-    exa
+    eza
     bat
-    postman
+    #unstable.postman
     pandoc
     util-linux
     xsv
@@ -96,7 +96,6 @@
     xclip
     yaml-language-server
     dive # docker image viewer
-    dockfmt
     procs # replacement for ps
     imagemagick
     hyperfine # measure cli speed
@@ -113,6 +112,8 @@
     terraform
     shfmt
     eclint
+    dnsutils
+    just
 
     # keyboards
     wally-cli
@@ -208,6 +209,7 @@
 
     # Games
     cataclysm-dda
+    warsow
 
     # irc
     gnutls
@@ -250,5 +252,5 @@
   systemd.user.startServices = "sd-switch";
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  home.stateVersion = "23.05";
+  home.stateVersion = "23.11";
 }

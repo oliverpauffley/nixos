@@ -63,6 +63,14 @@
 
   networking.hostName = "arrakis";
   networking.networkmanager.enable = true;
+  networking.nameservers = [ "1.1.1.1" "9.9.9.9" ];
+  services.dnsmasq = {
+    enable = true;
+    extraConfig = ''
+      interface=wg0
+    '';
+  };
+
   programs.nm-applet.enable = true;
 
   # Bootloader
@@ -79,9 +87,11 @@
       initialPassword = "password";
       # passwordFile = config.sops."users.yaml/ollie/password";
       extraGroups = [ "wheel" "docker" "networkmanager" "audio" ];
-      shell = pkgs.nushell;
+      shell = pkgs.fish;
     };
   };
+  # really really set the shell
+  environment.shells = [ pkgs.fish ];
 
   # 1password setup
   programs._1password.enable = true;
@@ -93,6 +103,7 @@
     settings.PermitRootLogin = "no";
   };
 
+  programs.fish.enable = true;
   environment.systemPackages = with pkgs; [
     dict
     vim
@@ -109,7 +120,7 @@
     polkit_gnome
     mu
   ];
-  fonts.fonts = with pkgs;
+  fonts.packages = with pkgs;
     [ (nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; }) ];
   fonts.fontDir.enable = true;
   fonts.fontDir.decompressFonts = true;
@@ -197,6 +208,7 @@
   security.polkit.enable = true;
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = true;
+  security.sudo-rs.enable = true;
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.sddm.enableGnomeKeyring = true;
   services.fwupd.enable = true;
@@ -233,13 +245,13 @@
     overrideFolders = true;
     overrideDevices = true;
 
-    devices = {
+    settings.devices = {
       "Phone" = {
         id = "FBLIQCA-TQRYBUC-DOKDMM5-BFGUS7F-BQBXZ5N-L4XFL7S-HYN4I4K-T66HSQZ";
         autoAcceptFolders = true;
       };
     };
-    folders = {
+    settings.folders = {
       "Org" = {
         id = "csuap-tld6q";
         path = "/home/${user}/org/";

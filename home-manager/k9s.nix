@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }: {
   programs.k9s = {
+    package = pkgs.unstable.k9s;
     enable = true;
     # TODO add this by updating homemanager
     # plugin = {
@@ -103,9 +104,8 @@
           };
           # TableView attributes.
           table = {
-
             fgColor = "${foreground}";
-            cursorFgColor = "${white}";
+            cursorFgColor = "${cyan}";
             cursorBgColor = "${background}";
             markColor = "${yellow}";
           };

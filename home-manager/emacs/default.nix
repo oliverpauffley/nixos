@@ -2,7 +2,7 @@
   programs.emacs = {
     enable = true;
     package = pkgs.emacs-unstable;
-    extraPackages = epkgs: with epkgs; [ vterm pdf-tools ];
+    extraPackages = epkgs: with epkgs; [ vterm ];
   };
 
   services.emacs = {
