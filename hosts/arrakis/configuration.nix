@@ -213,6 +213,7 @@
   security.polkit.enable = true;
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = true;
+  security.pam.services.xscreensaver.fprintAuth = true;
   security.sudo-rs.enable = true;
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.sddm.enableGnomeKeyring = true;
