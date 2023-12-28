@@ -114,6 +114,9 @@
     eclint
     dnsutils
     just
+    my-cookies # gets cookies for leetcode in emacs
+    sqlite
+    wordnet
 
     # keyboards
     wally-cli
@@ -191,6 +194,7 @@
     ghc
     haskellPackages.haskell-language-server
     haskellPackages.hoogle
+    haskellPackages.ghcide
     hlint
     stylish-haskell
 
@@ -209,7 +213,6 @@
 
     # Games
     cataclysm-dda
-    warsow
 
     # irc
     gnutls

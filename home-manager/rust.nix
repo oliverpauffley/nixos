@@ -38,5 +38,6 @@ in {
       cargo-machete
       cargo-outdated
       cargo-show-asm
+      rust-analyzer
     ];
 }

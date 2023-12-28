@@ -63,13 +63,10 @@
 
   networking.hostName = "arrakis";
   networking.networkmanager.enable = true;
-  networking.nameservers = [ "1.1.1.1" "9.9.9.9" ];
-  services.dnsmasq = {
-    enable = true;
-    extraConfig = ''
-      interface=wg0
-    '';
-  };
+  networking.nameservers = [ "9.9.9.9" "1.1.1.1" "8.8.8.8" ];
+  networking.networkmanager.dns = "none";
+  networking.dhcpcd.extraConfig = "nohook resolv.conf";
+  services.resolved.enable = false;
 
   programs.nm-applet.enable = true;
 
@@ -124,6 +121,14 @@
     [ (nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; }) ];
   fonts.fontDir.enable = true;
   fonts.fontDir.decompressFonts = true;
+
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall =
+      true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall =
+      true; # Open ports in the firewall for Source Dedicated Server
+  };
 
   i18n.defaultLocale = "en_GB.UTF-8";
   console = {

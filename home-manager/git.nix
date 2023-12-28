@@ -1,5 +1,5 @@
 { config, lib, pkgs, ... }: {
-  home.packages = with pkgs; [ strongbox libsecret ];
+  home.packages = with pkgs; [ strongbox libsecret ssh-askpass-fullscreen ];
   programs.git = {
     enable = true;
     lfs.enable = true;

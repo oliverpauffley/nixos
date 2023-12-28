@@ -23,6 +23,8 @@
 
       # suppress direnv logging
       set -gx DIRENV_LOG_FORMAT ""
+
+      set -U fish_user_paths $fish_user_paths $HOME/.config/emacs/bin
     '';
     functions = { ec = { body = "emacsclient --create-frame $argv &"; }; };
     plugins = [
