@@ -117,6 +117,8 @@
     my-cookies # gets cookies for leetcode in emacs
     sqlite
     wordnet
+    exercism
+    nix-output-monitor
 
     # keyboards
     wally-cli
