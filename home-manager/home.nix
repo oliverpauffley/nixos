@@ -88,7 +88,6 @@
     ripgrep
     eza
     bat
-    #unstable.postman
     pandoc
     util-linux
     xsv
@@ -118,7 +117,8 @@
     sqlite
     wordnet
     exercism
-    nix-output-monitor
+    nix-output-monitor # nom build to see your nix builds
+    mermaid-cli # diagrams from code
 
     # keyboards
     wally-cli
@@ -156,6 +156,7 @@
     gotests
     gotestsum
     golangci-lint
+    gotools
 
     # kube
     kubectl
@@ -182,9 +183,6 @@
 
     # rust
     rust-analyzer
-
-    # Ruby
-    ruby
 
     # Janet
     janet
