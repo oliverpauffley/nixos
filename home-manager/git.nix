@@ -22,7 +22,6 @@
       diff = { strongbox = { textconv = "strongbox -diff"; }; };
       init = { defaultBranch = "main"; };
       url = { "git@github.com:" = { insteadOf = "https://github.com/"; }; };
-      gpg."ssh".program = "${pkgs._1password-gui}/bin/op-ssh-sign";
     };
     signing = {
       signByDefault = true;

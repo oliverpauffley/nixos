@@ -218,6 +218,7 @@
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.sddm.enableGnomeKeyring = true;
   security.pam.services.ollie.gnupg.enable = true;
+  security.pam.services.ollie.gnupg.storeOnly = true;
   services.fwupd.enable = true;
   services.pcscd.enable = true;
   programs.gnupg.agent = {
