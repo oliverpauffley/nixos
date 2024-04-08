@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, lib, pkgs, inputs, environment, ... }:
 let
   # Seems it reject missing fields.
   # https://github.com/rustsec/rustsec/blob/5058319167c0a86eae7bf25ebc820a8eefeb1c55/cargo-audit/audit.toml.example
@@ -26,8 +26,8 @@ in {
         targets = [ "x86_64-unknown-linux-gnu" ];
       })
 
+      libiconv
       pkg-config
-      openssl
       openssl.dev
       cargo-audit
       cargo-bloat

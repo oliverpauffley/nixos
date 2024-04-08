@@ -158,6 +158,12 @@ in {
           "exec i3-msg exit"; # bypass default session exit confirmation menu.
         "${mod}+space" = "exec i3-msg open"; # Open blank space.
         "${mod}+e" = "exec org-capture"; # emacs org capture.
+        "${mod}+s" = "layout toggle tabbed splitv split";
+
+        "${mod}+h" = "focus left";
+        "${mod}+j" = "focus down";
+        "${mod}+k" = "focus up";
+        "${mod}+l" = "focus right";
 
         # Audio controls
         "XF86AudioRaiseVolume" =
@@ -187,7 +193,7 @@ in {
         "${mod}+Print" = ''
           exec (unclutter -idle 0 &) && maim -i "$(xdotool getactivewindow)" | xclip -selection clipboard -t image/png && killall unclutter'';
 
-        # Remove dmenu
+        # rofi
         "${mod}+d" = "exec rofi -show drun -theme";
       };
       bars = [{

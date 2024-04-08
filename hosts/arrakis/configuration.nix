@@ -58,6 +58,9 @@
       experimental-features = "nix-command flakes";
       # Deduplicate and optimize nix store
       auto-optimise-store = true;
+      trusted-public-keys =
+        [ "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" ];
+      substituters = [ "https://cache.iog.io" ];
     };
   };
 
@@ -116,7 +119,11 @@
     syncthing
     polkit_gnome
     mu
+    openssl
   ];
+  environment.variables = {
+    PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
+  };
   fonts.packages = with pkgs;
     [ (nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; }) ];
   fonts.fontDir.enable = true;

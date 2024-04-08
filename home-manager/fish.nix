@@ -9,14 +9,16 @@
       ls = "eza";
       cat = "bat";
       giff-account-id = "uuidgen -n 01d6ade7-f2eb-5e7d-b36d-9468f7bae3fb -s -N";
+      cd = "z";
     };
     interactiveShellInit = ''
 
       # Disable greeting
       set fish_greeting
 
-      # Work go export
+      # Work go export and github settings
       set -Ux GOPRIVATE "github.com/utilitywarehouse/*"
+      set -x GITHUB_TOKEN "op://pojwgzr42wd5q3awejtd5nnn3m/2nfmnrjvbzgdxap53hyllyqasq/token"
 
       # Cargo use git to fetch
       set -Ux CARGO_NET_GIT_FETCH_WITH_CLI true
@@ -33,4 +35,8 @@
     ];
   };
   services.gpg-agent.enableFishIntegration = true;
+  programs.zoxide = {
+    enable = true;
+    enableFishIntegration = true;
+  };
 }

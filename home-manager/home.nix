@@ -77,6 +77,7 @@
 
   home.packages = with pkgs; [
     emacs-all-the-icons-fonts
+    chromium
     unstable.slack
     jq
     gnuplot
@@ -119,6 +120,12 @@
     exercism
     nix-output-monitor # nom build to see your nix builds
     mermaid-cli # diagrams from code
+    nodePackages_latest.prettier # code formatting
+    unstable.yt-dlp
+    vlc
+    textsnatcher # yank text from images
+    unrar
+    haskellPackages.patat # tui presenations
 
     # keyboards
     wally-cli
@@ -138,12 +145,11 @@
 
     # nix
     nixfmt
-    rnix-lsp
-    alejandra
+    nil
     statix
 
     # go
-    unstable.go_1_21
+    go
     go-outline
     gocode
     gocode-gomod
@@ -197,6 +203,7 @@
     haskellPackages.ghcide
     hlint
     stylish-haskell
+    ghcid
 
     # Painting
     krita
@@ -241,6 +248,16 @@
       "application/pdf" = [ "zathura.desktop" "firefox.desktop" ];
       "image/png" = [ "feh.desktop" ];
       "text/plain" = [ "emacs.desktop" ];
+      "x-scheme-handler/http" = [ "firefox.desktop" ];
+      "x-scheme-handler/https" = [ "firefox.desktop" ];
+      "x-scheme-handler/chrome" = [ "firefox.desktop" ];
+      "text/html" = [ "firefox.desktop" ];
+      "application/x-extension-htm" = [ "firefox.desktop" ];
+      "application/x-extension-html" = [ "firefox.desktop" ];
+      "application/x-extension-shtml" = [ "firefox.desktop" ];
+      "application/xhtml+xml" = [ "firefox.desktop" ];
+      "application/x-extension-xhtml" = [ "firefox.desktop" ];
+      "application/x-extension-xht" = [ "firefox.desktop" ];
     };
   };
 
