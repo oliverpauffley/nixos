@@ -74,7 +74,6 @@
       package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
     };
   };
-
   home.packages = with pkgs; [
     emacs-all-the-icons-fonts
     chromium
@@ -126,6 +125,8 @@
     textsnatcher # yank text from images
     unrar
     haskellPackages.patat # tui presenations
+
+    # nix-inspect
 
     # keyboards
     wally-cli

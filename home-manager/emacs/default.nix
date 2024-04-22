@@ -1,8 +1,8 @@
-{ config, lib, pkgs, ... }: {
+{ pkgs, ... }: {
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs-unstable;
-    extraPackages = epkgs: with epkgs; [ vterm ];
+    package = pkgs.emacs;
+    extraPackages = epkgs: with epkgs; [ vterm sqlite3 ];
   };
 
   services.emacs = {

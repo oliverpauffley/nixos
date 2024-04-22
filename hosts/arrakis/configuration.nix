@@ -171,7 +171,7 @@
     layout = "gb";
     dpi = 180;
     upscaleDefaultCursor = true;
-    videoDrivers = [ "modesetting" ];
+    videoDrivers = [ "displaylink" "modesetting" ];
     xkbOptions = "caps:ctrl_modifier";
     displayManager.gdm.enable = true;
     windowManager.i3.enable = true;

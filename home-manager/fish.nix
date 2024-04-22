@@ -18,7 +18,6 @@
 
       # Work go export and github settings
       set -Ux GOPRIVATE "github.com/utilitywarehouse/*"
-      set -x GITHUB_TOKEN "op://pojwgzr42wd5q3awejtd5nnn3m/2nfmnrjvbzgdxap53hyllyqasq/token"
 
       # Cargo use git to fetch
       set -Ux CARGO_NET_GIT_FETCH_WITH_CLI true
