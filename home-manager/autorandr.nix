@@ -2,7 +2,7 @@
   programs.autorandr = let
     eDP-1-mode = "2160x1350";
     DVI-I-1-1-mode = "2560x1440";
-    bigScreenDPI = 120;
+    bigScreenDPI = 240;
     laptopDPI = 120;
   in {
     enable = true;

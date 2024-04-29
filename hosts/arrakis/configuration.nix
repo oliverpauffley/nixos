@@ -7,7 +7,6 @@
     # outputs.nixosModules.example
 
     # Or modules from other flakes (such as nixos-hardware):
-    inputs.hardware.nixosModules.common-gpu-intel
     inputs.hardware.nixosModules.common-cpu-intel
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
 
@@ -286,5 +285,12 @@
     };
   };
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  system.stateVersion = "23.11";
+  system = {
+    stateVersion = "23.11";
+    activationScripts.diff = ''
+          if [[ -e //run/current/system ]]; then
+            ${pkgs.nix}/bin/nix store diff-closures /run/current-system "$systemConfig"
+      fi
+    '';
+  };
 }

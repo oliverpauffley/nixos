@@ -125,6 +125,7 @@
     textsnatcher # yank text from images
     unrar
     haskellPackages.patat # tui presenations
+    comma # run commands that aren't installed with ","
 
     # nix-inspect
 
