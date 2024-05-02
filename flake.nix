@@ -22,10 +22,6 @@
     home-manager.url = "github:nix-community/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Emacs
-    emacs-community.url = "github:nix-community/emacs-overlay";
-    emacs-community.inputs.nixpkgs.follows = "nixpkgs";
-
     hardware.url = "github:nixos/nixos-hardware";
 
     # reproducible rust
@@ -36,7 +32,7 @@
   };
 
   outputs = { self, nixpkgs, home-manager, nixos-hardware, rust-overlay
-    , nix-colors, mytemplates, emacs-community, ... }@inputs:
+    , nix-colors, mytemplates, ... }@inputs:
     let
       inherit (self) outputs;
       forAllSystems = nixpkgs.lib.genAttrs [
@@ -46,7 +42,7 @@
         "aarch64-darwin"
         "x86_64-darwin"
       ];
-    in rec {
+    in {
       # Your custom packages
       # Acessible through 'nix build', 'nix shell', etc
       packages = forAllSystems (system:

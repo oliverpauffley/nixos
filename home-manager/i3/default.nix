@@ -97,23 +97,23 @@ in {
         }
         {
           workspace = "6";
-          output = "nonprimary primary";
+          output = "nonprimary";
         }
         {
           workspace = "7";
-          output = "nonprimary primary";
+          output = "nonprimary";
         }
         {
           workspace = "8";
-          output = "nonprimary primary";
+          output = "nonprimary";
         }
         {
           workspace = "9";
-          output = "nonprimary primary";
+          output = "nonprimary";
         }
         {
           workspace = "10";
-          output = "nonprimary primary";
+          output = "nonprimary";
         }
       ];
       modifier = mod;
