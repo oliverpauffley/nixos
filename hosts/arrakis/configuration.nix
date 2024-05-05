@@ -173,7 +173,10 @@
     videoDrivers = [ "displaylink" "modesetting" ];
     xkbOptions = "caps:ctrl_modifier";
     displayManager.gdm.enable = true;
-    windowManager.i3.enable = true;
+    windowManager.xmonad = {
+      enable = true;
+      enableContribAndExtras = true;
+    };
 
     desktopManager = { xterm.enable = false; };
 

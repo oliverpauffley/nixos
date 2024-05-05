@@ -18,7 +18,7 @@
     ./rofi.nix
     ./rust.nix
     ./starship.nix
-    ./i3
+    ./xmonad
     ./autorandr.nix
     ./email.nix
     ./k9s.nix
@@ -31,7 +31,6 @@
       outputs.overlays.additions
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
-      inputs.emacs-community.overlay
 
       # You can also add overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
@@ -73,6 +72,14 @@
       package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
     };
   };
+
+  services.random-background = {
+    enable = true;
+    display = "fill";
+    imageDirectory = "%h/wallpapers";
+    interval = "1h";
+  };
+
   home.packages = with pkgs; [
     emacs-all-the-icons-fonts
     chromium
@@ -198,7 +205,8 @@
     # haskell
     stack
     cabal-install
-    ghc
+    (haskellPackages.ghcWithPackages
+      (hpkgs: [ hpkgs.xmobar hpkgs.xmonad hpkgs.xmonad-contrib ]))
     haskellPackages.haskell-language-server
     haskellPackages.hoogle
     haskellPackages.ghcide
