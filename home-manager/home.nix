@@ -132,8 +132,8 @@
     unrar
     haskellPackages.patat # tui presenations
     comma # run commands that aren't installed with ","
-
-    # nix-inspect
+    mysql
+    (import ./git_visualizer.nix { inherit pkgs; })
 
     # keyboards
     wally-cli

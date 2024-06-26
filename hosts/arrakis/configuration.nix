@@ -164,6 +164,22 @@
     daemon.enable = true;
   };
 
+  # patch downloaded binaries
+  programs.nix-ld.enable = true;
+
+  # Sets up all the libraries to load
+  programs.nix-ld.libraries = with pkgs; [
+    stdenv.cc.cc
+    zlib
+    fuse3
+    icu
+    zlib
+    nss
+    openssl
+    curl
+    expat
+    # ...
+  ];
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;

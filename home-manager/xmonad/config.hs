@@ -1,4 +1,5 @@
 import qualified Data.Map                   as M
+import           System.Environment
 import           XMonad
 import           XMonad.Config.Desktop
 import           XMonad.Config.Gnome
@@ -6,6 +7,8 @@ import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
 import           XMonad.Hooks.StatusBar
 import           XMonad.Hooks.StatusBar.PP
+import           XMonad.Layout.Grid         (Grid (Grid))
+import           XMonad.Layout.MagicFocus
 import           XMonad.Layout.Magnifier    (magnifiercz')
 import           XMonad.Layout.ThreeColumns
 import           XMonad.Util.EZConfig       (additionalKeysP)
@@ -14,7 +17,6 @@ import           XMonad.Util.Ungrab         (unGrab)
 
 
 appLauncher = "rofi -modi drun,ssh,window -show drun -show-icons"
-
 myKeys =
   [ ("M-<Return>", spawn "alacritty")
   , ("M-d", spawn appLauncher)
@@ -26,7 +28,7 @@ myKeys =
   , ("M-s 2",
        spawn "autorandr work")
   ]
-myLayout = tiled ||| Mirror tiled ||| Full ||| threeCol
+myLayout = tiled ||| Mirror tiled ||| Full ||| threeCol ||| Grid
   where
     tiled = Tall nmaster delta ratio
     threeCol = magnifiercz' 1.3 $ ThreeColMid nmaster delta ratio
@@ -68,13 +70,16 @@ myConfig =
             { modMask = mod4Mask, -- Rebind Mod to the Super key
               terminal = "alacritty",
               borderWidth = 1,
+              normalBorderColor = "#bbbbbb",
+              focusedBorderColor = "#ff79c6",
               layoutHook = myLayout
             }
             `additionalKeysP` myKeys
 
 main :: IO ()
-main =
-  xmonad .
-    ewmhFullscreen .
-      ewmh .
-        withEasySB (statusBarProp "xmobar" (pure myXmobarPP)) defToggleStrutsKey $ myConfig
+main = do
+        myEnvVar <- lookupEnv "BASE" >>= return . maybe "defaultValue" id
+        xmonad .
+          ewmhFullscreen .
+          ewmh .
+          withEasySB (statusBarProp "xmobar" (pure myXmobarPP)) defToggleStrutsKey $ myConfig
