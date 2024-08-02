@@ -12,6 +12,7 @@
       cat = "bat";
       giff-account-id = "uuidgen -n 01d6ade7-f2eb-5e7d-b36d-9468f7bae3fb -s -N";
       cd = "z";
+      icat = "kitten icat";
     };
     interactiveShellInit = ''
 

@@ -12,7 +12,7 @@
 
     # You can also split up your configuration and import pieces of it here:
     ./git.nix
-    ./alacritty.nix
+    ./kitty.nix
     ./emacs
     ./fish.nix
     ./rofi.nix
@@ -105,9 +105,6 @@
     imagemagick
     hyperfine # measure cli speed
     du-dust # see hard disk usage
-    beancount
-    beancount-language-server
-    fava
     ffmpeg
     python311Packages.pygments # syntax highlighter
     zathura # pdf viewer
@@ -128,13 +125,13 @@
     nodePackages_latest.prettier # code formatting
     unstable.yt-dlp
     vlc
-    textsnatcher # yank text from images
     unrar
     haskellPackages.patat # tui presenations
     comma # run commands that aren't installed with ","
     mysql
     (import ./git_visualizer.nix { inherit pkgs; })
     (import ./go_coverage.nix { inherit pkgs; })
+    wineWowPackages.stable
 
     # keyboards
     wally-cli
@@ -236,6 +233,11 @@
 
     emacs-all-the-icons-fonts
   ];
+
+  programs.vim = {
+    enable = true;
+    defaultEditor = true;
+  };
 
   services.picom.enable = true;
   gtk = {

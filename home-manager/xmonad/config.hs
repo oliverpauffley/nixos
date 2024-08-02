@@ -13,12 +13,13 @@ import           XMonad.Layout.Magnifier    (magnifiercz')
 import           XMonad.Layout.ThreeColumns
 import           XMonad.Util.EZConfig       (additionalKeysP)
 import           XMonad.Util.Loggers
+import           XMonad.Util.Paste          (pasteString)
 import           XMonad.Util.Ungrab         (unGrab)
 
 
 appLauncher = "rofi -modi drun,ssh,window -show drun -show-icons"
 myKeys =
-  [ ("M-<Return>", spawn "alacritty")
+  [ ("M-<Return>", spawn "kitty")
   , ("M-d", spawn appLauncher)
   ,("M-C-s", unGrab *> spawn "scrot -s")
     -- Switch to single screen mode
@@ -27,6 +28,7 @@ myKeys =
   -- Switch to dual screen mode
   , ("M-s 2",
        spawn "autorandr work")
+  , ("C-S-p", pasteString "psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/$POSTGRES_DATABASE?sslmode=disable")
   ]
 myLayout = tiled ||| Mirror tiled ||| Full ||| threeCol ||| Grid
   where
@@ -68,7 +70,7 @@ myXmobarPP = def
 myConfig =
           gnomeConfig
             { modMask = mod4Mask, -- Rebind Mod to the Super key
-              terminal = "alacritty",
+              terminal = "kitty",
               borderWidth = 1,
               normalBorderColor = "#bbbbbb",
               focusedBorderColor = "#ff79c6",

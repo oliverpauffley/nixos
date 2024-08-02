@@ -4,7 +4,7 @@ in {
   programs.rofi = {
     enable = true;
     font = config.fontProfiles.monospace.family + " 14";
-    terminal = "\${pkgs.alacritty}/bin/alacritty";
+    terminal = "\${pkgs.kitty}/bin/kitty";
     theme = let
       # Use `mkLiteral` for string-like values that should show without
       # quotes, e.g.:
