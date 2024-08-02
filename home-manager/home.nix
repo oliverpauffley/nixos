@@ -134,6 +134,7 @@
     comma # run commands that aren't installed with ","
     mysql
     (import ./git_visualizer.nix { inherit pkgs; })
+    (import ./go_coverage.nix { inherit pkgs; })
 
     # keyboards
     wally-cli
@@ -157,7 +158,7 @@
     statix
 
     # go
-    go
+    unstable.go
     go-outline
     gocode
     gocode-gomod

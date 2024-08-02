@@ -4,6 +4,8 @@
     shellAbbrs = {
       hms = "home-manager switch --flake .#";
       nos = "sudo nixos-rebuild switch --flake .#";
+      pgsql =
+        "psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/$POSTGRES_DATABASE?sslmode=disable";
     };
     shellAliases = {
       ls = "eza";
