@@ -123,8 +123,10 @@
   environment.variables = {
     PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
   };
-  fonts.packages = with pkgs;
-    [ (nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; }) ];
+  fonts.packages = with pkgs; [
+    (nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; })
+    departure-mono
+  ];
   fonts.fontDir.enable = true;
   fonts.fontDir.decompressFonts = true;
 
@@ -251,6 +253,14 @@
 
   # printing
   services.printing.enable = true;
+  services.printing.drivers =
+    [ pkgs.gutenprint pkgs.fxlinuxprint pkgs.foomatic-db-ppds-withNonfreeDb ];
+
+  services.avahi = {
+    enable = true;
+    nssmdns = true;
+    openFirewall = true;
+  };
 
   # power managment
   services.upower.enable = true;

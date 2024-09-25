@@ -12,6 +12,7 @@
       copy_on_select = true;
       allow_remote_control = true;
       editor = "vim";
+      update_check_interval = 0;
     };
   };
 }

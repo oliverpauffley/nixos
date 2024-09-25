@@ -29,6 +29,7 @@ myKeys =
   , ("M-s 2",
        spawn "autorandr work")
   , ("C-S-p", pasteString "psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/$POSTGRES_DATABASE?sslmode=disable")
+  , ("M-e", spawn "kitty org-capture")
   ]
 myLayout = tiled ||| Mirror tiled ||| Full ||| threeCol ||| Grid
   where

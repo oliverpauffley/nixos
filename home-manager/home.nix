@@ -64,8 +64,8 @@
   fontProfiles = {
     enable = true;
     monospace = {
-      family = "GohuFont 14 Nerd Font";
-      package = pkgs.nerdfonts.override { fonts = [ "Gohu" ]; };
+      family = "Departure Mono";
+      package = pkgs.departure-mono;
     };
     regular = {
       family = "mononoki Nerd Font";
@@ -89,7 +89,6 @@
     fd
     ispell
     (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
-    ncspot
     direnv
     ripgrep
     eza
@@ -132,6 +131,10 @@
     (import ./git_visualizer.nix { inherit pkgs; })
     (import ./go_coverage.nix { inherit pkgs; })
     wineWowPackages.stable
+    dhall
+    dhallPackages.dhall-kubernetes
+    multi-gitter
+    btop
 
     # keyboards
     wally-cli
@@ -169,6 +172,7 @@
     gotestsum
     golangci-lint
     gotools
+    moq
 
     # kube
     kubectl
@@ -176,6 +180,8 @@
 
     # json/grpc
     evans
+    grpcurl
+    unstable.postman
 
     # debugger dependencies
     nodejs
@@ -204,11 +210,10 @@
     stack
     cabal-install
     (haskellPackages.ghcWithPackages
-      (hpkgs: [ hpkgs.xmobar hpkgs.xmonad hpkgs.xmonad-contrib ]))
+      (hpkgs: [ hpkgs.xmobar hpkgs.xmonad hpkgs.xmonad-contrib hpkgs.random ]))
     haskellPackages.haskell-language-server
     haskellPackages.hoogle
     haskellPackages.ghcide
-    hlint
     stylish-haskell
     ghcid
 
@@ -252,6 +257,21 @@
     enable = true;
     nix-direnv.enable = true;
   };
+
+  # # spotify
+  # TODO get work with age
+  # services.spotifyd = {
+  #   enable = true;
+  #   settings = {
+  #     global = {
+  #       username_cmd =
+  #         "op item get xjbwvvknhngz3cbciwbbhdrtpq --fields username";
+  #       password_cmd =
+  #         "op item get xjbwvvknhngz3cbciwbbhdrtpq --fields password";
+  #       device_name = "nix";
+  #     };
+  #   };
+  # };
 
   # default programs
   xdg.mimeApps = {

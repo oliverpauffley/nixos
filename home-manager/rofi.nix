@@ -1,5 +1,5 @@
 { config, lib, pkgs, nix-colors, ... }:
-let inherit (config.colorscheme) colors;
+let inherit (config.colorscheme) palette;
 in {
   programs.rofi = {
     enable = true;
@@ -18,17 +18,17 @@ in {
     in {
       "*" = {
         color-enabled = true;
-        color-window = mkLiteral "#${colors.base02}";
-        color-separator = mkLiteral "#${colors.base05}";
-        color-background = mkLiteral "#${colors.base01}";
-        background-color = mkLiteral "#${colors.base04}";
+        color-window = mkLiteral "#${palette.base02}";
+        color-separator = mkLiteral "#${palette.base05}";
+        color-background = mkLiteral "#${palette.base01}";
+        background-color = mkLiteral "#${palette.base04}";
         blink = true;
-        border-color = mkLiteral "#${colors.base0F}";
-        border-radius = mkLiteral "#${colors.base03}";
+        border-color = mkLiteral "#${palette.base0F}";
+        border-radius = mkLiteral "#${palette.base03}";
         cursor = "inherit";
         placeholder = quote "Search Applications";
-        placeholder-color = "#${colors.base04}";
-        text-color = "#${colors.base05}";
+        placeholder-color = "#${palette.base04}";
+        text-color = "#${palette.base05}";
         transparency = quote "real";
       };
 
@@ -67,11 +67,11 @@ in {
       };
       prompt = { enabled = true; };
       scrollbar = {
-        handle-color = "#${colors.base05}";
+        handle-color = "#${palette.base05}";
         handle-with = 10;
       };
       window = {
-        background-color = "#${colors.base04}";
+        background-color = "#${palette.base04}";
         border = mkLiteral "5.0";
         width = "35%";
       };
