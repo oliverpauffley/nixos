@@ -83,7 +83,6 @@
   home.packages = with pkgs; [
     emacs-all-the-icons-fonts
     chromium
-    unstable.slack
     jq
     gnuplot
     fd
@@ -209,8 +208,15 @@
     # haskell
     stack
     cabal-install
-    (haskellPackages.ghcWithPackages
-      (hpkgs: [ hpkgs.xmobar hpkgs.xmonad hpkgs.xmonad-contrib hpkgs.random ]))
+    zlib
+    (haskellPackages.ghcWithPackages (hpkgs: [
+      hpkgs.xmobar
+      hpkgs.xmonad
+      hpkgs.xmonad-contrib
+      hpkgs.random
+      hpkgs.scotty
+      hpkgs.zlib
+    ]))
     haskellPackages.haskell-language-server
     haskellPackages.hoogle
     haskellPackages.ghcide

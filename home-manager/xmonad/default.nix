@@ -2,7 +2,7 @@
 
   home.packages = with pkgs; [ scrot ];
 
-  programs.xmobar = let inherit (config.colorscheme) colors;
+  programs.xmobar = let inherit (config.colorscheme) palette;
   in {
     enable = true;
     extraConfig = ''
@@ -10,11 +10,11 @@
 
          -- appearance
            font =         "${config.fontProfiles.monospace.family} 10"
-         , bgColor =      "#${colors.base00}"
-         , fgColor =      "#${colors.base05}"
+         , bgColor =      "#${palette.base00}"
+         , fgColor =      "#${palette.base05}"
          , position =     TopP 0 20
          , border =       BottomB
-         , borderColor =  "#${colors.base0B}"
+         , borderColor =  "#${palette.base0B}"
 
          -- layout
          , sepChar =  "%"   -- delineator between plugin names and straight text

@@ -7,7 +7,7 @@
     # outputs.nixosModules.example
 
     # Or modules from other flakes (such as nixos-hardware):
-    inputs.hardware.nixosModules.common-cpu-intel
+    # inputs.hardware.nixosModules.common-cpu-intel
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
 
     # You can also split up your configuration and import pieces of it here:
@@ -175,7 +175,6 @@
     zlib
     fuse3
     icu
-    zlib
     nss
     openssl
     curl
@@ -253,8 +252,13 @@
 
   # printing
   services.printing.enable = true;
-  services.printing.drivers =
-    [ pkgs.gutenprint pkgs.fxlinuxprint pkgs.foomatic-db-ppds-withNonfreeDb ];
+  services.printing.drivers = [
+    pkgs.gutenprint
+    pkgs.gutenprintBin
+    pkgs.fxlinuxprint
+    pkgs.epson-escpr
+    pkgs.foomatic-db-ppds-withNonfreeDb
+  ];
 
   services.avahi = {
     enable = true;
