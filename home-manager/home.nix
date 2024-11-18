@@ -22,6 +22,7 @@
     ./autorandr.nix
     ./email.nix
     ./k9s.nix
+    ./haskell.nix
   ];
 
   nixpkgs = {
@@ -134,6 +135,7 @@
     dhallPackages.dhall-kubernetes
     multi-gitter
     btop
+    mplayer
 
     # keyboards
     wally-cli
@@ -204,24 +206,6 @@
     # Janet
     janet
     jpm
-
-    # haskell
-    stack
-    cabal-install
-    zlib
-    (haskellPackages.ghcWithPackages (hpkgs: [
-      hpkgs.xmobar
-      hpkgs.xmonad
-      hpkgs.xmonad-contrib
-      hpkgs.random
-      hpkgs.scotty
-      hpkgs.zlib
-    ]))
-    haskellPackages.haskell-language-server
-    haskellPackages.hoogle
-    haskellPackages.ghcide
-    stylish-haskell
-    ghcid
 
     # Painting
     krita
