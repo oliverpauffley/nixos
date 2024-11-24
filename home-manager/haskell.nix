@@ -14,6 +14,7 @@
       hpkgs.criterion
       hpkgs.vector
       hpkgs.record-dot-preprocessor
+      hpkgs.containers
     ]))
     haskellPackages.haskell-language-server
     haskellPackages.hoogle
