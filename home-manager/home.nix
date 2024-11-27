@@ -25,6 +25,7 @@
     ./haskell.nix
   ];
 
+
   nixpkgs = {
     # You can add overlays here
     overlays = [
@@ -117,6 +118,7 @@
     just
     my-cookies # gets cookies for leetcode in emacs
     sqlite
+    sqlitecpp
     wordnet
     exercism
     nix-output-monitor # nom build to see your nix builds
@@ -227,6 +229,8 @@
     gnutls
 
     emacs-all-the-icons-fonts
+
+    distrobox
   ];
 
   programs.vim = {

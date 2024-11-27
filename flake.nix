@@ -29,10 +29,11 @@
 
     nix-colors.url = "github:misterio77/nix-colors";
     templates.url = "github:the-nix-way/dev-templates";
+
   };
 
-  outputs = { self, nixpkgs, home-manager, nixos-hardware, rust-overlay
-    , nix-colors, ... }@inputs:
+  outputs = inputs@{ self, nixpkgs, home-manager, nixos-hardware, rust-overlay
+    , nix-colors, ... }:
     let
       inherit (self) outputs;
       forAllSystems = nixpkgs.lib.genAttrs [

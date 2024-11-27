@@ -65,7 +65,7 @@
 
   networking.hostName = "arrakis";
   networking.networkmanager.enable = true;
-  networking.nameservers = [ "9.9.9.9" "1.1.1.1" "8.8.8.8" ];
+  networking.nameservers = [ "1.1.1.1" "9.9.9.9" "8.8.8.8" ];
   networking.networkmanager.dns = "none";
   networking.dhcpcd.extraConfig = "nohook resolv.conf";
   services.resolved.enable = false;
