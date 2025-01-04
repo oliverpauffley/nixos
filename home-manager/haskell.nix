@@ -15,11 +15,14 @@
       hpkgs.vector
       hpkgs.record-dot-preprocessor
       hpkgs.containers
+      hpkgs.text-show
+      hpkgs.cabal2nix
     ]))
     haskellPackages.haskell-language-server
     haskellPackages.hoogle
     haskellPackages.ghcide
     stylish-haskell
     ghcid
+    nix-prefetch-git
   ];
 }

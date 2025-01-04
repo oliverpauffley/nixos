@@ -62,7 +62,7 @@
   fonts.fontconfig.enable = true;
 
   # colors
-  colorScheme = nix-colors.colorSchemes.tokyo-night-dark;
+  colorScheme = nix-colors.colorSchemes.dracula;
   fontProfiles = {
     enable = true;
     monospace = {
@@ -138,6 +138,7 @@
     multi-gitter
     btop
     mplayer
+    unstable.slack
 
     # keyboards
     wally-cli
@@ -243,8 +244,8 @@
     enable = true;
     font.name = "${config.fontProfiles.regular.family} 12";
     theme = {
-      name = "Tokyonight-Dark-B";
-      package = pkgs.tokyo-night-gtk;
+      name = "Dracula";
+      package = pkgs.dracula-theme;
     };
   };
   programs.direnv = {

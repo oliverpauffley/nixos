@@ -253,10 +253,10 @@
   # printing
   services.printing.enable = true;
   services.printing.drivers = [
+    (pkgs.callPackage ../../pkgs/epson_thermal_printer_driver {})
     pkgs.gutenprint
     pkgs.gutenprintBin
     pkgs.fxlinuxprint
-    pkgs.epson-escpr
     pkgs.foomatic-db-ppds-withNonfreeDb
   ];
 

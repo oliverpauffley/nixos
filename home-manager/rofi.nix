@@ -18,16 +18,16 @@ in {
     in {
       "*" = {
         color-enabled = true;
-        color-window = mkLiteral "#${palette.base02}";
-        color-separator = mkLiteral "#${palette.base05}";
-        color-background = mkLiteral "#${palette.base01}";
-        background-color = mkLiteral "#${palette.base04}";
+        color-window = mkLiteral "#${palette.base03}";
+        color-separator = mkLiteral "#${palette.base0E}";
+        color-background = mkLiteral "#${palette.base02}";
+        background-color = mkLiteral "#${palette.base01}";
         blink = true;
-        border-color = mkLiteral "#${palette.base0F}";
+        border-color = mkLiteral "#${palette.base0B}";
         border-radius = mkLiteral "#${palette.base03}";
         cursor = "inherit";
         placeholder = quote "Search Applications";
-        placeholder-color = "#${palette.base04}";
+        placeholder-color = "#${palette.base05}";
         text-color = "#${palette.base05}";
         transparency = quote "real";
       };
