@@ -149,9 +149,7 @@
   environment.etc."dict.conf".text = "server dict.org";
 
   # Enable sound.
-  sound.enable = true;
   services.pipewire.wireplumber.enable = true;
-  hardware.pulseaudio.enable = true;
 
   # bluetooth
   hardware.bluetooth.enable = true;
@@ -182,13 +180,30 @@
     # ...
   ];
   # Enable the X11 windowing system.
+  services.libinput = {
+    enable = true;
+
+    touchpad = {
+      clickMethod = "buttonareas";
+      disableWhileTyping = true;
+      middleEmulation = true;
+      tapping = true;
+      additionalOptions = ''
+        Option "PalmDetection" "on"
+        Option "TappingButtonMap" "lmr"
+      '';
+    };
+  };
+  hardware.graphics.enable = true;
   services.xserver = {
     enable = true;
-    layout = "gb";
+    xkb = {
+      layout = "gb";
+      options = "caps:ctrl_modifier";
+    };
     dpi = 180;
     upscaleDefaultCursor = true;
     videoDrivers = [ "displaylink" "modesetting" ];
-    xkbOptions = "caps:ctrl_modifier";
     displayManager.gdm.enable = true;
     windowManager.xmonad = {
       enable = true;
@@ -197,24 +212,8 @@
 
     desktopManager = { xterm.enable = false; };
 
-    libinput = {
-      enable = true;
-
-      touchpad = {
-        clickMethod = "buttonareas";
-        disableWhileTyping = true;
-        middleEmulation = true;
-        tapping = true;
-        additionalOptions = ''
-          Option "PalmDetection" "on"
-          Option "TappingButtonMap" "lmr"
-        '';
-      };
-    };
   };
   services.dbus.enable = true;
-
-  hardware.opengl.enable = true;
 
   services.wiresteward.enable = true;
 
@@ -246,25 +245,19 @@
   services.pcscd.enable = true;
   programs.gnupg.agent = {
     enable = true;
-    pinentryFlavor = "qt";
     enableSSHSupport = true;
   };
 
   # printing
   services.printing.enable = true;
   services.printing.drivers = [
-    (pkgs.callPackage ../../pkgs/epson_thermal_printer_driver {})
+    (pkgs.callPackage ../../pkgs/epson_thermal_printer_driver { })
     pkgs.gutenprint
     pkgs.gutenprintBin
     pkgs.fxlinuxprint
     pkgs.foomatic-db-ppds-withNonfreeDb
   ];
 
-  services.avahi = {
-    enable = true;
-    nssmdns = true;
-    openFirewall = true;
-  };
 
   # power managment
   services.upower.enable = true;

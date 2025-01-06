@@ -116,7 +116,6 @@
     eclint
     dnsutils
     just
-    my-cookies # gets cookies for leetcode in emacs
     sqlite
     sqlitecpp
     wordnet
@@ -129,7 +128,6 @@
     unrar
     haskellPackages.patat # tui presenations
     comma # run commands that aren't installed with ","
-    mysql
     (import ./git_visualizer.nix { inherit pkgs; })
     (import ./go_coverage.nix { inherit pkgs; })
     wineWowPackages.stable
@@ -157,14 +155,13 @@
     clang-tools
 
     # nix
-    nixfmt
+    nixfmt-classic
     nil
     statix
 
     # go
     unstable.go
     go-outline
-    gocode
     gocode-gomod
     godef
     golint
@@ -218,13 +215,8 @@
     black
     pyright
     python311Packages.pyflakes
-    isort
     pipenv
-    python311Packages.nose
     python311Packages.pytest
-
-    # Games
-    cataclysm-dda
 
     # irc
     gnutls

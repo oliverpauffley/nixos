@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }: {
   programs.kitty = {
     shellIntegration.enableFishIntegration = true;
-    theme = "Tokyo Night";
+    themeFile = "Dracula";
     font = {
       name = config.fontProfiles.regular.family;
       size = 14;

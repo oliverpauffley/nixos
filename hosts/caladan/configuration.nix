@@ -1,11 +1,13 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{
-  config,
-  pkgs,
-  ...
-}: {
+{ config, pkgs, ... }: {
+  nixpkgs = {
+
+    # Allow unfree packages
+    config.allowUnfree = true;
+    config.nvidia.acceptLicense = true;
+  };
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -40,24 +42,20 @@
     LC_TIME = "en_GB.UTF-8";
   };
 
-  # Configure console keymap
   console.keyMap = "uk";
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ollie = {
     isNormalUser = true;
     description = "ollie";
-    extraGroups = ["networkmanager" "wheel"];
-    packages = with pkgs; [];
+    extraGroups = [ "networkmanager" "wheel" ];
+    packages = with pkgs; [ ];
   };
 
   # Nvidia settings
   hardware.opengl = {
-    enable = true;
-    driSupport = true;
     driSupport32Bit = true;
   };
-  services.xserver.videoDrivers = ["nvidia"];
+  services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement.enable = false;
@@ -67,12 +65,9 @@
     package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
   };
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [vim wget git cowsay];
+  environment.systemPackages = with pkgs; [ vim wget git cowsay ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

@@ -1,9 +1,5 @@
-{
-  buildGo119Module,
-  fetchFromGitHub,
-  lib,
-}:
-buildGo119Module rec {
+{ buildGoModule, fetchFromGitHub, lib, }:
+buildGoModule rec {
   pname = "wiresteward";
   version = "0.2.6";
   doCheck = false;

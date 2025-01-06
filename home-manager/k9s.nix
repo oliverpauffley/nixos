@@ -19,10 +19,10 @@ in {
     # };
     settings = {
       k9s = {
-        skin = "base16";
+        skins.skin = "base16";
       };
     };
-    skin = let
+    skins = let
       foreground = "#${palette.base05}";
       background = "#${palette.base02}";
       current_line = "#8c6c3e";
