@@ -23,8 +23,9 @@
     ./email.nix
     ./k9s.nix
     ./haskell.nix
+    ./sops.nix
   ];
-
+  programs.info.enable = true;
 
   nixpkgs = {
     # You can add overlays here
@@ -115,7 +116,7 @@
     shfmt
     eclint
     dnsutils
-    just
+    unstable.just
     sqlite
     sqlitecpp
     wordnet
@@ -135,8 +136,15 @@
     dhallPackages.dhall-kubernetes
     multi-gitter
     btop
-    mplayer
     unstable.slack
+    mariadb
+    # ebooks
+    calibre
+    gomerge
+    remmina
+    age
+    sops
+    # uwcli
 
     # keyboards
     wally-cli
@@ -171,9 +179,10 @@
     gore
     gotests
     gotestsum
-    golangci-lint
+    unstable.golangci-lint
     gotools
-    moq
+    unstable.moq
+    sqlc
 
     # kube
     kubectl

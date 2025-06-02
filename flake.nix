@@ -18,6 +18,16 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     # Also see the 'unstable-packages' overlay at 'overlays/default.nix'.
 
+    # For secrets
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+
+    mysecrets = {
+      url =
+        "git+ssh://git@github.com/oliverpauffley/nix-secrets.git?shallow=1&ref=main";
+      flake = false;
+    };
+
     # Home manager
     home-manager.url = "github:nix-community/home-manager/release-24.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -33,7 +43,7 @@
   };
 
   outputs = inputs@{ self, nixpkgs, home-manager, nixos-hardware, rust-overlay
-    , nix-colors, ... }:
+    , nix-colors, sops-nix, ... }:
     let
       inherit (self) outputs;
       forAllSystems = nixpkgs.lib.genAttrs [
@@ -89,9 +99,12 @@
               home-manager.extraSpecialArgs = {
                 inherit inputs outputs nix-colors;
               };
+              home-manager.sharedModules =
+                [ inputs.sops-nix.homeManagerModules.sops ];
               home-manager.backupFileExtension = "backup";
               home-manager.users.ollie = import ./home-manager/home.nix;
             }
+            sops-nix.nixosModules.sops
           ];
         };
       };

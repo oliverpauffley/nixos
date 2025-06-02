@@ -17,6 +17,8 @@
       hpkgs.containers
       hpkgs.text-show
       hpkgs.cabal2nix
+      hpkgs.doctest
+      hpkgs.fourmolu
     ]))
     haskellPackages.haskell-language-server
     haskellPackages.hoogle
@@ -24,5 +26,6 @@
     stylish-haskell
     ghcid
     nix-prefetch-git
+    niv
   ];
 }

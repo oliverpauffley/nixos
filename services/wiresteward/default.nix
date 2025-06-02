@@ -9,7 +9,6 @@ in with lib; {
 
   config = mkIf cfg.enable {
     systemd.services.wiresteward = {
-      environment = { ASSUME_NO_MOVING_GC_UNSAFE_RISK_IT_WITH = "go1.23"; };
       wantedBy = [ "multi-user.target" ];
       after = [ "network-online.target" ];
       requires = [ "network-online.target" ];

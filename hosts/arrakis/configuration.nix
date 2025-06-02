@@ -17,6 +17,8 @@
     ./hardware-configuration.nix
 
     ../../services/wiresteward
+    ../common/sops.nix
+    ../common/users.nix
   ];
 
   nixpkgs = {
@@ -52,6 +54,11 @@
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}")
       config.nix.registry;
 
+    envVars = {
+      NIX_GITHUB_PRIVATE_USERNAME = config.sops.secrets.github_username.path;
+      NIX_GITHUB_PRIVATE_PASSWORD = config.sops.secrets.github_token.path;
+    };
+
     settings = {
       # Enable flakes and new 'nix' command
       experimental-features = "nix-command flakes";
@@ -60,10 +67,12 @@
       trusted-public-keys =
         [ "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" ];
       substituters = [ "https://cache.iog.io" ];
+      trusted-users = [ "ollie" "root" ];
     };
   };
 
   networking.hostName = "arrakis";
+  networking.extraHosts = "10.91.9.5 webappint.tp.private";
   networking.networkmanager.enable = true;
   networking.nameservers = [ "1.1.1.1" "9.9.9.9" "8.8.8.8" ];
   networking.networkmanager.dns = "none";
@@ -80,10 +89,11 @@
   environment.pathsToLink =
     [ "/libexec" ]; # links /libexec from derivations to /run/current-system/sw
 
+  users.mutableUsers = false;
   users.users = {
     ollie = {
       isNormalUser = true;
-      initialPassword = "password";
+      hashedPasswordFile = config.sops.secrets.ollie_passwd.path;
       # passwordFile = config.sops."users.yaml/ollie/password";
       extraGroups = [ "wheel" "docker" "networkmanager" "audio" ];
       shell = pkgs.fish;
@@ -126,6 +136,7 @@
   fonts.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "Mononoki" "DroidSansMono" "Gohu" ]; })
     departure-mono
+    luculent
   ];
   fonts.fontDir.enable = true;
   fonts.fontDir.decompressFonts = true;
@@ -258,7 +269,6 @@
     pkgs.foomatic-db-ppds-withNonfreeDb
   ];
 
-
   # power managment
   services.upower.enable = true;
   services.tlp = {
@@ -307,6 +317,9 @@
       };
     };
   };
+
+  networking.firewall.allowedTCPPorts = [ 8083 ];
+
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system = {
     stateVersion = "23.11";

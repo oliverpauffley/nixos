@@ -28,9 +28,18 @@
       # suppress direnv logging
       set -gx DIRENV_LOG_FORMAT ""
 
+      set GITHUB_TOKEN (cat $XDG_RUNTIME_DIR/github_token | string collect)
+
       set -U fish_user_paths $fish_user_paths $HOME/.config/emacs/bin
     '';
-    functions = { ec = { body = "emacsclient --create-frame $argv &"; }; };
+    functions = {
+      ec = { body = "emacsclient --create-frame $argv &"; };
+      runFHS = {
+        body =
+          "nix-shell -E 'with import <nixpkgs> {}; (pkgs.buildFHSUserEnv { name = 'fhs'; runScript = 'fish';  }).env' $argv ";
+      };
+
+    };
     plugins = [
       # Enable a plugin (here grc for colorized command output) from nixpkgs
       #{ name = "grc"; src = pkgs.fishPlugins.grc.src; }

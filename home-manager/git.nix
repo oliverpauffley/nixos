@@ -12,16 +12,16 @@
       credential.helper = "${
           pkgs.git.override { withLibsecret = true; }
         }/bin/git-credential-libsecret";
-      filter = {
-        strongbox = {
-          clean = "strongbox -clean %f";
-          smudge = "strongbox -smudge %f";
-          required = "true";
-        };
-      };
-      diff = { strongbox = { textconv = "strongbox -diff"; }; };
       init = { defaultBranch = "main"; };
       url = { "git@github.com:" = { insteadOf = "https://github.com/"; }; };
+      filter.strongbox = {
+        clean = "strongbox -clean %f";
+        smudge = "strongbox -smudge %f";
+        required = "true";
+      };
+      diff.strongbox.textconv = "strongbox -diff";
+      merge.strongbox.driver =
+        "strongbox -merge-file %O -merge-file %A -merge-file %B -merge-file %L -merge-file %P -merge-file %S -merge-file %X -merge-file %Y";
     };
     signing = {
       signByDefault = true;

@@ -6,6 +6,7 @@ import           XMonad.Config.Desktop
 import           XMonad.Config.Gnome
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
+import           XMonad.Hooks.ManageHelpers (isDialog)
 import           XMonad.Hooks.StatusBar
 import           XMonad.Hooks.StatusBar.PP
 import           XMonad.Layout.Grid         (Grid (Grid))
@@ -81,9 +82,19 @@ myConfig =
       borderWidth = 1,
       normalBorderColor = "#bbbbbb",
       focusedBorderColor = "#ff79c6",
-      layoutHook = myLayout
+      layoutHook = myLayout,
+      manageHook = myManageHook
     }
     `additionalKeysP` myKeys
+
+-- Manage how windows open
+myManageHook :: ManageHook
+myManageHook =
+  composeAll
+    [ className =? "Gimp" --> doFloat,
+      className =? "krita" --> doFloat,
+      isDialog --> doFloat
+    ]
 
 main :: IO ()
 main = do

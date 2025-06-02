@@ -59,6 +59,12 @@
       openFirewall = true;
       group = "multimedia";
     };
+    suwayomi-server = {
+      enable = true;
+      openFirewall = true;
+      settings = { port = "1111"; };
+      group = "multimedia";
+    };
     homepage-dashboard = {
       enable = true;
       listenPort = 8082;

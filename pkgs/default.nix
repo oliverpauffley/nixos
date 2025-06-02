@@ -5,5 +5,8 @@
   multi-gitter = pkgs.callPackage ./multi-gitter { };
   departure-mono = pkgs.callPackage ./departure_mono { };
   strongbox = pkgs.callPackage ./strongbox { };
-  epson-thermal-printer-driver = pkgs.callPackage ./epson_thermal_printer_driver {};
+  epson-thermal-printer-driver =
+    pkgs.callPackage ./epson_thermal_printer_driver { };
+  gomerge = pkgs.callPackage ./gomerge { };
+  uwcli = pkgs.callPackage ./uwcli { };
 }
