@@ -12,7 +12,7 @@
 
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     # You can access packages and modules from different nixpkgs revs
     # at the same time. Here's an working example:
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -29,7 +29,7 @@
     };
 
     # Home manager
-    home-manager.url = "github:nix-community/home-manager/release-24.11";
+    home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     hardware.url = "github:nixos/nixos-hardware";
@@ -53,7 +53,10 @@
         "aarch64-darwin"
         "x86_64-darwin"
       ];
-    in {
+    in rec {
+      # Your custom packages and modifications, exported as overlays
+      overlays = import ./overlays { inherit inputs; };
+
       # Your custom packages
       # Acessible through 'nix build', 'nix shell', etc
       packages = forAllSystems (system:
@@ -65,8 +68,6 @@
         let pkgs = nixpkgs.legacyPackages.${system};
         in import ./shell.nix { inherit pkgs; });
 
-      # Your custom packages and modifications, exported as overlays
-      overlays = import ./overlays { inherit inputs; };
       # Reusable nixos modules you might want to export
       # These are usually stuff you would upstream into nixpkgs
       nixosModules = import ./modules/nixos;
@@ -75,7 +76,17 @@
       homeManagerModules = import ./modules/home-manager;
 
       colmena = {
-        meta = { nixpkgs = import nixpkgs { system = "x86_64-linux"; }; };
+        meta = {
+          nixpkgs = import nixpkgs {
+            system = "x86_64-linux";
+            overlays = [
+              # apply overlay to get unstable packages
+              (overlays.unstable-packages)
+
+            ];
+          };
+          specialArgs = { inherit inputs outputs packages; };
+        };
 
         caladan = { name, nodes, pkgs, ... }: {
           deployment = {
@@ -94,6 +105,25 @@
           modules = [
             # > Our main nixos configuration file <
             ./hosts/arrakis/configuration.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.extraSpecialArgs = {
+                inherit inputs outputs nix-colors;
+              };
+              home-manager.sharedModules =
+                [ inputs.sops-nix.homeManagerModules.sops ];
+              home-manager.backupFileExtension = "backup";
+              home-manager.users.ollie = import ./home-manager/home.nix;
+            }
+            sops-nix.nixosModules.sops
+          ];
+        };
+
+        giedi-prime = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs outputs; };
+          modules = [
+            # > Our main nixos configuration file <
+            ./hosts/geidi-prime/configuration.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {

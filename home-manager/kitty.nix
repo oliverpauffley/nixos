@@ -3,7 +3,7 @@
     shellIntegration.enableFishIntegration = true;
     themeFile = "Dracula";
     font = {
-      name = config.fontProfiles.regular.family;
+      name = config.fontProfiles.monospace.family;
       size = 14;
     };
     enable = true;

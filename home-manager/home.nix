@@ -24,6 +24,7 @@
     ./k9s.nix
     ./haskell.nix
     ./sops.nix
+    ./mr.nix
   ];
   programs.info.enable = true;
 
@@ -71,8 +72,8 @@
       package = pkgs.departure-mono;
     };
     regular = {
-      family = "mononoki Nerd Font";
-      package = pkgs.nerdfonts.override { fonts = [ "Mononoki" ]; };
+      family = "Mononoki Nerd Font";
+      package = pkgs.nerd-fonts.mononoki;
     };
   };
 
@@ -87,6 +88,8 @@
     emacs-all-the-icons-fonts
     chromium
     jq
+    rq
+    fx
     gnuplot
     fd
     ispell
@@ -97,7 +100,7 @@
     bat
     pandoc
     util-linux
-    xsv
+    xan
     postgresql
     xclip
     yaml-language-server
@@ -138,19 +141,28 @@
     btop
     unstable.slack
     mariadb
-    # ebooks
-    calibre
+    calibre # ebooks
     gomerge
     remmina
     age
     sops
-    # uwcli
+    comby
+    mergiraf
+    semgrep
+    yad # display keybindings with a dialog box
+    xdotool # do stuff with xmonad via cli
 
     # keyboards
     wally-cli
 
     # common lisp
     sbcl
+
+    # Scheme
+    racket
+
+    # Theorem Provers
+    (agda.withPackages [ agdaPackages.standard-library ])
 
     # c
     libtool
@@ -183,6 +195,8 @@
     gotools
     unstable.moq
     sqlc
+    unstable.structurizr-cli
+    graphviz
 
     # kube
     kubectl
@@ -232,7 +246,25 @@
 
     emacs-all-the-icons-fonts
 
-    distrobox
+    # run things with fhs to get a shell that works for most linux binaries
+    (let base = pkgs.appimageTools.defaultFhsEnvArgs;
+    in pkgs.buildFHSEnv (base // {
+      name = "fhs";
+      targetPkgs = pkgs:
+        # pkgs.buildFHSUserEnv provides only a minimal FHS environment,
+        # lacking many basic packages needed by most software.
+        # Therefore, we need to add them manually.
+        #
+        # pkgs.appimageTools provides basic packages required by most software.
+        (base.targetPkgs pkgs) ++ (with pkgs; [
+          pkg-config
+          ncurses
+          # Feel free to add more packages here if needed.
+        ]);
+      profile = "export FHS=1";
+      runScript = "bash";
+      extraOutputsToInstall = [ "dev" ];
+    }))
   ];
 
   programs.vim = {
@@ -253,21 +285,6 @@
     enable = true;
     nix-direnv.enable = true;
   };
-
-  # # spotify
-  # TODO get work with age
-  # services.spotifyd = {
-  #   enable = true;
-  #   settings = {
-  #     global = {
-  #       username_cmd =
-  #         "op item get xjbwvvknhngz3cbciwbbhdrtpq --fields username";
-  #       password_cmd =
-  #         "op item get xjbwvvknhngz3cbciwbbhdrtpq --fields password";
-  #       device_name = "nix";
-  #     };
-  #   };
-  # };
 
   # default programs
   xdg.mimeApps = {

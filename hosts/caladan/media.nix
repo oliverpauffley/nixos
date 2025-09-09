@@ -38,6 +38,7 @@
       openFirewall = true;
     };
     prowlarr = {
+      package = pkgs.unstable.prowlarr;
       enable = true;
       openFirewall = true;
     };
@@ -68,6 +69,7 @@
     homepage-dashboard = {
       enable = true;
       listenPort = 8082;
+      allowedHosts = "localhost:8082,127.0.0.1:8082,192.168.1.100:8082";
       openFirewall = true;
       package = pkgs.homepage-dashboard;
       services = [{

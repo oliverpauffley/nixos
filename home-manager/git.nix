@@ -20,6 +20,7 @@
         required = "true";
       };
       diff.strongbox.textconv = "strongbox -diff";
+      merge.conflictStyle = "diff3";
       merge.strongbox.driver =
         "strongbox -merge-file %O -merge-file %A -merge-file %B -merge-file %L -merge-file %P -merge-file %S -merge-file %X -merge-file %Y";
     };
@@ -33,4 +34,7 @@
     enable = true;
     gitCredentialHelper.enable = true;
   };
+
+  # better merge conflicts
+  programs.mergiraf.enable = true;
 }

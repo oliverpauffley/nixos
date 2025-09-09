@@ -8,7 +8,6 @@
 
     # Or modules from other flakes (such as nixos-hardware):
     # inputs.hardware.nixosModules.common-cpu-intel
-    inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
@@ -71,14 +70,11 @@
     };
   };
 
-  networking.hostName = "arrakis";
-  networking.extraHosts = "10.91.9.5 webappint.tp.private";
+  networking.hostName = "giedi-prime";
   networking.networkmanager.enable = true;
   networking.nameservers = [ "1.1.1.1" "9.9.9.9" "8.8.8.8" ];
   networking.networkmanager.dns = "none";
   networking.dhcpcd.extraConfig = "nohook resolv.conf";
-  programs.captive-browser.enable = true;
-  programs.captive-browser.interface = "wlp0s20f3";
   services.resolved.enable = false;
 
   programs.nm-applet.enable = true;
@@ -86,10 +82,6 @@
   # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
-  # some i3 needed thing
-  environment.pathsToLink =
-    [ "/libexec" ]; # links /libexec from derivations to /run/current-system/sw
 
   users.mutableUsers = false;
   users.users = {
@@ -171,10 +163,6 @@
 
   # Enable sound.
   services.pipewire.wireplumber.enable = true;
-
-  # bluetooth
-  hardware.bluetooth.enable = true;
-  services.blueman.enable = true;
 
   # Enable zsa keyboards
   hardware.keyboard.zsa.enable = true;
@@ -265,10 +253,6 @@
   services.fwupd.enable = true;
   services.pcscd.enable = true;
 
-  services.udev.extraRules = ''
-    SUBSYSTEMS=="usb", ATTRS{manufacturer}=="EPSON", ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0202", GROUP:="lp", MODE="0666"
-  '';
-
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;
@@ -277,7 +261,6 @@
   # printing
   services.printing.enable = true;
   services.printing.drivers = [
-    (pkgs.callPackage ../../pkgs/epson_thermal_printer_driver { })
     pkgs.gutenprint
     pkgs.gutenprintBin
     pkgs.fxlinuxprint
@@ -286,13 +269,6 @@
 
   # power managment
   services.upower.enable = true;
-  services.tlp = {
-    enable = true;
-    settings = {
-      CPU_SCALING_GOVERNOR_ON_AC = "performance";
-      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-    };
-  };
 
   # docker
   virtualisation.docker.enable = true;

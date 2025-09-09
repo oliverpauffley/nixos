@@ -9,6 +9,7 @@ buildGoModule rec {
     repo = pname;
     rev = "${version}";
     sha256 = "";
+    private = true;
   };
   vendorHash = "";
 
