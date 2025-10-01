@@ -24,7 +24,6 @@
     ./k9s.nix
     ./haskell.nix
     ./sops.nix
-    ./mr.nix
   ];
   programs.info.enable = true;
 
@@ -124,13 +123,10 @@
     sqlitecpp
     wordnet
     exercism
-    nix-output-monitor # nom build to see your nix builds
     mermaid-cli # diagrams from code
     nodePackages_latest.prettier # code formatting
-    unstable.yt-dlp
     vlc
     unrar
-    haskellPackages.patat # tui presenations
     comma # run commands that aren't installed with ","
     (import ./git_visualizer.nix { inherit pkgs; })
     (import ./go_coverage.nix { inherit pkgs; })
@@ -151,6 +147,8 @@
     semgrep
     yad # display keybindings with a dialog box
     xdotool # do stuff with xmonad via cli
+    nh # nix-helper
+    localsend # send files to nearby devices
 
     # keyboards
     wally-cli
@@ -317,5 +315,5 @@
   systemd.user.startServices = "sd-switch";
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  home.stateVersion = "23.11";
+  home.stateVersion = "25.05";
 }

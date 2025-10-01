@@ -93,7 +93,10 @@
             targetHost = "192.168.1.100";
             targetUser = "root";
           };
-          imports = [ ./hosts/caladan/configuration.nix ];
+          imports = [
+            ./hosts/caladan/configuration.nix
+            inputs.sops-nix.nixosModules.sops
+          ];
         };
       };
 
@@ -119,24 +122,24 @@
           ];
         };
 
-        giedi-prime = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs outputs; };
-          modules = [
-            # > Our main nixos configuration file <
-            ./hosts/geidi-prime/configuration.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.extraSpecialArgs = {
-                inherit inputs outputs nix-colors;
-              };
-              home-manager.sharedModules =
-                [ inputs.sops-nix.homeManagerModules.sops ];
-              home-manager.backupFileExtension = "backup";
-              home-manager.users.ollie = import ./home-manager/home.nix;
-            }
-            sops-nix.nixosModules.sops
-          ];
-        };
+        # giedi-prime = nixpkgs.lib.nixosSystem {
+        #   specialArgs = { inherit inputs outputs; };
+        #   modules = [
+        #     # > Our main nixos configuration file <
+        #     ./hosts/geidi-prime/configuration.nix
+        #     home-manager.nixosModules.home-manager
+        #     {
+        #       home-manager.extraSpecialArgs = {
+        #         inherit inputs outputs nix-colors;
+        #       };
+        #       home-manager.sharedModules =
+        #         [ inputs.sops-nix.homeManagerModules.sops ];
+        #       home-manager.backupFileExtension = "backup";
+        #       home-manager.users.ollie = import ./home-manager/home.nix;
+        #     }
+        #     sops-nix.nixosModules.sops
+        #   ];
+        # };
       };
     };
 }

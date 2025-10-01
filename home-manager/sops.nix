@@ -12,7 +12,6 @@ in {
     validateSopsFiles = false;
 
     secrets = {
-      # "private_keys/ollie" = { path = "/home/ollie/.ssh/id_ed25519"; };
 
       github_token = { path = "%r/github_token"; };
     };

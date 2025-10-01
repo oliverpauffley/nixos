@@ -1,12 +1,11 @@
-install:
-    sudo nixos-rebuild switch --flake .#arrakis
+install NAME:
+    nh os switch . -H {{NAME}}
 
-upgrade:
-    sudo nix flake update
+upgrade NAME:
+    nh os switch . -u -H {{NAME}}
+
+servers:
+    colmena apply --impure
 
 clean:
-    # remove all generations older than 7 days
-    sudo nix profile wipe-history --profile /nix/var/nix/profiles/system  --older-than 7d
-
-    # garbage collect all unused nix store entries
-    sudo nix store gc --debug
+    nh clean all -k 2

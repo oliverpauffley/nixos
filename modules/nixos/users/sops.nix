@@ -8,7 +8,8 @@ in {
     validateSopsFiles = false;
 
     age = {
-      sshKeyPaths = [ "/home/ollie/.ssh/id_rsa" ];
+      keyFile = "/home/ollie/.config/sops/age/keys.txt";
+      # sshKeyPaths = [ "/home/ollie/.ssh/id_rsa" ];
       generateKey = true;
     };
 
