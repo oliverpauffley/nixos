@@ -25,7 +25,6 @@ in {
       };
       dpi = 180;
       upscaleDefaultCursor = true;
-      videoDrivers = [ "nvidia" ];
       displayManager.gdm.enable = true;
       displayManager.gdm.wayland = false;
       windowManager.xmonad = {

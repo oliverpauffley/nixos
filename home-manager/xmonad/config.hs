@@ -9,19 +9,23 @@ import XMonad.Config.Desktop
 import XMonad.Config.Gnome
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.ManageHelpers (isDialog)
+import XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat, isDialog, isFullscreen)
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
 import XMonad.Layout.Accordion (Accordion (Accordion))
+import XMonad.Layout.Fullscreen (fullscreenFloat, fullscreenFull, fullscreenManageHook)
 import XMonad.Layout.Grid (Grid (Grid))
+import XMonad.Layout.LayoutHints (layoutHints)
 import XMonad.Layout.MagicFocus
 import XMonad.Layout.Magnifier (magnifiercz')
+import XMonad.Layout.NoBorders (smartBorders)
 import XMonad.Layout.ThreeColumns
 import XMonad.Util.EZConfig (additionalKeysP, mkNamedKeymap)
 import XMonad.Util.Loggers
 import XMonad.Util.NamedActions
 import XMonad.Util.Paste (pasteString)
 import XMonad.Util.Run (hPutStr, spawnPipe)
+import XMonad.Util.Scratchpad (scratchpadManageHookDefault)
 import XMonad.Util.Ungrab (unGrab)
 
 -- Variables
@@ -67,12 +71,13 @@ myKeys c =
         , ("M-S-y", addName "swap window to screen" shiftNextScreen)
         ]
 
-myLayout = tiled ||| Mirror tiled ||| Full ||| Grid ||| Accordion
+myLayout = smartBorders $ layoutHints $ tiled ||| Mirror tiled ||| full ||| Grid ||| Accordion
  where
   tiled = Tall nmaster delta ratio
   nmaster = 1 -- default number of master panes
   ratio = 1 / 2 -- default proportion of screen occupied by master pane
   delta = 3 / 100 -- percent of screen to increment when resizing panes
+  full = (fullscreenFloat . fullscreenFull) Full
 
 myXmobarPP :: PP
 myXmobarPP =
@@ -104,14 +109,30 @@ myXmobarPP =
   red = xmobarColor "#ff5555" ""
   lowWhite = xmobarColor "#bbbbbb" ""
 
--- Manage how windows open
 myManageHook :: ManageHook
 myManageHook =
-  composeAll
-    [ className =? "Gimp" --> doFloat
-    , className =? "krita" --> doFloat
-    , isDialog --> doFloat
-    ]
+  composeAll $
+    [isDialog --> doFloat]
+      ++ [appName =? r --> doIgnore | r <- myIgnores]
+      ++
+      -- auto-float certain windows
+      [className =? c --> doCenterFloat | c <- myCenFloats]
+      ++ [title =? t --> doFloat | t <- myFloat]
+      ++
+      -- fulscreen windows to fullfloating
+      [isFullscreen --> doFullFloat]
+      ++
+      -- unmanage docks such as gnome-panel and dzen
+      [ fullscreenManageHook
+      , scratchpadManageHookDefault
+      ]
+ where
+  -- windows to operate
+  myIgnores =
+    ["desktop", "kdesktop", "desktop_window", "stalonetray"]
+  myCenFloats =
+    ["Steam", "steam", "vlc", "Vlc", "mpv"]
+  myFloat = ["Hangouts", "Gimp"]
 
 -- show keybindings with subtitle
 subtitle' :: String -> ((KeyMask, KeySym), NamedAction)

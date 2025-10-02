@@ -38,10 +38,7 @@
 
   # Enable the X11 windowing system.
   hardware.graphics.enable = true;
-  services.xserver = {
-    videoDrivers = [ "nvidia" ];
-
-  };
+  services.xserver = { videoDrivers = [ "nvidia" ]; };
   services.dbus.enable = true;
 
   networking.firewall.allowedTCPPorts = [ 8083 ];

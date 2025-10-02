@@ -29,6 +29,8 @@
   modules.x.enable = true;
   modules.work.enable = true;
 
+  services.xserver = { videoDrivers = [ "displaylink" "modesetting" ]; };
+
   # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
