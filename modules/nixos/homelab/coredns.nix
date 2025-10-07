@@ -7,7 +7,7 @@ let
   # Function
   # Get Hosts IP
   hostsIps = lib.mapAttrsToList (name: host: {
-    name = name;
+    inherit name;
     ip = host.ipv4;
   }) config.modules.homelab.hosts;
 
@@ -44,7 +44,7 @@ in {
     enable = lib.mkEnableOption "Enable coredns service";
   };
 
-  config = lib.mkIf (cfg.enable) {
+  config = lib.mkIf cfg.enable {
     services.coredns.enable = true;
 
     networking.firewall.allowedTCPPorts = [ 53 9153 ];

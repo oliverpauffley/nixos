@@ -1,7 +1,7 @@
 { config, lib, ... }:
 let
   # find the config that is running coreDNS
-  dnsServerIP = (lib.findFirst (x: x.isDNS == true) null
+  dnsServerIP = (lib.findFirst (x: x.isDNS) null
     (builtins.attrValues config.modules.homelab.hosts)).ipv4;
   servers = [ dnsServerIP "1.1.1.1" "9.9.9.9" "8.8.8.8" ];
 
@@ -22,7 +22,7 @@ in {
     networkmanager.insertNameservers = servers;
 
     nameservers = servers;
-    domain = domain;
+    inherit domain;
     # add an entry to /etc/hosts for each host
     extraHosts = ''
 
