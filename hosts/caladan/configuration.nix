@@ -1,7 +1,9 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ config, pkgs, lib, ... }: {
+{ config, pkgs, lib, ... }:
+let name = "caladan";
+in {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -9,12 +11,14 @@
   ];
 
   modules.media.enable = true;
+  modules.homelab.coredns.enable = true;
+  modules.homelab.traefik.enable = true;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "caladan"; # Define your hostname.
+  networking.hostName = name;
   networking.hostId = "347b26dc"; # required for zfs
 
   # Nvidia settings

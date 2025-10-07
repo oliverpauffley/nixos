@@ -3,7 +3,7 @@
 let cfg = config.modules.media;
 in {
   options.modules.media = with lib; {
-    enable = lib.mkEnableOption "Enable the media library module";
+    enable = mkEnableOption "Enable the media library module";
   };
   config = lib.mkIf cfg.enable {
 
@@ -12,7 +12,7 @@ in {
 
     systemd.tmpfiles.rules = [ "d /mnt/media 0770 - multimedia - -" ];
 
-    # jellyfin config
+    # jellyfin graphics config
     nixpkgs.config.packageOverrides = pkgs: {
       vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
     };
@@ -77,7 +77,8 @@ in {
       homepage-dashboard = {
         enable = true;
         listenPort = 8082;
-        allowedHosts = "localhost:8082,127.0.0.1:8082,192.168.1.100:8082";
+        allowedHosts =
+          "localhost:8082,127.0.0.1:8082,192.168.1.100:8082,dashboard.home.lab";
         openFirewall = true;
         package = pkgs.homepage-dashboard;
         services = [{

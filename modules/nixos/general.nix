@@ -38,14 +38,6 @@
     };
   };
 
-  networking.networkmanager.enable = true;
-  networking.nameservers = [ "1.1.1.1" "9.9.9.9" "8.8.8.8" ];
-  networking.networkmanager.dns = "none";
-  networking.dhcpcd.extraConfig = "nohook resolv.conf";
-
-  services.resolved.enable = false;
-  programs.nm-applet.enable = true;
-
   users = {
     mutableUsers = false;
     users = {

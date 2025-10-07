@@ -81,7 +81,7 @@
             system = "x86_64-linux";
             overlays = [
               # apply overlay to get unstable packages
-              (overlays.unstable-packages)
+              overlays.unstable-packages
 
             ];
           };
@@ -110,13 +110,12 @@
             ./hosts/arrakis/configuration.nix
             home-manager.nixosModules.home-manager
             {
-              home-manager.extraSpecialArgs = {
-                inherit inputs outputs nix-colors;
+              home-manager = {
+                extraSpecialArgs = { inherit inputs outputs nix-colors; };
+                sharedModules = [ inputs.sops-nix.homeManagerModules.sops ];
+                backupFileExtension = "backup";
+                users.ollie = import ./home-manager/home.nix;
               };
-              home-manager.sharedModules =
-                [ inputs.sops-nix.homeManagerModules.sops ];
-              home-manager.backupFileExtension = "backup";
-              home-manager.users.ollie = import ./home-manager/home.nix;
             }
             sops-nix.nixosModules.sops
           ];
@@ -129,36 +128,17 @@
             ./hosts/giedi-prime/configuration.nix
             home-manager.nixosModules.home-manager
             {
-              home-manager.extraSpecialArgs = {
-                inherit inputs outputs nix-colors;
+              home-manager = {
+                extraSpecialArgs = { inherit inputs outputs nix-colors; };
+                sharedModules = [ inputs.sops-nix.homeManagerModules.sops ];
+                backupFileExtension = "backup";
+                users.ollie = import ./home-manager/home.nix;
               };
-              home-manager.sharedModules =
-                [ inputs.sops-nix.homeManagerModules.sops ];
-              home-manager.backupFileExtension = "backup";
-              home-manager.users.ollie = import ./home-manager/home.nix;
             }
             sops-nix.nixosModules.sops
           ];
         };
 
-        # giedi-prime = nixpkgs.lib.nixosSystem {
-        #   specialArgs = { inherit inputs outputs; };
-        #   modules = [
-        #     # > Our main nixos configuration file <
-        #     ./hosts/geidi-prime/configuration.nix
-        #     home-manager.nixosModules.home-manager
-        #     {
-        #       home-manager.extraSpecialArgs = {
-        #         inherit inputs outputs nix-colors;
-        #       };
-        #       home-manager.sharedModules =
-        #         [ inputs.sops-nix.homeManagerModules.sops ];
-        #       home-manager.backupFileExtension = "backup";
-        #       home-manager.users.ollie = import ./home-manager/home.nix;
-        #     }
-        #     sops-nix.nixosModules.sops
-        #   ];
-        # };
       };
     };
 }

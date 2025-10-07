@@ -1,6 +1,8 @@
 # This is your system's configuration file.
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
-{ inputs, outputs, lib, config, pkgs, ... }: {
+{ inputs, pkgs, ... }:
+let name = "arrakis";
+in {
   # You can import other NixOS modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/nixos):
@@ -19,29 +21,30 @@
     ../../modules/nixos
   ];
 
-  networking.hostName = "arrakis";
+  config = {
+    # ensure this is set to the same value as the one in the "hosts" module
+    networking.hostName = name;
 
-  modules.laptop = {
-    enable = true;
-    networkInterface = "wlp0s20f3";
-  };
+    modules.laptop = {
+      enable = true;
+      networkInterface = "wlp0s20f3";
+    };
+    modules.x.enable = true;
+    services.xserver = { videoDrivers = [ "displaylink" "modesetting" ]; };
+    modules.work.enable = true;
 
-  modules.x.enable = true;
-  modules.work.enable = true;
+    # Bootloader
+    boot.loader.systemd-boot.enable = true;
+    boot.loader.efi.canTouchEfiVariables = true;
 
-  services.xserver = { videoDrivers = [ "displaylink" "modesetting" ]; };
-
-  # Bootloader
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  system = {
-    stateVersion = "25.05";
-    activationScripts.diff = ''
-          if [[ -e //run/current/system ]]; then
-            ${pkgs.nix}/bin/nix store diff-closures /run/current-system "$systemConfig"
-      fi
-    '';
+    # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+    system = {
+      stateVersion = "25.05";
+      activationScripts.diff = ''
+            if [[ -e //run/current/system ]]; then
+              ${pkgs.nix}/bin/nix store diff-closures /run/current-system "$systemConfig"
+        fi
+      '';
+    };
   };
 }
