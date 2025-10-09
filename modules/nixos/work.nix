@@ -2,7 +2,7 @@
 let cfg = config.modules.work;
 in {
   imports = [ ../../services/wiresteward ];
-  options.modules.work = with lib; {
+  options.modules.work = {
     enable = lib.mkEnableOption "Enable the work module";
   };
 

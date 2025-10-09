@@ -1,8 +1,7 @@
-{ config, lib, pkgs, ... }:
-
+{ config, lib, ... }:
 let cfg = config.modules.laptop;
 in {
-  options.modules.laptop = with lib; {
+  options.modules.laptop = {
     enable = lib.mkEnableOption "Enable the laptop module";
     networkInterface = lib.mkOption {
       type = lib.types.str;
