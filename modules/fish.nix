@@ -23,7 +23,25 @@
           grep = "rg";
           icat = "kitten icat";
         };
-        functions = { fish_greeting = ""; };
+        functions = {
+          fish_greeting = "";
+
+          rds_connect = {
+            body = ''
+              set -l host $argv[1]
+              set -l user $argv[2]
+              set -l dbname $argv[3]
+
+              # Generate the auth token using command substitution
+              set -l pass (aws rds generate-db-auth-token --hostname $host --port 5432 --region eu-west-1 --username $user)
+
+              # Download the SSL certificate bundle
+              curl https://truststore.pki.rds.amazonaws.com/eu-west-1/eu-west-1-bundle.pem > eu-west-1-bundle.pem
+
+              # Connect using psql with the generated token
+              psql "user=$user port=5432 host=$host dbname=$dbname sslmode=verify-full sslrootcert=eu-west-1-bundle.pem password=$pass"'';
+          };
+        };
 
         interactiveShellInit = ''
           # Disable greeting
