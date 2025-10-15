@@ -18,7 +18,10 @@ in {
             inherit specialArgs;
             modules = module.imports ++ [
               inputs.home-manager.nixosModules.home-manager
-              { home-manager.extraSpecialArgs = specialArgs; }
+              {
+                home-manager.extraSpecialArgs = specialArgs;
+                home-manager.backupFileExtension = "bck";
+              }
             ];
           };
         }))

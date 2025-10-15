@@ -1,19 +1,17 @@
 { config, inputs, ... }: {
-  flake.modules.nixos."hosts/arrakis" = {
+  flake.modules.nixos."hosts/giedi-prime" = {
     imports = with config.flake.modules.nixos;
       [
         inputs.sops-nix.nixosModules.sops
         # Modules
         base
-        laptop
-        work
         dev
         xmonad
+        game
 
         # Users
         ollie
         root
-        inputs.hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
 
       ]
       # Specific Home-Manager modules

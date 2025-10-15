@@ -31,15 +31,14 @@
   #   (host: "${host.ip} ${host.name}.${domain} ${host.name}") aliasIps}
   # '';
   # in {
-  flake.modules.nixos.base = {
+  flake.modules.nixos.base = { lib, ... }: {
     programs.nm-applet.enable = true;
-    services.resolved = { enable = true; };
     networking = {
-      # networkmanager.insertNameservers = servers;
       useDHCP = false;
       networkmanager = {
         enable = true;
-        insertNameservers = [ "1.1.1.1" ];
+        dns = lib.mkDefault "none";
+        insertNameservers = [ "1.1.1.1" "8.8.8.8" "9.9.9.9" ];
       };
     };
     systemd = {
