@@ -9,6 +9,7 @@
         work
         dev
         xmonad
+        use-external
 
         # Users
         ollie

@@ -26,7 +26,8 @@
         hashedPasswordFile = local.config.sops.secrets.ollie_passwd.path;
       };
 
-      nix.settings.trusted-users = [ config.flake.meta.users.ollie.username ];
+      nix.settings.trusted-users =
+        [ config.flake.meta.users.ollie.username "root" ];
 
       home-manager.users.ollie = {
         home.file = {

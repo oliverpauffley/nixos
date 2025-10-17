@@ -1,17 +1,18 @@
 { config, inputs, ... }: {
-  flake.modules.nixos."hosts/giedi-prime" = {
+  flake.modules.nixos."hosts/caladan" = {
     imports = with config.flake.modules.nixos;
       [
         inputs.sops-nix.nixosModules.sops
         # Modules
         base
-        dev
-        xmonad
-        game
+        media
+        coredns
+        traefik
 
         # Users
         ollie
         root
+
       ]
       # Specific Home-Manager modules
       ++ [{
@@ -19,9 +20,6 @@
           with config.flake.modules.homeManager; [
             inputs.sops-nix.homeManagerModules.sops
             base
-            work
-            dev
-            xmonad
           ];
       }];
   };

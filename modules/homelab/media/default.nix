@@ -1,5 +1,8 @@
 {
-  flake.modules.nixos.media = { pkgs }: {
+  flake.modules.nixos.media = { pkgs, inputs, ... }: {
+    nixpkgs.overlays = [ inputs.self.overlays.default ];
+    environment.systemPackages = with pkgs; [ ffmpeg local.dovi-convert ];
+
     users.groups.multimedia = { };
     users.users.ollie.extraGroups = [ "multimedia" ];
 
@@ -20,6 +23,7 @@
         intel-media-sdk # QSV up to 11th gen
       ];
     };
+    # TODO dovi-convert cron
 
     services = {
       jellyfin = {
