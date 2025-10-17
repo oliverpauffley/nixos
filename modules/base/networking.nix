@@ -3,7 +3,7 @@ let
   domain = "home.lab";
   # find the config that is running coreDNS
   dnsServerIP = (lib.findFirst (x: x.isDNS) null
-    (builtins.attrValues config.networking.hosts)).ipv4;
+    (builtins.attrValues config.flake.hosts)).ipv4;
   servers = [ dnsServerIP "1.1.1.1" "9.9.9.9" "8.8.8.8" ];
 
   # get ips with their aliases
@@ -12,7 +12,7 @@ let
     in map (entry: {
       name = entry;
       ip = host.ipv4;
-    }) alias) config.networking.hosts);
+    }) alias) config.flake.hosts);
 
 in {
   flake.modules.nixos.base = { lib, ... }: {
@@ -34,7 +34,7 @@ in {
         # Hosts
         ${lib.concatStringsSep "\n" (lib.mapAttrsToList (hostname: hostinfo:
           "${hostinfo.ipv4} ${hostname}.${domain} ${hostname}")
-          config.networking.hosts)}
+          config.flake.hosts)}
 
         # Alias
         ${lib.concatMapStringsSep "\n"

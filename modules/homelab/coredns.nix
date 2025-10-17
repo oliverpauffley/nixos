@@ -4,13 +4,15 @@
       ttl = 180;
       domain = "home.lab";
 
+      # find the config that is running coreDNS
+      dnsServerIP = (lib.findFirst (x: x.isDNS) null
+        (builtins.attrValues config.flake.hosts)).ipv4;
       # TODO define config option here to turn on coredns and give it the host IP
-      # Function
       # Get Hosts IP
       hostsIps = lib.mapAttrsToList (name: host: {
         inherit name;
         ip = host.ipv4;
-      }) config.networking.hosts;
+      }) config.flake.hosts;
 
       # Function
       # Get Alias IP
@@ -19,7 +21,7 @@
         in map (entry: {
           name = entry;
           ip = host.ipv4;
-        }) alias) config.networking.hosts);
+        }) alias) config.flake.hosts);
 
       fileZone = pkgs.writeText "h.zone" ''
         $ORIGIN ${domain}.
@@ -30,7 +32,7 @@
                 180       ; Zone TTL
                 3600)     ; Negative response TTL
 
-        ns ${toString ttl} IN A ${config.flake.currentHost.ipv4}
+        ns ${toString ttl} IN A ${dnsServerIP}
 
         ; hosts
         ${lib.concatMapStringsSep "\n"
