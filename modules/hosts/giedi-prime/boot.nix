@@ -1,4 +1,9 @@
 { lib, ... }: {
+  flake.hosts."giedi-prime" = {
+    description = "games";
+    ipv4 = "192.168.1.49";
+    dnsalias = [ "giedi-prime" ];
+  };
   flake.modules.nixos."hosts/giedi-prime" = { pkgs, config, ... }: {
     nixpkgs.hostPlatform = "x86_64-linux";
 

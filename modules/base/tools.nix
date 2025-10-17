@@ -15,7 +15,6 @@
       xclip
       procs # instead of ps
       imagemagick
-      ffmpeg
       zathura
       pkg-config
       dnsutils

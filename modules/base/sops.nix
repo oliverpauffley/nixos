@@ -3,10 +3,7 @@ let
   secretspath = builtins.toString inputs.mysecrets;
   secrets = {
     ollie_passwd = { neededForUsers = true; };
-    github_token = {
-      neededForUsers = true;
-      path = "%r/github_token";
-    };
+    github_token = { neededForUsers = true; };
     github_username = { neededForUsers = true; };
   };
 in {

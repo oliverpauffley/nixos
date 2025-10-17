@@ -19,7 +19,7 @@
         })
       ];
     };
-    pkgsDirectory = ../pkgs/by-name;
+    pkgsDirectory = ../../pkgs/by-name;
   };
 
   flake = {
@@ -36,5 +36,8 @@
       };
     };
   };
-  flake.modules.nixos.base = { nixpkgs.config.allowUnfree = true; };
+  flake.modules.nixos.base = {
+    nixpkgs.config.allowUnfree = true;
+    nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  };
 }
