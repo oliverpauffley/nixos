@@ -1,7 +1,10 @@
 { lib, config, ... }:
 let
   domain = "home.lab";
-  localIp = config.flake.currentHost.ipv4;
+  # assume the thing running traefik is also running coredns
+  localIp = (lib.findFirst (x: x.isDNS) null
+    (builtins.attrValues config.flake.hosts)).ipv4;
+
 in {
   flake.modules.nixos.traefik = {
     networking.firewall.allowedTCPPorts = [ 80 ];
