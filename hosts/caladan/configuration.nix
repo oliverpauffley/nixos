@@ -19,24 +19,10 @@ in {
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = name;
-  networking.hostId = "347b26dc"; # required for zfs
 
   # Nvidia settings
-  hardware.opengl = { driSupport32Bit = true; };
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = false;
-    powerManagement.finegrained = false;
-    open = false;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
-  };
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-  services.openssh.settings.PermitRootLogin = lib.mkForce "yes";
-  security.pam.enableSSHAgentAuth = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
