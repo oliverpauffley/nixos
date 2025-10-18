@@ -1,12 +1,4 @@
 builds:
-  exclude: ["legacyPackages.*"]
+  exclude: []
   include:
-    - "*.x86_64-linux.dovi-convert"
-    - "*.x86_64-linux.multi-gitter"
-    - "*.x86_64-linux.strongbox"
-    - "*.x86_64-linux.wiresteward"
-    - defaultPackage.x86_64-linux
-    - devShell.x86_64-linux
-    - homeConfigurations.*
-    - darwinConfigurations.*
     - nixosConfigurations.*
