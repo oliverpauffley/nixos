@@ -1,5 +1,4 @@
-{ lib, stdenvNoCC, fetchzip }:
-
+{ lib, stdenvNoCC, fetchzip, ... }:
 stdenvNoCC.mkDerivation {
   pname = "departure_mono";
   version = "v1.346";

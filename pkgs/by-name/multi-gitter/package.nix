@@ -1,4 +1,4 @@
-{ buildGoModule, fetchFromGitHub, lib, }:
+{ buildGoModule, fetchFromGitHub, lib, ... }:
 buildGoModule rec {
   pname = "multi-gitter";
   version = "0.53.0";
