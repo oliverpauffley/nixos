@@ -1,15 +1,19 @@
-{ lib, config, ... }: {
-  flake.hosts."arrakis" = {
+{ lib, config, ... }:
+let name = "arrakis";
+in {
+  flake.hosts."${name}" = {
     description = "work laptop";
     ipv4 = "192.168.1.159";
-    dnsalias = [ "arrakis" ];
+    dnsalias = [ name ];
   };
-  flake.modules.nixos."hosts/arrakis" = {
+  flake.modules.nixos."hosts/${name}" = {
     nixpkgs.hostPlatform = "x86_64-linux";
 
     services.xserver = { videoDrivers = [ "displaylink" "modesetting" ]; };
     powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
-    networking.hostName = "arrakis";
+    networking.hostName = name;
+    hardware.cpu.intel.updateMicrocode = lib.mkDefault true;
+    hardware.enableRedistributableFirmware = true;
 
     boot = {
       loader.systemd-boot.enable = true;

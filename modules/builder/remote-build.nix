@@ -4,6 +4,8 @@
       nix = {
         distributedBuilds = true;
         buildMachines = [{
+          sshKey = "/home/ollie/.ssh/id_rsa";
+          sshUser = "ollie";
           hostName = "caladan";
           systems = [ "x86_64-linux" "aarch64-linux" ];
           maxJobs = 4;

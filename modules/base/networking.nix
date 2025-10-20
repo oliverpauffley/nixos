@@ -18,7 +18,8 @@ in {
   flake.modules.nixos.base = { lib, ... }: {
     programs.nm-applet.enable = true;
     networking = {
-      useDHCP = false;
+      useDHCP = lib.mkDefault true;
+      dhcpcd.extraConfig = "nohook resolv.conf";
       networkmanager = {
         enable = true;
         dns = lib.mkDefault "none";
@@ -27,7 +28,6 @@ in {
 
       inherit domain;
       extraHosts = ''
-
         # ADM
         192.168.1.100 traefik.home.lab
 

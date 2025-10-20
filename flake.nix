@@ -1,15 +1,11 @@
 {
   description = "ollie pauffley nix config";
   nixConfig = {
-    extra-substituters = [
-      "https://nix-community.cachix.org"
-      "https://cache.iog.io"
-      "https://cache.garnix.io"
-    ];
+    extra-substituters =
+      [ "https://nix-community.cachix.org" "https://cache.iog.io" ];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
-      "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
     ];
   };
 
