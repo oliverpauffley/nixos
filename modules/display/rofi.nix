@@ -1,81 +1,139 @@
 {
-  flake.modules.homeManager.base = { config, pkgs, ... }:
-    let inherit (config.colorscheme) palette;
+  flake.modules.homeManager.base = { inputs, config, pkgs, ... }:
+    let
+      inherit (config.colorscheme) palette;
+      nix-colors-lib = inputs.nix-colors.lib.conversions;
     in {
       programs.rofi = {
         enable = true;
         font = config.fontProfiles.monospace.family + " 14";
         terminal = "${pkgs.kitty}/bin/kitty";
         theme = let
-          # Use `mkLiteral` for string-like values that should show without
-          # quotes, e.g.:
-          # {
-          #   foo = "abc"; => foo: "abc";
-          #   bar = mkLiteral "abc"; => bar: abc;
-          # };
           inherit (config.lib.formats.rasi) mkLiteral;
-          quote = x: ''"${x}"'';
-          border-width = 5.0;
+          mkRgba = opacity': color:
+            let
+              rgb = nix-colors-lib.hexToRGB palette."${color}";
+              r = builtins.toString (builtins.elemAt rgb 0);
+              g = builtins.toString (builtins.elemAt rgb 1);
+              b = builtins.toString (builtins.elemAt rgb 2);
+            in mkLiteral "rgba ( ${r}, ${g}, ${b}, ${opacity'} % )";
+          mkRgb = mkRgba "100";
+          rofiOpacity = toString (builtins.ceil (0.8 * 100));
         in {
           "*" = {
-            color-enabled = true;
-            color-window = mkLiteral "#${palette.base03}";
-            color-separator = mkLiteral "#${palette.base0E}";
-            color-background = mkLiteral "#${palette.base02}";
-            background-color = mkLiteral "#${palette.base01}";
-            blink = true;
-            border-color = mkLiteral "#${palette.base0B}";
-            border-radius = mkLiteral "#${palette.base03}";
-            cursor = "inherit";
-            placeholder = quote "Search Applications";
-            placeholder-color = "#${palette.base05}";
-            text-color = "#${palette.base05}";
-            transparency = quote "real";
+            background = mkRgba rofiOpacity "base00";
+            lightbg = mkRgba rofiOpacity "base01";
+            red = mkRgba rofiOpacity "base08";
+            blue = mkRgba rofiOpacity "base0D";
+            lightfg = mkRgba rofiOpacity "base06";
+            foreground = mkRgba rofiOpacity "base05";
+
+            background-color = mkRgb "base00";
+            separatorcolor = mkLiteral "@foreground";
+            border-color = mkLiteral "@foreground";
+            selected-normal-foreground = mkLiteral "@lightbg";
+            selected-normal-background = mkLiteral "@lightfg";
+            selected-active-foreground = mkLiteral "@background";
+            selected-active-background = mkLiteral "@blue";
+            selected-urgent-foreground = mkLiteral "@background";
+            selected-urgent-background = mkLiteral "@red";
+            normal-foreground = mkLiteral "@foreground";
+            normal-background = mkLiteral "@background";
+            active-foreground = mkLiteral "@blue";
+            active-background = mkLiteral "@background";
+            urgent-foreground = mkLiteral "@red";
+            urgent-background = mkLiteral "@background";
+            alternate-normal-foreground = mkLiteral "@foreground";
+            alternate-normal-background = mkLiteral "@lightbg";
+            alternate-active-foreground = mkLiteral "@blue";
+            alternate-active-background = mkLiteral "@lightbg";
+            alternate-urgent-foreground = mkLiteral "@red";
+            alternate-urgent-background = mkLiteral "@lightbg";
+
+            # Text Colors
+            base-text = mkRgb "base05";
+            selected-normal-text = mkRgb "base01";
+            selected-active-text = mkRgb "base00";
+            selected-urgent-text = mkRgb "base00";
+            normal-text = mkRgb "base05";
+            active-text = mkRgb "base0D";
+            urgent-text = mkRgb "base08";
+            alternate-normal-text = mkRgb "base05";
+            alternate-active-text = mkRgb "base0D";
+            alternate-urgent-text = mkRgb "base08";
           };
 
-          element = {
-            background-color = "inherit";
-            children = [ "element-icon" "element-text" ];
-            cursor = "pointer";
-            orientation = "vertical";
-            padding = "20 0";
+          window.background-color = mkLiteral "@background";
+
+          message.border-color = mkLiteral "@separatorcolor";
+
+          textbox.text-color = mkLiteral "@base-text";
+
+          listview.border-color = mkLiteral "@separatorcolor";
+
+          element-text = {
+            background-color = mkLiteral "inherit";
+            text-color = mkLiteral "inherit";
           };
-          element-icon = { size = 64; };
-          element-text = { horizontal-align = mkLiteral "0.5"; };
-          "element.selected" = { border = builtins.ceil (border-width / 2.0); };
-          entry = { cursor = "text"; };
-          inputbar = {
-            border = builtins.ceil (border-width / 2.0);
-            children = [ "prompt" "entry" ];
-            padding = 10;
-            spacing = 10;
+
+          element-icon = {
+            background-color = mkLiteral "inherit";
+            text-color = mkLiteral "inherit";
           };
-          listview = {
-            background-color = "inherit";
-            children = [ "element" "scrollbar" ];
-            columns = 4;
-            cycle = false;
-            dynamic = true;
-            flow = "horizontal";
-            layout = "vertical";
-            lines = 2;
-            scrollbar = true;
+
+          "element normal.normal" = {
+            background-color = mkLiteral "@normal-background";
+            text-color = mkLiteral "@normal-text";
           };
-          mainbox = {
-            children = [ "inputbar" "listview" ];
-            padding = 10;
-            spacing = 10;
+          "element normal.urgent" = {
+            background-color = mkLiteral "@urgent-background";
+            text-color = mkLiteral "@urgent-text";
           };
-          prompt = { enabled = true; };
-          scrollbar = {
-            handle-color = "#${palette.base05}";
-            handle-with = 10;
+          "element normal.active" = {
+            background-color = mkLiteral "@active-background";
+            text-color = mkLiteral "@active-text";
           };
-          window = {
-            background-color = "#${palette.base04}";
-            border = mkLiteral "5.0";
-            width = "35%";
+
+          "element selected.normal" = {
+            background-color = mkLiteral "@selected-normal-background";
+            text-color = mkLiteral "@selected-normal-text";
           };
+          "element selected.urgent" = {
+            background-color = mkLiteral "@selected-urgent-background";
+            text-color = mkLiteral "@selected-urgent-text";
+          };
+          "element selected.active" = {
+            background-color = mkLiteral "@selected-active-background";
+            text-color = mkLiteral "@selected-active-text";
+          };
+
+          "element alternate.normal" = {
+            background-color = mkLiteral "@alternate-normal-background";
+            text-color = mkLiteral "@alternate-normal-text";
+          };
+          "element alternate.urgent" = {
+            background-color = mkLiteral "@alternate-urgent-background";
+            text-color = mkLiteral "@alternate-urgent-text";
+          };
+          "element alternate.active" = {
+            background-color = mkLiteral "@alternate-active-background";
+            text-color = mkLiteral "@alternate-active-text";
+          };
+
+          scrollbar.handle-color = mkLiteral "@normal-foreground";
+          sidebar.border-color = mkLiteral "@separatorcolor";
+          button.text-color = mkLiteral "@normal-text";
+          "button selected" = {
+            background-color = mkLiteral "@selected-normal-background";
+            text-color = mkLiteral "@selected-normal-text";
+          };
+
+          inputbar.text-color = mkLiteral "@normal-text";
+          case-indicator.text-color = mkLiteral "@normal-text";
+          entry.text-color = mkLiteral "@normal-text";
+          prompt.text-color = mkLiteral "@normal-text";
+
+          textbox-prompt-colon.text-color = mkLiteral "inherit";
         };
       };
     };

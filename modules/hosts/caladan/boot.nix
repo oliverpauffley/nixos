@@ -12,6 +12,8 @@
     powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
     networking.hostName = "caladan";
     networking.hostId = "347b26dc"; # required for zfs
+    hardware.cpu.intel.updateMicrocode = lib.mkDefault true;
+    hardware.enableRedistributableFirmware = true;
 
     hardware.opengl = {
       extraPackages = with pkgs; [

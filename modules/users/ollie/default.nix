@@ -19,7 +19,7 @@
         isNormalUser = true;
         createHome = true;
         extraGroups =
-          [ "audio" "input" "networkmanager" "sound" "tty" "wheel" ];
+          [ "audio" "input" "networkmanager" "sound" "tty" "wheel" "docker" ];
         shell = pkgs.fish;
         openssh.authorizedKeys.keys =
           config.flake.meta.users.ollie.authorizedKeys;

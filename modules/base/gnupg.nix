@@ -6,7 +6,6 @@
     };
 
     security.pam.services.ollie.gnupg.enable = true;
-    security.pam.services.ollie.gnupg.storeOnly = true;
 
     environment.systemPackages = with pkgs; [ gnupg ];
   };

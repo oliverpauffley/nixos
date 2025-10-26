@@ -1,11 +1,12 @@
 {
-  flake.modules.homeManager.base = {
-    services.random-background = {
-      enable = true;
-      display = "scale";
-      enableXinerama = false;
-      imageDirectory = "%h/wallpapers";
-      interval = "1h";
-    };
-  };
+  flake.modules.homeManager.base = { inputs, config, pkgs, ... }:
+    let
+      nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
+      wallpaper = nix-colors-lib.nixWallpaperFromScheme {
+        scheme = config.colorScheme;
+        width = 2560;
+        height = 1080;
+        logoScale = 3.0;
+      };
+    in { home.file.".background-image" = { source = wallpaper; }; };
 }

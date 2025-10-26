@@ -3,14 +3,16 @@
     environment.systemPackages = with pkgs; [ gtk3 ];
   };
 
-  flake.modules.homeManager.base = { pkgs, config, ... }: {
-    gtk = {
+  flake.modules.homeManager.base = { pkgs, config, inputs, ... }: {
+    gtk = let nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
+    in {
       enable = true;
       font.name = "${config.fontProfiles.regular.family} 12";
-      theme = {
-        name = "Dracula";
-        package = pkgs.dracula-theme;
-      };
+      # Takes a scheme, ouputs a generated materia GTK theme
+      # Example:
+      theme.name = "nix-colors";
+      theme.package =
+        nix-colors-lib.gtkThemeFromScheme { scheme = config.colorScheme; };
     };
   };
 }

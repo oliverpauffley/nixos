@@ -4,7 +4,7 @@
       nix = {
         distributedBuilds = true;
         buildMachines = [{
-          sshKey = "/home/ollie/.ssh/id_rsa";
+          sshKey = "/etc/ssh/ssh_host_ed25519_key";
           sshUser = "ollie";
           hostName = "caladan";
           systems = [ "x86_64-linux" "aarch64-linux" ];
@@ -16,8 +16,9 @@
       };
     };
   };
-  # flake.modules.nixos.remote-build = {
-  #   nix.config.trusted-users =
-  #     [ config.flake.meta.users.ollie.username "root" ];
-  # };
+  flake.modules.nixos.remote-build = {
+    nix.maxJobs = 2;
+    nix.config.trusted-users =
+      [ config.flake.meta.users.ollie.username "root" ];
+  };
 }

@@ -2,7 +2,6 @@
   flake.modules.homeManager.base = { config, ... }: {
     programs.kitty = {
       shellIntegration.enableFishIntegration = true;
-      themeFile = "Dracula";
       font = {
         name = config.fontProfiles.monospace.family;
         size = 14;
