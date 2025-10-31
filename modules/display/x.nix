@@ -13,8 +13,6 @@
         layout = "gb";
         options = "caps:ctrl_modifier";
       };
-      dpi = 180;
-      upscaleDefaultCursor = true;
       displayManager.gdm.enable = true;
       displayManager.gdm.wayland = false;
       desktopManager = { xterm.enable = false; };

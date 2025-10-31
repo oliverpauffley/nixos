@@ -7,11 +7,17 @@
         pulseaudio.enable = false;
         pipewire = {
           enable = true;
+          extraConfig = {
+            pipewire."99-silent-bell.conf" = {
+              "context.properties" = { "module.x11.bell" = false; };
+            };
+          };
           alsa = {
             enable = true;
             support32Bit = true;
           };
           pulse.enable = true;
+
         };
       };
     };

@@ -11,6 +11,7 @@
     nixpkgs.overlays = [ inputs.self.overlays.default ];
     home.packages = with pkgs; [
       local.strongbox
+      local.gomerge
       libsecret
       ssh-askpass-fullscreen
     ];

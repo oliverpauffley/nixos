@@ -1,6 +1,9 @@
 {
   flake.modules.nixos.base = { pkgs, ... }: {
     environment.systemPackages = with pkgs; [ gtk3 ];
+    programs.dconf.profiles.user.databases = [{
+      settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+    }];
   };
 
   flake.modules.homeManager.base = { pkgs, config, inputs, ... }: {
@@ -13,6 +16,8 @@
       theme.name = "nix-colors";
       theme.package =
         nix-colors-lib.gtkThemeFromScheme { scheme = config.colorScheme; };
+      gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
+      gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
     };
   };
 }

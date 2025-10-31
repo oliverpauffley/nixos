@@ -133,7 +133,7 @@ myTerminal = "kitty"
 myStartupHook :: X ()
 myStartupHook = do
     spawn "autorandr default && "
-    spawn "feh --bg-scale ~/.background-image"
+    spawn "feh --bg-fill ~/.background-image"
 
 -- The keybindings with names so we can show with super - m
 myKeys c =
@@ -152,7 +152,7 @@ myKeys c =
             , -- Switch to dual screen mode
 
                 ( "M-s 2"
-                , addName "2 screen mode" $ spawn "autorandr work"
+                , addName "2 screen mode" $ spawn "autorandr work && feh --bg-fill ~/.background-image"
                 )
             , -- TODO change to use emacs daemon
               ("M-e", addName "org capture" emacsCapture)
@@ -209,7 +209,6 @@ myXmobarPP =
     ppWindow :: String -> String
     ppWindow = xmobarRaw . (\w -> if null w then "untitled" else w) . shorten 30
 
-    -- TODO extract this to something more configurable
     blue, lowWhite, magenta, red, white, yellow :: String -> String
     magenta = xmobarColor color06 ""
     blue = xmobarColor color05 ""

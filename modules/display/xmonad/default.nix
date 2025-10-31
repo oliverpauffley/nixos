@@ -16,10 +16,10 @@
           Config {
 
              -- appearance
-               font =         "${config.fontProfiles.monospace.family} 10"
+               font =         "${config.fontProfiles.monospace.family} 12"
              , bgColor =      "#${palette.base01}"
              , fgColor =      "#${palette.base03}"
-             , position =     TopP 0 20
+             , position =     TopP 0 25
              , border =       BottomB
              , borderColor =  "#${palette.base0B}"
 
