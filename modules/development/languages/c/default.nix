@@ -6,7 +6,6 @@
       cmake
       shellcheck
       coreutils
-      clang
       cmake
       clang-tools
     ];

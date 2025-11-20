@@ -212,7 +212,7 @@ myXmobarPP =
     blue, lowWhite, magenta, red, white, yellow :: String -> String
     magenta = xmobarColor color06 ""
     blue = xmobarColor color05 ""
-    white = xmobarColor color08 ""
+    white = xmobarColor colorFg ""
     yellow = xmobarColor color04 ""
     red = xmobarColor color02 ""
     lowWhite = xmobarColor colorSecondary ""

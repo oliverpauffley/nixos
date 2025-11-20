@@ -1,6 +1,7 @@
 {
   flake.modules.homeManager.dev = { pkgs, inputs, ... }: {
     home.packages = with pkgs; [
+      gcc
       go
       go-outline
       gocode-gomod

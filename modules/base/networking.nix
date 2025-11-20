@@ -4,7 +4,7 @@ let
   # find the config that is running coreDNS
   dnsServerIP = (lib.findFirst (x: x.isDNS) null
     (builtins.attrValues config.flake.hosts)).ipv4;
-  servers = [ dnsServerIP "1.1.1.1" "9.9.9.9" "8.8.8.8" ];
+  servers = [ "1.1.1.1" "9.9.9.9" "8.8.8.8" ];
 
   # get ips with their aliases
   aliasIps = lib.flatten (lib.mapAttrsToList (name: host:

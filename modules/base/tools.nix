@@ -15,6 +15,7 @@
       xclip
       procs # instead of ps
       imagemagick
+      gifsicle
       zathura
       pkg-config
       dnsutils

@@ -12,8 +12,7 @@
       enable = true;
       font.name = "${config.fontProfiles.regular.family} 12";
       # Takes a scheme, ouputs a generated materia GTK theme
-      # Example:
-      theme.name = "nix-colors";
+      theme.name = config.colorScheme.slug;
       theme.package =
         nix-colors-lib.gtkThemeFromScheme { scheme = config.colorScheme; };
       gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;

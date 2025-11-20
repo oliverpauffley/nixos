@@ -4,7 +4,7 @@
       nerd-fonts.mononoki
       nerd-fonts.gohufont
       nerd-fonts.droid-sans-mono
-      departure-mono
+      nerd-fonts.departure-mono
       luculent
     ];
     config.fonts.fontDir.enable = true;
@@ -12,13 +12,13 @@
   };
 
   flake.modules.homeManager.base = { pkgs, ... }: {
-    config.fonts.fontconfig.enable = true;
     config = {
+      fonts.fontconfig.enable = true;
       fontProfiles = {
         enable = true;
         monospace = {
-          family = "Departure Mono";
-          package = pkgs.departure-mono;
+          family = "DepartureMono Nerd Font";
+          package = pkgs.nerd-fonts.departure-mono;
         };
         regular = {
           family = "Mononoki Nerd Font";
