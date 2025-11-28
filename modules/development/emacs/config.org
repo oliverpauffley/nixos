@@ -4,8 +4,6 @@
 #+PROPERTY: header-args :tangle config.el
 
 * Config
- - TODO steal stuff from [[https://github.com/mclear-tools/dotemacs/blob/master/cpm-setup-meow.el][here]] for meow
- - TODO workspaces for projects.
  - TODO Dired controls for going up levels.
  - TODO Dired backspace removes symbols not characters.
 ** Initial Setup
@@ -141,6 +139,7 @@ Like vim but better!
      '("e" . meow-next-word)
      '("E" . meow-next-symbol)
      '("f" . meow-find)
+     '("F" . consult-outline-or-org-heading)
      '("g" . meow-cancel-selection)
      '("G" . meow-grab)
      '("h" . meow-left)
@@ -158,15 +157,19 @@ Like vim but better!
      '("o" . meow-tree-sitter-node)
      '("O" . meow-to-block)
      '("p" . my-replace-or-yank)
+     '("P" . consult-yank-from-kill-ring)
      '("q" . meow-quit)
      '("Q" . meow-goto-line)
      '("R" . meow-swap-grab)
+     '("^" . consult-register-store)
+     '("=" . consult-register)
      '("s" . meow-kill)
      '("t" . meow-till)
      '("u" . meow-undo)
      '("U" . meow-undo-in-selection)
      '("v" . meow-visit)
-     '("/" . meow-visit)
+     '("/" . consult-line)
+     '("?" . consult-ripgrep)
      '("w" . meow-mark-word)
      '("W" . meow-mark-symbol)
      '("x" . meow-line)
@@ -406,15 +409,7 @@ Reduce the number of minor modes by putting them in a menu.
   ;; setup initial action keybind
   (meow-normal-define-key
    '("C-." . embark-act))
-
-  (defun consult-outline-or-org-heading (&optional match scope)
-    "Call `consult-org-heading' when in an `org-mode' buffer, otherwise call
-  `consult-outline'."
-    (interactive)
-    (if (eq major-mode 'org-mode)
-        (consult-org-heading match scope)
-      (consult-outline)))
-
+  
   (defun ic-consult-bookmark ()
     "Call `consult-bookmark' without automatic buffer preview.
 This is to prevent possible `tramp' calls."
@@ -451,6 +446,14 @@ This is to prevent possible `tramp' calls."
   ;; Configure other variables and modes in the :config section,
   ;; after lazily loading the package.
   :config
+  
+  (defun consult-outline-or-org-heading (&optional match scope)
+    "Call `consult-org-heading' when in an `org-mode' buffer, otherwise call
+  `consult-outline'."
+    (interactive)
+    (if (eq major-mode 'org-mode)
+        (consult-org-heading match scope)
+      (consult-outline)))
 
   ;; Optionally configure preview. The default value
   ;; is 'any, such that any key triggers the preview.
@@ -472,9 +475,6 @@ This is to prevent possible `tramp' calls."
   ;; Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<") ;; "C-+"
 
-  ;; Optionally make narrowing help available in the minibuffer.
-  ;; You may want to use `embark-prefix-help-command' or which-key instead.
-  ;; (keymap-set consult-narrow-map (concat consult-narrow-key " ?") #'consult-narrow-help)
 )
 #+end_src
 ** Consult-LSP
@@ -889,3 +889,6 @@ We also use persp-projectile to link projectile and perspective together
 #+begin_src emacs-lisp
 (use-package exercism)
 #+end_src
+
+
+

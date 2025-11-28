@@ -74,7 +74,7 @@
         enable = true;
         listenPort = 8082;
         allowedHosts =
-          "localhost:8082,127.0.0.1:8082,192.168.1.100:8082,dashboard.home.lab";
+          "localhost:8082,127.0.0.1:8082,192.168.0.100:8082,dashboard.home.lab";
         openFirewall = true;
         package = pkgs.homepage-dashboard;
         services = [{
@@ -82,43 +82,43 @@
             {
               "Jellyfin" = {
                 description = "media player";
-                href = "http://192.168.1.100:8096/";
+                href = "http://192.168.0.100:8096/";
               };
             }
             {
               "sabnzbd" = {
                 description = "nzb downloader";
-                href = "http://192.168.1.100:8080/";
+                href = "http://192.168.0.100:8080/";
               };
             }
             {
               "radarr" = {
                 description = "film downloader";
-                href = "http://192.168.1.100:7878/";
+                href = "http://192.168.0.100:7878/";
               };
             }
             {
               "sonarr" = {
                 description = "tv downloader";
-                href = "http://192.168.1.100:8989/";
+                href = "http://192.168.0.100:8989/";
               };
             }
             {
               "prowlarr" = {
                 description = "index manager";
-                href = "http://192.168.1.100:9696/";
+                href = "http://192.168.0.100:9696/";
               };
             }
             {
               "deluge" = {
                 description = "torrent downloader";
-                href = "http://192.168.1.100:58846/";
+                href = "http://192.168.0.100:58846/";
               };
             }
             {
               "plex" = {
                 description = "media player";
-                href = "http://192.168.1.100:32400/web";
+                href = "http://192.168.0.100:32400/web";
               };
             }
           ];
