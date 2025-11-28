@@ -4,7 +4,10 @@
 #+PROPERTY: header-args :tangle config.el
 
 * Config
-steal stuff from [[https://github.com/mclear-tools/dotemacs/blob/master/cpm-setup-meow.el][here]] for meow
+ - TODO steal stuff from [[https://github.com/mclear-tools/dotemacs/blob/master/cpm-setup-meow.el][here]] for meow
+ - TODO workspaces for projects.
+ - TODO Dired controls for going up levels.
+ - TODO Dired backspace removes symbols not characters.
 ** Initial Setup
 #+begin_src elisp
 ;; -*- lexical-binding: t -*-
@@ -16,15 +19,26 @@ steal stuff from [[https://github.com/mclear-tools/dotemacs/blob/master/cpm-setu
 ;; static cursor
 (blink-cursor-mode -1)
 
+;; turn off tabs
+(setq-default indent-tabs-mode nil)
+;; set indents to 4
+(setq-default tab-width 4)
+(setq-default require-final-newline "visit-save")
+
 ;; don't show the initial emacs screen
 (setq inhibit-startup-screen t)
-;; start in the *Messages* buffer
-(setq initial-buffer-choice (lambda () (get-buffer "*Messages*")))
 ;; let me use y/n in prompts
 (fset 'yes-or-no-p 'y-or-n-p)
 ;; no cowbell
 (setq visible-bell nil)
 (setq ring-bell-function #'ignore)
+;; move backup files out of the way
+(setq backup-directory-alist `(("." . "~/.saves")))
+(setq backup-by-copying t)
+(setq delete-old-versions t
+  kept-new-versions 6
+  kept-old-versions 2
+  version-control t)
 #+end_src
 ** Themes
 I'm really liking the modus themes by Prot at the moment. Good using =f5= to rotate the theme is a nice way of spicing things up.
@@ -58,12 +72,21 @@ I'm really liking the modus themes by Prot at the moment. Good using =f5= to rot
 ** Meow
 Like vim but better!
 #+begin_src elisp
+(defun my-replace-or-yank ()
+  "if a region is selected then replace else yank."
+  (interactive)
+  (if (use-region-p) (meow-replace) (meow-yank)))
+
   (defun meow-setup ()
     (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
     ;; this stops the keypad from hijacking some commands
     (setq meow-keypad-meta-prefix nil
         meow-keypad-ctrl-meta-prefix nil
         meow-keypad-literal-prefix nil)
+    (defvar-keymap my-insert-map
+      :doc "insert"
+      )
+    (define-key global-map (kbd "C-c i") my-insert-map)
     (meow-motion-define-key
      '("j" . meow-next)
      '("k" . meow-prev)
@@ -89,6 +112,7 @@ Like vim but better!
      '("<SPC>" . projectile-find-file)
      '("." . find-file)
      '("p" . 'projectile-command-map)
+     '("i" . 'my-insert-map)
      )
     (meow-normal-define-key
      '("0" . meow-expand-0)
@@ -131,18 +155,18 @@ Like vim but better!
      '("L" . meow-right-expand)
      '("m" . meow-join)
      '("n" . meow-search)
-     '("o" . meow-block)
+     '("o" . meow-tree-sitter-node)
      '("O" . meow-to-block)
-     '("p" . meow-yank)
+     '("p" . my-replace-or-yank)
      '("q" . meow-quit)
      '("Q" . meow-goto-line)
-     '("r" . meow-replace)
      '("R" . meow-swap-grab)
      '("s" . meow-kill)
      '("t" . meow-till)
      '("u" . meow-undo)
      '("U" . meow-undo-in-selection)
      '("v" . meow-visit)
+     '("/" . meow-visit)
      '("w" . meow-mark-word)
      '("W" . meow-mark-symbol)
      '("x" . meow-line)
@@ -154,6 +178,8 @@ Like vim but better!
      '("<escape>" . ignore)
      '("C-o" . xref-go-back)
      '("C-i" . xref-go-forward)
+     '("C-d" . meow-page-down)
+     '("C-u" . meow-page-up)
      )
     )
 
@@ -161,9 +187,13 @@ Like vim but better!
     :demand t
     :config
     (setq meow-char-thing-table
-          '((?\( . round)
+          '(
+           (?\( . round)
+           (?\) . round)
            (?\[ . square)
+           (?\] . square)
            (?\{ . curly)
+           (?\} . curly)
            (?g . string)
            (?e . symbol)
            (?w . window)
@@ -177,9 +207,6 @@ Like vim but better!
         meow-goto-line-function 'consult-goto-line)
     (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
     (add-to-list 'meow-mode-state-list '(eshell-mode . insert))
-    ;; TODO install these
-    ;; (meow-vterm-enable)
-    (meow-tree-sitter-register-defaults)
     ;; keep the expand hints around a while longer
     (setq meow-expand-hint-remove-delay 3.0)
     ;; start git commits in insert mode
@@ -189,24 +216,61 @@ Like vim but better!
 #+end_src
 ** Font
 #+begin_src elisp
-(setq myfont "Mononoki Nerd Font Mono-18")
-(set-frame-font myfont)
-(add-to-list 'default-frame-alist
-	     '(font . myfont))
+;; Main typeface
+(set-face-attribute 'default nil :family "Mononoki Nerd Font Mono" :height 130)
+
+;; Proportionately spaced typeface
+(set-face-attribute 'variable-pitch nil :family "DepartureMono Nerd Font" :height 0.8)
+
+;; Monospaced typeface
+(set-face-attribute 'fixed-pitch nil :family "Mononoki Nerd Font Mono" :height 1.0)
+#+end_src
 ** Org
+Configured in [[file:init.el][init.el]]
 #+begin_src elisp
-    (setq org-directory "~/org"
-          org-refile-targets '((nil :maxlevel . 3) (org-agenda-files :maxlevel . 10))
-          org-agenda-files (list
-                        "~/org/todo.org"
-                        "~/org/work/todo.org"
-                        "~/org/programming/todo.org"
-                        "~/org/rpgs/todo.org"
-                        "~/org/diary"
-                        "~/org/contacts.org.gpg")
-      calendar-date-style 'european
-      mark-diary-entries-in-calendar t
-      org-confirm-babel-evaluate nil)
+(use-package org
+  :init
+  (auto-fill-mode -1)
+  :config
+  (setq org-hide-leading-stars             t
+        org-hide-macro-markers             t
+        org-ellipsis                       " ⤵"
+        org-image-actual-width             600
+        org-redisplay-inline-images        t
+        org-display-inline-images          t
+        org-startup-with-inline-images     "inlineimages"
+        org-pretty-entities                t
+        org-fontify-whole-heading-line     t
+        org-fontify-done-headline          t
+        org-fontify-quote-and-verse-blocks t
+        org-startup-indented               t
+        org-startup-align-all-tables       t
+        org-use-property-inheritance       t
+        org-list-allow-alphabetical        t
+        org-M-RET-may-split-line           nil
+        org-src-window-setup               'split-window-below
+        org-src-fontify-natively           t
+        org-src-tab-acts-natively          t
+        org-src-preserve-indentation       t
+        org-log-done                       'time
+	diary-file "~/org/diary"
+	org-agenda-diary-file 'diary-file
+	org-agenda-include-diary t
+	diary-show-holidays-flag nil
+	org-contacts-files '("~org/contacts.org.gpg")
+	org-agenda-file-regexp "\\`[^.].*\\.org\\\(\\.gpg\\\)?\\'"
+        org-directory "~/org"
+        org-refile-targets '((nil :maxlevel . 3) (org-agenda-files :maxlevel . 10))
+        org-agenda-files (list
+                          "~/org/todo.org"
+                          "~/org/work/todo.org"
+                          "~/org/programming/todo.org"
+                          "~/org/rpgs/todo.org"
+                          "~/org/contacts.org.gpg")
+        calendar-date-style 'european
+        mark-diary-entries-in-calendar t
+        org-confirm-babel-evaluate nil)
+  )
 #+end_src
 ** Elfeed
 #+begin_src elisp
@@ -234,13 +298,11 @@ Like vim but better!
         doom-modeline-hud t)
   :init (doom-modeline-mode 1))
 #+end_src
-*** Diminish
-Slim line the modeline displays "lighters" for minor modes.
-#+begin_src elisp
-(use-package diminish
-  :defer 5
-  :config
-  (diminish 'org-indent-mode))
+*** Minions
+Reduce the number of minor modes by putting them in a menu.
+#+begin_src emacs-lisp
+(use-package minions
+  :config (minions-mode 1))
 #+end_src
 ** Projectile
 #+begin_src elisp
@@ -252,8 +314,10 @@ Slim line the modeline displays "lighters" for minor modes.
      projectile-project-search-path '(("~/code" . 5))
      projectile-enable-caching 'persistent
      projectile-auto-discover "true")
-    :bind (:map projectile-mode-map
+    :bind (("C-c \/" . project-find-regexp)
+	   :map projectile-mode-map
          ("C-c p a" . projectile-add-known-project)
+         ("C-c p p"  . projectile-switch-project)
          ("C-c p R" . projectile-run-command-in-root)
          ("C-c p t" . projectile-run-eshell)
          ("C-c p T" . projectile-test-project))
@@ -626,7 +690,7 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
   :hook
   ((lsp-mode . lsp-enable-which-key-integration)
    (csharp-mode . lsp)
-   (haskell-mode . lsp)
+   (haskell-ts-mode . lsp)
    (haskell-literate-mode . lsp)
    (lsp-completion-mode . my/lsp-mode-setup-completion)
    (go-mode . lsp)))
@@ -636,6 +700,7 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
 (use-package yasnippet
   :ensure t
   :defer t
+  :bind (:prefix-map my-insert :prefix "C-c i" ("s" . yas-insert-snippet))
   :config
   (setq
    yas-verbosity 1
@@ -660,22 +725,34 @@ Most formatting tasks should be handled with apheleia .
 #+end_src
 *** Haskell
 #+begin_src elisp
-(use-package haskell-mode
-  :demand t)
+(use-package haskell-ts-mode
+  :custom
+  (haskell-ts-font-lock-level 4)
+  (haskell-ts-use-indent t)
+  (haskell-ts-ghci "ghci")
+  (haskell-ts-use-indent t)
+)
+
+(use-package consult-hoogle)
 
 (use-package lsp-haskell
   :after (lsp-mode))
 #+end_src
 *** Go
 #+begin_src elisp
-(use-package go-mode
-  :mode "\\.go\\'"
-  :config
-  (defun my/go-mode-setup ()
-    "Basic Go mode setup."
+(defun my-go-mode-setup ()
+  "Setup Go mode to my liking."
   (add-hook 'before-save-hook #'lsp-format-buffer t t)
-  (add-hook 'before-save-hook #'lsp-organize-imports t t))
-  (add-hook 'go-mode-hook #'my/go-mode-setup))
+  (add-hook 'before-save-hook #'lsp-organize-imports t t)
+  (setq gofmt-command "goimports")
+  (add-hook 'before-save-hook 'gofmt nil t)
+  )
+
+(use-package go-mode
+  :ensure t
+  :mode (("\\.go$" . go-ts-mode))
+  :hook ((go-mode go-ts-mode) . my-go-mode-setup)
+  :custom (gofmt-command "goimports"))
 #+end_src
 *** Lisp
 #+begin_src elisp
@@ -721,9 +798,30 @@ Most formatting tasks should be handled with apheleia .
 #+end_src
 ** Dired
 #+begin_src elisp
-;; when viewing multiple directories (with `i') movement should be over the dead
-;; heading lines
-(setq dired-movement-style 'bounded)
+(use-package dired
+  :config
+  (setq dired-movement-style 'bounded)
+)
+#+end_src
+** Perspective
+#+begin_src emacs-lisp 
+(use-package perspective
+  :bind
+  ("C-x C-b" . persp-list-buffers)
+  ("C-c g t" . persp-next)
+  :custom
+  (persp-mode-prefix-key (kbd "C-c M-p")) 
+  (consult-customize consult--source-buffer :hidden t :default nil)
+  (add-to-list 'consult-buffer-sources persp-consult-source)
+  :init
+  (persp-mode))
+#+end_src
+We also use persp-projectile to link projectile and perspective together
+#+begin_src emacs-lisp
+(use-package persp-projectile
+  :bind
+  (:map projectile-mode-map ("s-s"  . projectile-persp-switch-project)
+  ))
 #+end_src
 ** Text
 #+begin_src elisp
@@ -747,22 +845,19 @@ Most formatting tasks should be handled with apheleia .
 #+end_src
 ** Tree-Sitter
 #+begin_src elisp
-(setq treesit-language-source-alist
-   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-     (cmake "https://github.com/uyha/tree-sitter-cmake")
-     (css "https://github.com/tree-sitter/tree-sitter-css")
-     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-     (go "https://github.com/tree-sitter/tree-sitter-go")
-     (html "https://github.com/tree-sitter/tree-sitter-html")
-     (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-     (json "https://github.com/tree-sitter/tree-sitter-json")
-     (make "https://github.com/alemuller/tree-sitter-make")
-     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-     (python "https://github.com/tree-sitter/tree-sitter-python")
-     (toml "https://github.com/tree-sitter/tree-sitter-toml")
-     (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
-     (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+(use-package treesit
+  :custom
+  (treesit-font-lock-level 4))
+
+(use-package tree-sitter-langs 
+  :after tree-sitter
+  :custom (global-tree-sitter-mode t))
+
+(with-eval-after-load 'meow
+  (use-package meow-tree-sitter
+    :demand
+    :config
+    (meow-tree-sitter-register-defaults)))
 #+end_src
 ** Eshell
 #+begin_src elisp
@@ -789,4 +884,8 @@ Most formatting tasks should be handled with apheleia .
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode))
+#+end_src
+** Exercism
+#+begin_src emacs-lisp
+(use-package exercism)
 #+end_src

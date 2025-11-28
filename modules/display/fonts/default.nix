@@ -6,6 +6,7 @@
       nerd-fonts.droid-sans-mono
       nerd-fonts.departure-mono
       luculent
+      jost
     ];
     config.fonts.fontDir.enable = true;
     config.fonts.fontDir.decompressFonts = true;

@@ -13,7 +13,7 @@
         with epkgs; [
           # Core framework
           use-package
-          diminish
+          minions
           bind-key
 
           # Modern completion framework (Vertico ecosystem)
@@ -35,9 +35,7 @@
 
           # keys
           meow
-          # TODO install these
-          # meow-vterm
-          meow-tree-sitter
+          pkgs.local.meow-treesitter
           which-key
 
           # LSP integration (Pure Corfu approach - no LSP-UI)
@@ -53,6 +51,28 @@
           highlight-defined
           suggest
 
+          # Tree-sitter grammars (from emacs-overlay)
+          tree-sitter-langs
+          (treesit-grammars.with-grammars (p: [
+            p.tree-sitter-bash
+            p.tree-sitter-dockerfile
+            p.tree-sitter-elisp
+            p.tree-sitter-markdown
+            p.tree-sitter-markdown-inline
+            p.tree-sitter-nix
+            p.tree-sitter-python
+            p.tree-sitter-rust
+            p.tree-sitter-toml
+            p.tree-sitter-yaml
+            p.tree-sitter-go
+            p.tree-sitter-gowork
+            p.tree-sitter-gomod
+            p.tree-sitter-json
+            p.tree-sitter-sql
+            p.tree-sitter-just
+            p.tree-sitter-haskell
+          ]))
+
           go-mode
           rust-mode
           web-mode
@@ -60,7 +80,9 @@
           yaml-mode
           json-mode
           markdown-mode
-          haskell-mode
+          consult-hoogle
+
+          exercism
 
           # Git integration
           magit
@@ -74,6 +96,8 @@
           projectile
           consult-projectile
           dashboard
+          perspective
+          persp-projectile
 
           # Org mode
           org
@@ -86,6 +110,7 @@
           # UI enhancements
           doom-modeline
           all-the-icons
+          all-the-icons-dired
 
           # Terminal integration
           vterm
@@ -100,8 +125,6 @@
           yasnippet
           yasnippet-snippets
 
-          # Tree-sitter grammars (from emacs-overlay)
-          treesit-grammars.with-all-grammars
         ];
 
       # Package overrides for compatibility
@@ -133,6 +156,7 @@
         ripgrep
         fd
         sqlite
+        silver-searcher
       ];
 
     in {
@@ -151,5 +175,13 @@
 
       home.packages = devPackages ++ [ myEmacs ];
 
+      xdg.desktopEntries.vanilla-emacs = {
+        name = "Vanilla Emacs";
+        genericName = "Emacs with nix";
+        exec = "emacs --init-directory .config/emacs/nix-vanilla/";
+        terminal = false;
+        categories = [ "System" ];
+        mimeType = [ "text/org" ];
+      };
     };
 }
