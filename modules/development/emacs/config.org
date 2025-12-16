@@ -32,7 +32,10 @@
 (setq ring-bell-function #'ignore)
 ;; move backup files out of the way
 (setq backup-directory-alist `(("." . "~/.saves")))
+(setq create-lockfiles nil)
 (setq backup-by-copying t)
+(setq enable-recursive-minibuffers t)
+(setq sentence-end-double-space nil)
 (setq delete-old-versions t
   kept-new-versions 6
   kept-old-versions 2
@@ -80,7 +83,13 @@ Like vim but better!
     ;; this stops the keypad from hijacking some commands
     (setq meow-keypad-meta-prefix nil
         meow-keypad-ctrl-meta-prefix nil
-        meow-keypad-literal-prefix nil)
+        meow-keypad-literal-prefix nil
+        meow-use-cursor-position-hack t
+        meow-use-dynamic-face-color nil
+        )
+    (with-eval-after-load 'org
+    ;; for use with meow movement
+    (modify-syntax-entry ?@ "_" org-mode-syntax-table))
     (defvar-keymap my-insert-map
       :doc "insert"
       )
@@ -107,7 +116,7 @@ Like vim but better!
      '(":" . execute-extended-command)
      '("=" . text-scale-increase)
      '("-" . text-scale-decrease)
-     '("<SPC>" . projectile-find-file)
+     '("<SPC>" . consult-projectile-find-file)
      '("." . find-file)
      '("p" . 'projectile-command-map)
      '("i" . 'my-insert-map)
@@ -150,6 +159,7 @@ Like vim but better!
      '("J" . meow-next-expand)
      '("k" . meow-prev)
      '("K" . meow-prev-expand)
+     '("M-k" . lsp-describe-thing-at-point)
      '("l" . meow-right)
      '("L" . meow-right-expand)
      '("m" . meow-join)
@@ -158,7 +168,6 @@ Like vim but better!
      '("O" . meow-to-block)
      '("p" . my-replace-or-yank)
      '("P" . consult-yank-from-kill-ring)
-     '("q" . meow-quit)
      '("Q" . meow-goto-line)
      '("R" . meow-swap-grab)
      '("^" . consult-register-store)
@@ -210,6 +219,7 @@ Like vim but better!
         meow-goto-line-function 'consult-goto-line)
     (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
     (add-to-list 'meow-mode-state-list '(eshell-mode . insert))
+    (add-to-list 'meow-mode-state-list '(helpful-mode . insert))
     ;; keep the expand hints around a while longer
     (setq meow-expand-hint-remove-delay 3.0)
     ;; start git commits in insert mode
@@ -229,51 +239,272 @@ Like vim but better!
 (set-face-attribute 'fixed-pitch nil :family "Mononoki Nerd Font Mono" :height 1.0)
 #+end_src
 ** Org
-Configured in [[file:init.el][init.el]]
 #+begin_src elisp
-(use-package org
-  :init
-  (auto-fill-mode -1)
+  ;; (defvar-keymap my-org-menu
+  ;;   :doc "org menu"
+  ;;   "a" my-org-menu-attachments
+  ;;   "b" my-org-menu-tables
+  ;;   "d"  my-org-menu-delete
+  ;;   "i" my-org-menu-insert
+  ;;   )
+    ;; (("C-c m" . (defvar-keymap org-menu))
+    ;;  ("C-c m a" . (defvar-keymap org-menu-attachments))
+    ;;  ("C-c m b" . (defvar-keymap org-menu-tables))
+    ;;  ("C-c m d" . (defvar-keymap org-menu-delete))
+    ;;  ("C-c m i" . (defvar-keymap org-menu-insert))
+    ;;  ("C-c m c" . (defvar-keymap org-menu-clock))
+    ;;  ("C-c m d" . (defvar-keymap org-menu-date))
+    ;;  ("C-c m l" . (defvar-keymap org-menu-links))
+    ;;  ("C-c m P" . (defvar-keymap org-menu-publish))
+    ;;  ("C-c m r" . (defvar-keymap org-menu-refile))
+    ;;  ("C-c m s" . (defvar-keymap org-menu-subtree))
+    ;;  ("C-c m p" . (defvar-keymap org-menu-priority))
+    ;;  )
+
+  
+  (use-package org
+    :ensure t
+    :init
+    (load-file "~/.config/emacs/nix-vanilla/org/autoloads.el" )  
+    (auto-fill-mode -1)
+    ;; :bind-keymap
+    ;; (("C-c m" . (defvar-keymap org-menu))
+    ;;  ("C-c m a" . (defvar-keymap org-menu-attachments))
+    ;;  ("C-c m b" . (defvar-keymap org-menu-tables))
+    ;;  ("C-c m d" . (defvar-keymap org-menu-delete))
+    ;;  ("C-c m i" . (defvar-keymap org-menu-insert))
+    ;;  ("C-c m c" . (defvar-keymap org-menu-clock))
+    ;;  ("C-c m d" . (defvar-keymap org-menu-date))
+    ;;  ("C-c m l" . (defvar-keymap org-menu-links))
+    ;;  ("C-c m P" . (defvar-keymap org-menu-publish))
+    ;;  ("C-c m r" . (defvar-keymap org-menu-refile))
+    ;;  ("C-c m s" . (defvar-keymap org-menu-subtree))
+    ;;  ("C-c m p" . (defvar-keymap org-menu-priority))
+    ;;  )
+    ;; :bind (:map org-mode              
+    ;;              ("S-RET"      . '+org/shift-return)
+    ;;              ("C-RET"      . '+org/insert-item-below)
+    ;;              ("C-S-RET"    . '+org/insert-item-above)
+    ;;              ("C-M-RET"    . 'org-insert-subheading)
+    ;;              ([C-return]   . '+org/insert-item-below)
+    ;;              ([C-S-return] . '+org/insert-item-above)
+    ;;              ([C-M-return] . 'org-insert-subheading)
+
+                 ;; ("C-c m A" . 'org-archive-subtree-default)
+                 ;; ("C-c m e" . 'org-export-dispatch)
+    ;;              ("C-c m h" . 'org-toggle-heading)
+    ;;              ("C-c m i" . 'org-toggle-item)
+    ;;              ("C-c m I" . 'org-id-get-create)
+    ;;              ("C-c m k" . 'org-babel-remove-result)
+    ;;              ("C-c m K" . '+org/remove-result-blocks)
+    ;;              ("C-c m n" . 'org-store-link)
+    ;;              ("C-c m o" . 'org-set-property)
+    ;;              ("C-c m q" . 'org-set-tags-command)
+    ;;              ("C-c m t" . 'org-todo)
+    ;;              ("C-c m T" . 'org-todo-list)
+    ;;              ("C-c m x" . 'org-toggle-checkbox)
+    ;;              ("C-c m a a" . 'org-attach)
+    ;;              ("C-c m a d" . 'org-attach-delete-one)
+    ;;              ("C-c m a D" . 'org-attach-delete-all)
+    ;;              ("C-c m a n" . 'org-attach-new)
+    ;;              ("C-c m a o" . 'org-attach-open)
+    ;;              ("C-c m a O" . 'org-attach-open-in-emacs)
+    ;;              ("C-c m a r" . 'org-attach-reveal)
+    ;;              ("C-c m a R" . 'org-attach-reveal-in-emacs)
+    ;;              ("C-c m a u" . 'org-attach-url)
+    ;;              ("C-c m a s" . 'org-attach-set-directory)
+    ;;              ("C-c m a S" . 'org-attach-sync)
+    ;;              ("C-c m b -" . 'org-table-insert-hline)
+    ;;              ("C-c m b a" . 'org-table-align)
+    ;;              ("C-c m b b" . 'org-table-blank-field)
+    ;;              ("C-c m b c" . 'org-table-create-or-convert-from-region)
+    ;;              ("C-c m b e" . 'org-table-edit-field)
+    ;;              ("C-c m b f" . 'org-table-edit-formulas)
+    ;;              ("C-c m b h" . 'org-table-field-info)
+    ;;              ("C-c m b s" . 'org-table-sort-lines)
+    ;;              ("C-c m b r" . 'org-table-recalculate)
+    ;;              ("C-c m b R" . 'org-table-recalculate-buffer-tables))
+    ;;        (:prefix ("d" . "delete")
+    ;;         "c" #'org-table-delete-column
+    ;;         "r" #'org-table-kill-row)
+    ;;        (:prefix ("i" . "insert")
+    ;;         "c" #'org-table-insert-column
+    ;;         "h" #'org-table-insert-hline
+    ;;         "r" #'org-table-insert-row
+    ;;         "H" #'org-table-hline-and-move)
+    ;;       (:prefix ("c" . "clock")
+    ;;        "c" #'org-clock-cancel
+    ;;        "d" #'org-clock-mark-default-task
+    ;;        "e" #'org-clock-modify-effort-estimate
+    ;;        "E" #'org-set-effort
+    ;;        "g" #'org-clock-goto
+    ;;        "G" (cmd! (org-clock-goto 'select))
+    ;;        "l" #'+org/toggle-last-clock
+    ;;        "i" #'org-clock-in
+    ;;        "I" #'org-clock-in-last
+    ;;        "o" #'org-clock-out
+    ;;        "r" #'org-resolve-clocks
+    ;;        "R" #'org-clock-report
+    ;;        "t" #'org-evaluate-time-range
+    ;;        "=" #'org-clock-timestamps-up
+    ;;        "-" #'org-clock-timestamps-down)
+    ;;       (:prefix ("d" . "date/deadline")
+    ;;        "d" #'org-deadline
+    ;;        "s" #'org-schedule
+    ;;        "t" #'org-time-stamp
+    ;;        "T" #'org-time-stamp-inactive)
+    ;;       (:prefix ("l" . "links")
+    ;;        "c" #'org-cliplink
+    ;;        "d" #'+org/remove-link
+    ;;        "i" #'org-id-store-link
+    ;;        "l" #'org-insert-link
+    ;;        "L" #'org-insert-all-links
+    ;;        "s" #'org-store-link
+    ;;        "S" #'org-insert-last-stored-link
+    ;;        "t" #'org-toggle-link-display
+    ;;        "y" #'+org/yank-link)
+    ;;       (:prefix ("P" . "publish")
+    ;;        "a" #'org-publish-all
+    ;;        "f" #'org-publish-current-file
+    ;;        "p" #'org-publish
+    ;;        "P" #'org-publish-current-project
+    ;;        "s" #'org-publish-sitemap)
+    ;;       (:prefix ("r" . "refile")
+    ;;        "." #'+org/refile-to-current-file
+    ;;        "c" #'+org/refile-to-running-clock
+    ;;        "l" #'+org/refile-to-last-location
+    ;;        "f" #'+org/refile-to-file
+    ;;        "o" #'+org/refile-to-other-window
+    ;;        "O" #'+org/refile-to-other-buffer
+    ;;        "v" #'+org/refile-to-visible
+    ;;        "r" #'org-refile
+    ;;        "R" #'org-refile-reverse) ; to all `org-refile-targets'
+    ;;       (:prefix ("s" . "tree/subtree")
+    ;;        "a" #'org-toggle-archive-tag
+    ;;        "b" #'org-tree-to-indirect-buffer
+    ;;        "c" #'org-clone-subtree-with-time-shift
+    ;;        "d" #'org-cut-subtree
+    ;;        "h" #'org-promote-subtree
+    ;;        "j" #'org-move-subtree-down
+    ;;        "k" #'org-move-subtree-up
+    ;;        "l" #'org-demote-subtree
+    ;;        "n" #'org-narrow-to-subtree
+    ;;        "r" #'org-refile
+    ;;        "s" #'org-sparse-tree
+    ;;        "A" #'org-archive-subtree-default
+    ;;        "N" #'widen
+    ;;        "S" #'org-sort)
+    ;;       (:prefix ("p" . "priority")
+    ;;        "d" #'org-priority-down
+    ;;        "p" #'org-priority
+    ;;        "u" #'org-priority-up))
+    ;; (:map org-agenda
+    ;;       (
+    ;;       :m "C-SPC" #'org-agenda-show-and-scroll-up
+    ;;       (:prefix ("d" . "date/deadline")
+    ;;        "d" #'org-agenda-deadline
+    ;;        "s" #'org-agenda-schedule)
+    ;;       (:prefix ("c" . "clock")
+    ;;        "c" #'org-agenda-clock-cancel
+    ;;        "g" #'org-agenda-clock-goto
+    ;;        "i" #'org-agenda-clock-in
+    ;;        "o" #'org-agenda-clock-out
+    ;;        "r" #'org-agenda-clockreport-mode
+    ;;        "s" #'org-agenda-show-clocking-issues)
+    ;;       (:prefix ("p" . "priority")
+    ;;        "d" #'org-agenda-priority-down
+    ;;        "p" #'org-agenda-priority
+    ;;        "u" #'org-agenda-priority-up)
+    ;;       "q" #'org-agenda-set-tags
+    ;;       "r" #'org-agenda-refile
+    ;;       "t" #'org-agenda-todo)))
+    :config
+    (setq org-hide-leading-stars             t
+          org-hide-macro-markers             t
+          org-ellipsis                       " ⤵"
+          org-image-actual-width             600
+          org-redisplay-inline-images        t
+          org-display-inline-images          t
+          org-startup-with-inline-images     "inlineimages"
+          org-pretty-entities                t
+          org-fontify-whole-heading-line     t
+          org-fontify-done-headline          t
+          org-fontify-quote-and-verse-blocks t
+          org-startup-indented               t
+          org-startup-align-all-tables       t
+          org-use-property-inheritance       t
+          org-list-allow-alphabetical        t
+          org-M-RET-may-split-line           nil
+          org-src-window-setup               'split-window-below
+          org-src-fontify-natively           t
+          org-src-tab-acts-natively          t
+          org-src-preserve-indentation       t
+          org-log-done                       'time
+  	    diary-file "~/org/diary"
+  	    org-agenda-diary-file 'diary-file
+  	    org-agenda-include-diary t
+  	    diary-show-holidays-flag nil
+  	    org-agenda-file-regexp "\\`[^.].*\\.org\\\(\\.gpg\\\)?\\'"
+          org-directory "~/org"
+          org-refile-targets '((nil :maxlevel . 3) (org-agenda-files :maxlevel . 10))
+          org-agenda-files (list
+                            "~/org/todo.org"
+                            "~/org/work/todo.org"
+                            "~/org/programming/todo.org"
+                            "~/org/rpgs/todo.org"
+                            "~/org/contacts.org.gpg")
+          calendar-date-style 'european
+          mark-diary-entries-in-calendar t
+          org-confirm-babel-evaluate nil)
+    :hook (org-mode . global-org-modern-mode)
+    )
+#+end_src
+** Org latex
+ox-latex is used to handle exporting latex from org files.
+#+begin_src elisp 
+  (use-package ox-latex
+    :init
+    :config
+    (setq org-latex-with-hyperref nil) ;; stop org adding hypersetup{author..} to latex export
+
+    ;; deleted unwanted file extensions after latexMK
+    (setq org-latex-logfiles-extensions
+          (quote ("lof" "lot" "tex~" "aux" "idx" "log" "out" "toc" "nav" "snm" "vrb" "dvi" "fdb_latexmk" "blg" "brf" "fls" "entoc" "ps" "spl" "bbl" "xmpi" "run.xml" "bcf" "acn" "acr" "alg" "glg" "gls" "ist")))
+
+    (unless (boundp 'org-latex-classes)
+      (setq org-latex-classes nil)))
+#+end_src
+
+#+begin_src elisp
+(use-package ox-extra
   :config
-  (setq org-hide-leading-stars             t
-        org-hide-macro-markers             t
-        org-ellipsis                       " ⤵"
-        org-image-actual-width             600
-        org-redisplay-inline-images        t
-        org-display-inline-images          t
-        org-startup-with-inline-images     "inlineimages"
-        org-pretty-entities                t
-        org-fontify-whole-heading-line     t
-        org-fontify-done-headline          t
-        org-fontify-quote-and-verse-blocks t
-        org-startup-indented               t
-        org-startup-align-all-tables       t
-        org-use-property-inheritance       t
-        org-list-allow-alphabetical        t
-        org-M-RET-may-split-line           nil
-        org-src-window-setup               'split-window-below
-        org-src-fontify-natively           t
-        org-src-tab-acts-natively          t
-        org-src-preserve-indentation       t
-        org-log-done                       'time
-	diary-file "~/org/diary"
-	org-agenda-diary-file 'diary-file
-	org-agenda-include-diary t
-	diary-show-holidays-flag nil
-	org-contacts-files '("~org/contacts.org.gpg")
-	org-agenda-file-regexp "\\`[^.].*\\.org\\\(\\.gpg\\\)?\\'"
-        org-directory "~/org"
-        org-refile-targets '((nil :maxlevel . 3) (org-agenda-files :maxlevel . 10))
-        org-agenda-files (list
-                          "~/org/todo.org"
-                          "~/org/work/todo.org"
-                          "~/org/programming/todo.org"
-                          "~/org/rpgs/todo.org"
-                          "~/org/contacts.org.gpg")
-        calendar-date-style 'european
-        mark-diary-entries-in-calendar t
-        org-confirm-babel-evaluate nil)
-  )
+    (ox-extras-activate '(latex-header-blocks ignore-headlines)))
+#+end_src
+** Org tempo
+expand things like =<s= to src blocks
+#+begin_src emacs-lisp 
+(use-package org-tempo
+  :ensure nil
+  :after org)
+#+end_src
+** Org-contacts
+#+begin_src emacs-lisp
+(use-package org-contacts
+  :after org
+  :custom (org-contacts-files '("~/org/contacts.org.gpg")
+  ))
+#+end_src
+** Ox Markdown
+#+begin_src elisp
+(use-package ox-gfm)
+#+end_src
+** Ox MD
+#+begin_src elisp
+(use-package ox-md)
+#+end_src
+** Ox Hugo
+#+begin_src elisp
+(use-package ox-hugo)
 #+end_src
 ** Elfeed
 #+begin_src elisp
@@ -295,7 +526,6 @@ Configured in [[file:init.el][init.el]]
 ** Modeline
 #+begin_src elisp
 (use-package doom-modeline
-  :ensure t
   :config
   (setq doom-modeline-modal-icon t
         doom-modeline-hud t)
@@ -306,6 +536,22 @@ Reduce the number of minor modes by putting them in a menu.
 #+begin_src emacs-lisp
 (use-package minions
   :config (minions-mode 1))
+#+end_src
+** Markdown-mode
+#+begin_src elisp
+(use-package markdown-mode
+  :defer t
+  :hook (markdown-mode . (lambda () (setq fill-column 72))))
+#+end_src
+** Direnv
+#+begin_src elisp
+;; direnv integration
+(use-package envrc
+  :if (executable-find "direnv")
+  :init
+  (setq envrc-debug t)
+  (add-hook 'after-init-hook (lambda () (envrc-global-mode 1)))
+  (advice-add 'cider-jack-in :around #'envrc-propagate-environment))
 #+end_src
 ** Projectile
 #+begin_src elisp
@@ -321,10 +567,10 @@ Reduce the number of minor modes by putting them in a menu.
 	   :map projectile-mode-map
          ("C-c p a" . projectile-add-known-project)
          ("C-c p p"  . projectile-switch-project)
-         ("C-c p R" . projectile-run-command-in-root)
+         ("C-c p R" . projectile-run-shell-command-in-root)
          ("C-c p t" . projectile-run-eshell)
          ("C-c p T" . projectile-test-project))
-    )
+         ("C-c p ." . find-file))
 #+end_src
 ** Smart Parens
 #+begin_src elisp
@@ -477,6 +723,45 @@ This is to prevent possible `tramp' calls."
 
 )
 #+end_src
+** Consult GH
+#+begin_src elisp
+(use-package consult-gh
+  :after consult
+  :custom
+  (consult-gh-default-clone-directory "~/code")
+  (consult-gh-show-preview t)
+  (consult-gh-preview-key "C-o")
+  (consult-gh-repo-action #'consult-gh--repo-browse-files-action)
+  (consult-gh-large-file-warning-threshold 2500000)
+  (consult-gh-confirm-name-before-fork nil)
+  (consult-gh-confirm-before-clone t)
+  (consult-gh-notifications-show-unread-only nil)
+  (consult-gh-default-interactive-command #'consult-gh-transient)
+  (consult-gh-prioritize-local-folder nil)
+  (consult-gh-group-dashboard-by :reason)
+  ;;;; Optional
+  (consult-gh-repo-preview-major-mode nil) ; show readmes in their original format
+  (consult-gh-preview-major-mode 'org-mode) ; use 'org-mode for editing comments, commit messages, ...
+  :config
+  ;; Remember visited orgs and repos across sessions
+  (add-to-list 'savehist-additional-variables 'consult-gh--known-orgs-list)
+  (add-to-list 'savehist-additional-variables 'consult-gh--known-repos-list)
+  ;; Enable default keybindings (e.g. for commenting on issues, prs, ...)
+  (consult-gh-enable-default-keybindings))
+
+
+;; Install `consult-gh-embark' for embark actions
+(use-package consult-gh-embark
+  :config
+  (consult-gh-embark-mode +1))
+
+
+;; Install `consult-gh-forge' for forge actions
+(use-package consult-gh-forge
+ :config
+ (consult-gh-forge-mode +1)
+ (setq consult-gh-forge-timeout-seconds 20))
+#+end_src
 ** Consult-LSP
 #+begin_src elisp
 (use-package consult-lsp
@@ -580,6 +865,7 @@ This is to prevent possible `tramp' calls."
                         (projects  . 5)
                         (agenda    . 5)
                         ))
+  (setq dashboard-icon-type 'all-the-icons)
   (dashboard-setup-startup-hook))
 #+end_src
 ** Windows
@@ -636,7 +922,9 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
   :defer t
   :config
   (setq magit-repository-directories `(("~/code". 5)))
-  (setq straight-vc-git-default-protocol "ssh"))
+  (setq straight-vc-git-default-protocol "ssh")
+  :bind (:map magit-mode-map (("x" . magit-discard)))
+)
 #+end_src
 *** Forge
 #+begin_src elisp
@@ -686,15 +974,23 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
     (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point))))
 
   :bind (:map global-map
-              ("C-c g d" . #'xref-find-definitions))
+              ("C-c g d" . #'xref-find-definitions)
+              ("C-c c a" . #'lsp-execute-code-action)
+              ("C-c c i" . #'lsp-find-implementation)
+              ("C-c c r" . #'lsp-rename)
+              )
   :hook
   ((lsp-mode . lsp-enable-which-key-integration)
    (csharp-mode . lsp)
    (haskell-ts-mode . lsp)
    (haskell-literate-mode . lsp)
    (lsp-completion-mode . my/lsp-mode-setup-completion)
-   (go-mode . lsp)))
+   (go-ts-mode . lsp)))
 #+end_src
+
+#+RESULTS:
+: lsp-rename
+
 ** Snippets
 #+begin_src elisp
 (use-package yasnippet
@@ -737,6 +1033,10 @@ Most formatting tasks should be handled with apheleia .
 
 (use-package lsp-haskell
   :after (lsp-mode))
+
+(use-package cabal-mode
+  :mode (("\\.cabal$" . cabal-mode))
+  :defer)
 #+end_src
 *** Go
 #+begin_src elisp
@@ -799,8 +1099,20 @@ Most formatting tasks should be handled with apheleia .
 ** Dired
 #+begin_src elisp
 (use-package dired
+  :bind (:map dired-mode-map
+              ("_" . dired-up-directory))
   :config
-  (setq dired-movement-style 'bounded)
+  (setq dired-movement-style 'bounded
+        dired-dwim-target t
+        ;; Always copy/delete recursively
+        dired-recursive-copies 'always
+        dired-recursive-deletes 'top
+        dired-kill-when-opening-new-dired-buffer t
+        dired-auto-revert-buffer #'dired-buffer-stale-p
+        dired-isearch-filenames t
+        ;; Ask whether destination dirs should get created when copying/removing files.
+        dired-create-destination-dirs 'ask
+        )
 )
 #+end_src
 ** Perspective
@@ -859,14 +1171,59 @@ We also use persp-projectile to link projectile and perspective together
     :config
     (meow-tree-sitter-register-defaults)))
 #+end_src
-** Eshell
+** Elisp
 #+begin_src elisp
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+#+end_src
+** Protobuf-ts-mode
+#+begin_src emacs-lisp
+(use-package protobuf-ts-mode
+  :mode (("\\.proto" . protobuf-ts-mode)))
+#+end_src
+** COMMENT Eshell
+#+begin_src elisp
+(defun eshell-here ()
+  "Opens up a new shell in the directory associated with the
+current buffer's file. The eshell is renamed to match that
+directory to make multiple eshell windows easier."
+  (interactive)
+  (let* ((parent (if (buffer-file-name)
+                     (file-name-directory (buffer-file-name))
+                   default-directory))
+         (height (/ (window-total-height) 3))
+         (name   (car (last (split-string parent "/" t)))))
+    (split-window-vertically (- height))
+    (other-window 1)
+    (eshell "new")
+    (rename-buffer (concat "*eshell: " name "*"))
+
+    (insert (concat "ls"))
+    (eshell-send-input)))
+
+
+(defun eshell/x ()
+  (interactive)
+  (insert "exit")
+  (eshell-send-input)
+  (delete-window))
+
+(use-package eshell-z)
+
 (use-package eshell
+  :bind (("C-c o t" . eshell-here)
+         ("C-c e t" . eshell/x))
   :config
   (setq mode-line-format nil)
-  :hook ((eshell-mode . (lambda ()
-                              (setq-local corfu-auto nil)
-                              (corfu-mode)))))
+  :hook
+  ((eshell-mode . (lambda ()
+                    (setq-local corfu-auto nil)
+                    (corfu-mode)))
+   (eshell-mode . (lambda ()
+                    (setenv "TERM" "xterm-256color")))
+   (eshell-mode .
+          (lambda ()
+            (require 'eshell-z)))))
 #+end_src
 ** Ws-Butler
 #+begin_src elisp
@@ -889,6 +1246,30 @@ We also use persp-projectile to link projectile and perspective together
 #+begin_src emacs-lisp
 (use-package exercism)
 #+end_src
+** Vaarn.el
+#+begin_src emacs-lisp 
+(use-package vaarn)
+#+end_src
+** Hyperbole 
+#+begin_src emacs-lisp 
+(use-package hyperbole
+  :init
+  (hyperbole-mode))
+#+end_src
+** PDF-Tools
+#+begin_src emacs-lisp 
+(use-package pdf-tools
+  :defer t
+  :mode "\\.pdf\\'"
+  :bind (:map pdf-view-mode-map
+              ("c" . (lambda ()
+                       (interactive)
+                       (if header-line-format
+                           (setq header-line-format nil)
+                         (nano-modeline-pdf-mode))))
+              ("j" . pdf-view-next-line-or-next-page)
+              ("k" . pdf-view-previous-line-or-previous-page))
+  :init (pdf-loader-install)
+  :config (add-to-list 'revert-without-query ".pdf"))
 
-
-
+#+end_src

@@ -8,17 +8,23 @@
         withSQLite3 = true;
       };
 
-      # Comprehensive package list following 2024-2025 best practices
       emacsPackages = epkgs:
         with epkgs; [
           # Core framework
           use-package
           minions
           bind-key
+          pdf-tools
+          envrc
 
           # Modern completion framework (Vertico ecosystem)
           vertico
           consult
+          consult-gh
+          consult-gh-embark
+          consult-gh-forge
+          consult-gh-with-pr-review
+          consult-yasnippet
           embark
           embark-consult
           marginalia
@@ -30,7 +36,7 @@
           corfu-terminal # Terminal support for Emacs 30
           popon # Required dependency for corfu-terminal
           cape
-          kind-icon # Beautiful completion icons
+          ind-icon # Beautiful completion icons
           wgrep
 
           # keys
@@ -71,6 +77,7 @@
             p.tree-sitter-sql
             p.tree-sitter-just
             p.tree-sitter-haskell
+            p.tree-sitter-proto
           ]))
 
           go-mode
@@ -80,6 +87,7 @@
           yaml-mode
           json-mode
           markdown-mode
+          protobuf-ts-mode
           consult-hoogle
 
           exercism
@@ -100,12 +108,19 @@
           persp-projectile
 
           # Org mode
-          org
+          epkgs.org
+          ox-hugo
+          ox-gfm
+
           org-contrib
+          org-contacts
           org-cliplink
+          org-modern
           elfeed
           elfeed-org
           elfeed-goodies
+
+          hyperbole
 
           # UI enhancements
           doom-modeline
@@ -124,19 +139,28 @@
           flycheck
           yasnippet
           yasnippet-snippets
+          eshell-z
 
+          # My packages
+          pkgs.local.vaarn
         ];
 
-      # Package overrides for compatibility
-      packageOverrides = self: super: {
-        # Ensure we use the right org version
-        org = super.elpaPackages.org;
-      };
+      packageOverrides = self: super: { org = super.elpaPackages.org; };
 
       # Build final Emacs with all packages
       myEmacs = ((pkgs.emacsPackagesFor emacs-base).overrideScope
         packageOverrides).emacsWithPackages emacsPackages;
 
+      tex = (pkgs.texlive.combined.scheme-full.withPackages (ps:
+        with ps; [
+          dvisvgm
+          dvipng # for preview and export as html
+          wrapfig
+          amsmath
+          ulem
+          hyperref
+          capt-of
+        ]));
       # Development tools and LSP servers
       devPackages = with pkgs; [
         # LSP servers and tools
@@ -157,6 +181,9 @@
         fd
         sqlite
         silver-searcher
+
+        # latex
+        tex
       ];
 
     in {
@@ -169,6 +196,9 @@
       };
       home.file.".config/emacs/nix-vanilla/early-init.el" = {
         source = ./early-init.el;
+      };
+      home.file.".config/emacs/nix-vanilla/org/autoloads.el" = {
+        source = ./org/autoloads.el;
       };
 
       # === PACKAGES ===
