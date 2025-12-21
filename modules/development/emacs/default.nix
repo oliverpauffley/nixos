@@ -36,7 +36,7 @@
           corfu-terminal # Terminal support for Emacs 30
           popon # Required dependency for corfu-terminal
           cape
-          ind-icon # Beautiful completion icons
+          kind-icon # Beautiful completion icons
           wgrep
 
           # keys
@@ -89,6 +89,7 @@
           markdown-mode
           protobuf-ts-mode
           consult-hoogle
+          haskell-ts-mode
 
           exercism
 
@@ -193,6 +194,7 @@
       home.file.".config/emacs/nix-vanilla/init.el" = { source = ./init.el; };
       home.file.".config/emacs/nix-vanilla/config.org" = {
         source = ./config.org;
+        force = true;
       };
       home.file.".config/emacs/nix-vanilla/early-init.el" = {
         source = ./early-init.el;

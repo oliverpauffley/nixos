@@ -29,6 +29,7 @@
       nix.settings.trusted-users =
         [ config.flake.meta.users.ollie.username "root" ];
 
+
       home-manager.users.ollie = {
         home.file = {
           ".face" = {
