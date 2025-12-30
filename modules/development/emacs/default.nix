@@ -78,6 +78,7 @@
             p.tree-sitter-just
             p.tree-sitter-haskell
             p.tree-sitter-proto
+            p.tree-sitter-scheme
           ]))
 
           go-mode
@@ -90,6 +91,7 @@
           protobuf-ts-mode
           consult-hoogle
           haskell-ts-mode
+          geiser-chez
 
           exercism
 

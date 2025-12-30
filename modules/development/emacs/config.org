@@ -1270,3 +1270,11 @@ directory to make multiple eshell windows easier."
   :config (add-to-list 'revert-without-query ".pdf"))
 
 #+end_src
+** Scheme
+#+begin_src elisp
+(use-package geiser-chez)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((scheme . t)))
+#+end_src

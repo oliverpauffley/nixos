@@ -1,5 +1,5 @@
 install NAME:
-    nh os switch . -H {{NAME}}
+    sudo nixos-rebuild switch --flake .#{{NAME}}
 
 upgrade NAME:
     nh os switch . -u -H {{NAME}}
