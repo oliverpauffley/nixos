@@ -92,6 +92,7 @@
           consult-hoogle
           haskell-ts-mode
           geiser-chez
+          terraform-mode
 
           exercism
 
@@ -142,6 +143,7 @@
           flycheck
           yasnippet
           yasnippet-snippets
+          yatemplate
           eshell-z
 
           # My packages

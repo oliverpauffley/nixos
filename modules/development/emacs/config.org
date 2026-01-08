@@ -649,6 +649,7 @@ Reduce the number of minor modes by putting them in a menu.
   :config
   ;; always use completing-read for selecting actions, rather than keybinds
   (setq embark-prompter 'embark-completing-read-prompter)
+  (setq wgrep-auto-save-buffer t)
 
   ;; setup initial action keybind
   (meow-normal-define-key
@@ -1008,6 +1009,19 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
 (use-package yasnippet-snippets         ; Collection of snippets
   :ensure t)
 #+end_src
+** Yatemplate
+Like yasnippet but for new files
+#+begin_src elisp
+(use-package autoinsert
+  :hook (my/startup . (lambda () (auto-insert-mode 1)))
+  :config
+  (use-package yatemplate)
+  (yatemplate-fill-alist)
+  :custom
+  (yatemplate-dir (expand-file-name "templates" user-emacs-directory))
+  ;; (setq auto-insert t)
+  )
+#+end_src
 ** Programming Languages
 *** Formatting
 Most formatting tasks should be handled with apheleia .
@@ -1277,4 +1291,16 @@ directory to make multiple eshell windows easier."
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((scheme . t)))
+#+end_src
+** Terraform
+#+begin_src elisp
+(use-package terraform-mode
+  :custom (terraform-indent-level 4)
+  :config
+  (defun my-terraform-mode-init ()
+    ;; if you want to use outline-minor-mode
+    ;; (outline-minor-mode 1)
+    )
+
+  (add-hook 'terraform-mode-hook 'my-terraform-mode-init))
 #+end_src
