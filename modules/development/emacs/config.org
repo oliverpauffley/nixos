@@ -6,6 +6,7 @@
 * Config
  - TODO Dired controls for going up levels.
  - TODO Dired backspace removes symbols not characters.
+ - TODO get new files to have some pregenerated content.
 ** Initial Setup
 #+begin_src elisp
 ;; -*- lexical-binding: t -*-
@@ -1040,14 +1041,24 @@ Most formatting tasks should be handled with apheleia .
   (haskell-ts-use-indent t)
 )
 
+(use-package haskell-mode)
+
 (use-package consult-hoogle)
 
 (use-package lsp-haskell
+  :custom
+ (lsp-haskell-server-path "haskell-language-server-wrapper")
   :after (lsp-mode))
 
 (use-package cabal-mode
   :mode (("\\.cabal$" . cabal-mode))
   :defer)
+
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((haskell . t)))
+
 #+end_src
 *** Go
 #+begin_src elisp

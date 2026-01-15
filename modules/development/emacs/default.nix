@@ -79,8 +79,10 @@
             p.tree-sitter-haskell
             p.tree-sitter-proto
             p.tree-sitter-scheme
+            p.tree-sitter-janet-simple
           ]))
 
+          janet-mode
           go-mode
           rust-mode
           web-mode
@@ -91,6 +93,7 @@
           protobuf-ts-mode
           consult-hoogle
           haskell-ts-mode
+          haskell-mode
           geiser-chez
           terraform-mode
 
@@ -205,6 +208,10 @@
       };
       home.file.".config/emacs/nix-vanilla/org/autoloads.el" = {
         source = ./org/autoloads.el;
+      };
+
+      home.file.".config/emacs/nix-vanilla/templates/00:go.go" = {
+        source = ./templates/go.go;
       };
 
       # === PACKAGES ===
