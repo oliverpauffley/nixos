@@ -1315,3 +1315,13 @@ directory to make multiple eshell windows easier."
 
   (add-hook 'terraform-mode-hook 'my-terraform-mode-init))
 #+end_src
+** Janet
+#+begin_src elisp
+(use-package janet-mode)
+
+
+(use-package ob-janet
+  :after org
+  :config
+  (append '((janet . t)) org-babel-load-languages))
+#+end_src

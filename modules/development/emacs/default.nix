@@ -82,6 +82,7 @@
             p.tree-sitter-janet-simple
           ]))
 
+          pkgs.local.ob-janet
           janet-mode
           go-mode
           rust-mode
