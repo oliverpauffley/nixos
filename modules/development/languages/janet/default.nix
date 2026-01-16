@@ -1,5 +1,5 @@
 {
   flake.modules.homeManager.dev = { pkgs, inputs, ... }: {
-    home.packages = with pkgs; [ janet jpm ];
+    home.packages = [ pkgs.janet pkgs.jpm pkgs.local.janet-lsp ];
   };
 }

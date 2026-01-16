@@ -984,7 +984,9 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
    (haskell-ts-mode . lsp)
    (haskell-literate-mode . lsp)
    (lsp-completion-mode . my/lsp-mode-setup-completion)
-   (go-ts-mode . lsp)))
+   (go-ts-mode . lsp)
+   (janet-mode .lsp)
+   ))
 #+end_src
 
 #+RESULTS:
@@ -1072,8 +1074,8 @@ Most formatting tasks should be handled with apheleia .
 
 (use-package go-mode
   :ensure t
-  :mode (("\\.go$" . go-ts-mode))
-  :hook ((go-mode go-ts-mode) . my-go-mode-setup)
+  :mode (("\\.go$" . go-mode))
+  :hook ((go-mode go-mode) . my-go-mode-setup)
   :custom (gofmt-command "goimports"))
 #+end_src
 *** Lisp
