@@ -1,6 +1,7 @@
 {
   description = "ollie pauffley nix config";
   nixConfig = {
+    allow-import-from-derivation = "true";
     extra-substituters =
       [ "https://nix-community.cachix.org" "https://cache.iog.io" ];
     extra-trusted-public-keys = [

@@ -86,6 +86,7 @@
           janet-mode
           go-mode
           rust-mode
+          rustic
           web-mode
           nix-mode
           yaml-mode
@@ -114,6 +115,7 @@
           dashboard
           perspective
           persp-projectile
+          pkgs.local.linear-emacs
 
           # Org mode
           epkgs.org
@@ -131,6 +133,7 @@
           hyperbole
 
           # UI enhancements
+          modus-themes
           doom-modeline
           all-the-icons
           all-the-icons-dired
@@ -149,6 +152,7 @@
           yasnippet-snippets
           yatemplate
           eshell-z
+          smart-jump
 
           # My packages
           pkgs.local.vaarn
@@ -199,20 +203,16 @@
       # === PRIMARY CONFIGURATION: Nix-Vanilla (Modern Terminal-First Emacs) ===
 
       # Install nix-vanilla configuration files
-      home.file.".config/emacs/nix-vanilla/init.el" = { source = ./init.el; };
-      home.file.".config/emacs/nix-vanilla/config.org" = {
+      home.file."/home/ollie/.config/emacs/init.el" = { source = ./init.el; };
+      home.file."/home/ollie/.config/emacs/config.org" = {
         source = ./config.org;
         force = true;
       };
-      home.file.".config/emacs/nix-vanilla/early-init.el" = {
+      home.file."/home/ollie/.config/emacs/early-init.el" = {
         source = ./early-init.el;
       };
-      home.file.".config/emacs/nix-vanilla/org/autoloads.el" = {
+      home.file."/home/ollie/.config/emacs/org/autoloads.el" = {
         source = ./org/autoloads.el;
-      };
-
-      home.file.".config/emacs/nix-vanilla/templates/00:go.go" = {
-        source = ./templates/go.go;
       };
 
       # === PACKAGES ===
@@ -222,7 +222,7 @@
       xdg.desktopEntries.vanilla-emacs = {
         name = "Vanilla Emacs";
         genericName = "Emacs with nix";
-        exec = "emacs --init-directory .config/emacs/nix-vanilla/";
+        exec = "emacs --init-directory .config/emacs/";
         terminal = false;
         categories = [ "System" ];
         mimeType = [ "text/org" ];

@@ -8,6 +8,7 @@
         media
         coredns
         traefik
+        hydra
 
         # Users
         ollie

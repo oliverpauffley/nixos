@@ -4,9 +4,9 @@
 #+PROPERTY: header-args :tangle config.el
 
 * Config
- - TODO Dired controls for going up levels.
- - TODO Dired backspace removes symbols not characters.
- - TODO get new files to have some pregenerated content.
+** TODO Dired backspace removes symbols not characters.
+** TODO get new files to have some pregenerated content.
+** TODO fix deleting first letter in parentheses deleting the parentheses
 ** Initial Setup
 #+begin_src elisp
 ;; -*- lexical-binding: t -*-
@@ -91,6 +91,7 @@ Like vim but better!
     (modify-syntax-entry ?@ "_" org-mode-syntax-table))
     (defvar-keymap my-insert-map
       :doc "insert"
+      "u" 'insert-char
       )
     (define-key global-map (kbd "C-c i") my-insert-map)
     (meow-motion-define-key
@@ -187,8 +188,8 @@ Like vim but better!
      '("z" . meow-pop-selection)
      '("'" . repeat)
      '("<escape>" . ignore)
-     '("C-o" . xref-go-back)
-     '("C-i" . xref-go-forward)
+     '("C-c g d" . smart-jump-go)
+     '("C-o" . smart-jump-back)
      '("C-d" . meow-page-down)
      '("C-u" . meow-page-up)
      )
@@ -239,184 +240,13 @@ Like vim but better!
 #+end_src
 ** Org
 #+begin_src elisp
-  ;; (defvar-keymap my-org-menu
-  ;;   :doc "org menu"
-  ;;   "a" my-org-menu-attachments
-  ;;   "b" my-org-menu-tables
-  ;;   "d"  my-org-menu-delete
-  ;;   "i" my-org-menu-insert
-  ;;   )
-    ;; (("C-c m" . (defvar-keymap org-menu))
-    ;;  ("C-c m a" . (defvar-keymap org-menu-attachments))
-    ;;  ("C-c m b" . (defvar-keymap org-menu-tables))
-    ;;  ("C-c m d" . (defvar-keymap org-menu-delete))
-    ;;  ("C-c m i" . (defvar-keymap org-menu-insert))
-    ;;  ("C-c m c" . (defvar-keymap org-menu-clock))
-    ;;  ("C-c m d" . (defvar-keymap org-menu-date))
-    ;;  ("C-c m l" . (defvar-keymap org-menu-links))
-    ;;  ("C-c m P" . (defvar-keymap org-menu-publish))
-    ;;  ("C-c m r" . (defvar-keymap org-menu-refile))
-    ;;  ("C-c m s" . (defvar-keymap org-menu-subtree))
-    ;;  ("C-c m p" . (defvar-keymap org-menu-priority))
-    ;;  )
-
   
   (use-package org
     :ensure t
     :init
-    (load-file "~/.config/emacs/nix-vanilla/org/autoloads.el" )  
+    (load-file "~/.config/emacs/org/autoloads.el" )  
     (auto-fill-mode -1)
-    ;; :bind-keymap
-    ;; (("C-c m" . (defvar-keymap org-menu))
-    ;;  ("C-c m a" . (defvar-keymap org-menu-attachments))
-    ;;  ("C-c m b" . (defvar-keymap org-menu-tables))
-    ;;  ("C-c m d" . (defvar-keymap org-menu-delete))
-    ;;  ("C-c m i" . (defvar-keymap org-menu-insert))
-    ;;  ("C-c m c" . (defvar-keymap org-menu-clock))
-    ;;  ("C-c m d" . (defvar-keymap org-menu-date))
-    ;;  ("C-c m l" . (defvar-keymap org-menu-links))
-    ;;  ("C-c m P" . (defvar-keymap org-menu-publish))
-    ;;  ("C-c m r" . (defvar-keymap org-menu-refile))
-    ;;  ("C-c m s" . (defvar-keymap org-menu-subtree))
-    ;;  ("C-c m p" . (defvar-keymap org-menu-priority))
-    ;;  )
-    ;; :bind (:map org-mode              
-    ;;              ("S-RET"      . '+org/shift-return)
-    ;;              ("C-RET"      . '+org/insert-item-below)
-    ;;              ("C-S-RET"    . '+org/insert-item-above)
-    ;;              ("C-M-RET"    . 'org-insert-subheading)
-    ;;              ([C-return]   . '+org/insert-item-below)
-    ;;              ([C-S-return] . '+org/insert-item-above)
-    ;;              ([C-M-return] . 'org-insert-subheading)
 
-                 ;; ("C-c m A" . 'org-archive-subtree-default)
-                 ;; ("C-c m e" . 'org-export-dispatch)
-    ;;              ("C-c m h" . 'org-toggle-heading)
-    ;;              ("C-c m i" . 'org-toggle-item)
-    ;;              ("C-c m I" . 'org-id-get-create)
-    ;;              ("C-c m k" . 'org-babel-remove-result)
-    ;;              ("C-c m K" . '+org/remove-result-blocks)
-    ;;              ("C-c m n" . 'org-store-link)
-    ;;              ("C-c m o" . 'org-set-property)
-    ;;              ("C-c m q" . 'org-set-tags-command)
-    ;;              ("C-c m t" . 'org-todo)
-    ;;              ("C-c m T" . 'org-todo-list)
-    ;;              ("C-c m x" . 'org-toggle-checkbox)
-    ;;              ("C-c m a a" . 'org-attach)
-    ;;              ("C-c m a d" . 'org-attach-delete-one)
-    ;;              ("C-c m a D" . 'org-attach-delete-all)
-    ;;              ("C-c m a n" . 'org-attach-new)
-    ;;              ("C-c m a o" . 'org-attach-open)
-    ;;              ("C-c m a O" . 'org-attach-open-in-emacs)
-    ;;              ("C-c m a r" . 'org-attach-reveal)
-    ;;              ("C-c m a R" . 'org-attach-reveal-in-emacs)
-    ;;              ("C-c m a u" . 'org-attach-url)
-    ;;              ("C-c m a s" . 'org-attach-set-directory)
-    ;;              ("C-c m a S" . 'org-attach-sync)
-    ;;              ("C-c m b -" . 'org-table-insert-hline)
-    ;;              ("C-c m b a" . 'org-table-align)
-    ;;              ("C-c m b b" . 'org-table-blank-field)
-    ;;              ("C-c m b c" . 'org-table-create-or-convert-from-region)
-    ;;              ("C-c m b e" . 'org-table-edit-field)
-    ;;              ("C-c m b f" . 'org-table-edit-formulas)
-    ;;              ("C-c m b h" . 'org-table-field-info)
-    ;;              ("C-c m b s" . 'org-table-sort-lines)
-    ;;              ("C-c m b r" . 'org-table-recalculate)
-    ;;              ("C-c m b R" . 'org-table-recalculate-buffer-tables))
-    ;;        (:prefix ("d" . "delete")
-    ;;         "c" #'org-table-delete-column
-    ;;         "r" #'org-table-kill-row)
-    ;;        (:prefix ("i" . "insert")
-    ;;         "c" #'org-table-insert-column
-    ;;         "h" #'org-table-insert-hline
-    ;;         "r" #'org-table-insert-row
-    ;;         "H" #'org-table-hline-and-move)
-    ;;       (:prefix ("c" . "clock")
-    ;;        "c" #'org-clock-cancel
-    ;;        "d" #'org-clock-mark-default-task
-    ;;        "e" #'org-clock-modify-effort-estimate
-    ;;        "E" #'org-set-effort
-    ;;        "g" #'org-clock-goto
-    ;;        "G" (cmd! (org-clock-goto 'select))
-    ;;        "l" #'+org/toggle-last-clock
-    ;;        "i" #'org-clock-in
-    ;;        "I" #'org-clock-in-last
-    ;;        "o" #'org-clock-out
-    ;;        "r" #'org-resolve-clocks
-    ;;        "R" #'org-clock-report
-    ;;        "t" #'org-evaluate-time-range
-    ;;        "=" #'org-clock-timestamps-up
-    ;;        "-" #'org-clock-timestamps-down)
-    ;;       (:prefix ("d" . "date/deadline")
-    ;;        "d" #'org-deadline
-    ;;        "s" #'org-schedule
-    ;;        "t" #'org-time-stamp
-    ;;        "T" #'org-time-stamp-inactive)
-    ;;       (:prefix ("l" . "links")
-    ;;        "c" #'org-cliplink
-    ;;        "d" #'+org/remove-link
-    ;;        "i" #'org-id-store-link
-    ;;        "l" #'org-insert-link
-    ;;        "L" #'org-insert-all-links
-    ;;        "s" #'org-store-link
-    ;;        "S" #'org-insert-last-stored-link
-    ;;        "t" #'org-toggle-link-display
-    ;;        "y" #'+org/yank-link)
-    ;;       (:prefix ("P" . "publish")
-    ;;        "a" #'org-publish-all
-    ;;        "f" #'org-publish-current-file
-    ;;        "p" #'org-publish
-    ;;        "P" #'org-publish-current-project
-    ;;        "s" #'org-publish-sitemap)
-    ;;       (:prefix ("r" . "refile")
-    ;;        "." #'+org/refile-to-current-file
-    ;;        "c" #'+org/refile-to-running-clock
-    ;;        "l" #'+org/refile-to-last-location
-    ;;        "f" #'+org/refile-to-file
-    ;;        "o" #'+org/refile-to-other-window
-    ;;        "O" #'+org/refile-to-other-buffer
-    ;;        "v" #'+org/refile-to-visible
-    ;;        "r" #'org-refile
-    ;;        "R" #'org-refile-reverse) ; to all `org-refile-targets'
-    ;;       (:prefix ("s" . "tree/subtree")
-    ;;        "a" #'org-toggle-archive-tag
-    ;;        "b" #'org-tree-to-indirect-buffer
-    ;;        "c" #'org-clone-subtree-with-time-shift
-    ;;        "d" #'org-cut-subtree
-    ;;        "h" #'org-promote-subtree
-    ;;        "j" #'org-move-subtree-down
-    ;;        "k" #'org-move-subtree-up
-    ;;        "l" #'org-demote-subtree
-    ;;        "n" #'org-narrow-to-subtree
-    ;;        "r" #'org-refile
-    ;;        "s" #'org-sparse-tree
-    ;;        "A" #'org-archive-subtree-default
-    ;;        "N" #'widen
-    ;;        "S" #'org-sort)
-    ;;       (:prefix ("p" . "priority")
-    ;;        "d" #'org-priority-down
-    ;;        "p" #'org-priority
-    ;;        "u" #'org-priority-up))
-    ;; (:map org-agenda
-    ;;       (
-    ;;       :m "C-SPC" #'org-agenda-show-and-scroll-up
-    ;;       (:prefix ("d" . "date/deadline")
-    ;;        "d" #'org-agenda-deadline
-    ;;        "s" #'org-agenda-schedule)
-    ;;       (:prefix ("c" . "clock")
-    ;;        "c" #'org-agenda-clock-cancel
-    ;;        "g" #'org-agenda-clock-goto
-    ;;        "i" #'org-agenda-clock-in
-    ;;        "o" #'org-agenda-clock-out
-    ;;        "r" #'org-agenda-clockreport-mode
-    ;;        "s" #'org-agenda-show-clocking-issues)
-    ;;       (:prefix ("p" . "priority")
-    ;;        "d" #'org-agenda-priority-down
-    ;;        "p" #'org-agenda-priority
-    ;;        "u" #'org-agenda-priority-up)
-    ;;       "q" #'org-agenda-set-tags
-    ;;       "r" #'org-agenda-refile
-    ;;       "t" #'org-agenda-todo)))
     :config
     (setq org-hide-leading-stars             t
           org-hide-macro-markers             t
@@ -453,9 +283,14 @@ Like vim but better!
                             "~/org/rpgs/todo.org"
                             "~/org/contacts.org.gpg")
           calendar-date-style 'european
-          mark-diary-entries-in-calendar t
+          org-todo-keywords '((sequence "TRIAGE(e)" "BACKLOG(b)" "READY-FOR-REFINEMENT(i)" "REFINED(r)" "TO-DO(t)" "IN-PROGRESS(p)" "REVIEW(w)" "|" "DONE(D)" "CANCELED(c)"))
+         mark-diary-entries-in-calendar t
           org-confirm-babel-evaluate nil)
     :hook (org-mode . global-org-modern-mode)
+          (org-mode . (lambda ()
+                           (apheleia-mode -1)
+                           (setq-local apheleia-format-on-save nil)))
+
     )
 #+end_src
 ** Org latex
@@ -567,7 +402,7 @@ Reduce the number of minor modes by putting them in a menu.
          ("C-c p a" . projectile-add-known-project)
          ("C-c p p"  . projectile-switch-project)
          ("C-c p R" . projectile-run-shell-command-in-root)
-         ("C-c p t" . projectile-run-eshell)
+         ("C-c p t" . projectile-run-vterm)
          ("C-c p T" . projectile-test-project))
          ("C-c p ." . find-file))
 #+end_src
@@ -578,8 +413,24 @@ Reduce the number of minor modes by putting them in a menu.
   :defer t
   :hook (prog-mode text-mode markdown-mode)
   :config
-  ;; load default config
-  (require 'smartparens-config))
+  (require 'smartparens-config)
+  (let ((unless-list '(sp-point-before-word-p
+                         sp-point-after-word-p
+                         sp-point-before-same-p)))
+      (sp-pair "'"  nil :unless unless-list)
+      (sp-pair "\"" nil :unless unless-list))
+    ;; In lisps should open a new form if before another parenthesis
+    (sp-local-pair sp-lisp-modes "(" ")" :unless '(:rem sp-point-before-same-p))
+      ;; Don't do square-bracket space-expansion where it doesn't make sense to
+    (sp-local-pair '(emacs-lisp-mode org-mode markdown-mode markdown-ts-mode gfm-mode)
+                   "[" nil :post-handlers '(:rem ("| " "SPC")))
+
+    ;; Reasonable default pairs for HTML-style comments
+    (sp-local-pair (append sp--html-modes '(markdown-mode markdown-ts-mode gfm-mode))
+                   "<!--" "-->"
+                   :unless '(sp-point-before-word-p sp-point-before-same-p)
+                   :actions '(insert) :post-handlers '(("| " "SPC")))
+  )
 #+end_src
 ** Vertico
 #+begin_src elisp
@@ -858,13 +709,16 @@ This is to prevent possible `tramp' calls."
 ** Dashboard
 #+begin_src elisp
 (use-package dashboard
-  :ensure t
+  :after org
   :config
   (setq dashboard-items '((bookmarks . 5)
                         (projects  . 5)
                         (agenda    . 5)
                         ))
-  (setq dashboard-icon-type 'all-the-icons)
+  (setq dashboard-display-icons-p t)     ; display icons on both GUI and terminal
+  (setq dashboard-icon-type 'nerd-icons) ; use `nerd-icons' package
+  (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
+  (setq dashboard-week-agenda t)
   (dashboard-setup-startup-hook))
 #+end_src
 ** Windows
@@ -949,7 +803,6 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
 #+begin_src elisp
 (use-package lsp-mode
   :demand t
-  :defer t
   :commands lsp
 
   :init
@@ -984,7 +837,7 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
    (haskell-ts-mode . lsp)
    (haskell-literate-mode . lsp)
    (lsp-completion-mode . my/lsp-mode-setup-completion)
-   (go-ts-mode . lsp)
+   (go-mode . lsp)
    (janet-mode .lsp)
    ))
 #+end_src
@@ -1080,10 +933,6 @@ Most formatting tasks should be handled with apheleia .
 #+end_src
 *** Lisp
 #+begin_src elisp
-(use-package lisp
-  :hook
-  (after-save . check-parens))
-
 (use-package elisp-mode
   :bind
   (:map emacs-lisp-mode-map
@@ -1319,11 +1168,97 @@ directory to make multiple eshell windows easier."
 #+end_src
 ** Janet
 #+begin_src elisp
-(use-package janet-mode)
+(use-package janet-mode
+  :after lsp
+  :config
+  (add-to-list 'lsp-language-id-configuration
+               '(janet-mode . "janet"))
 
+    (lsp-register-client (make-lsp-client
+                        :new-connection (lsp-stdio-connection "janet-lsp")
+                        :activation-fn (lsp-activate-on "janet")
+                        :server-id 'janet-lsp)))
 
 (use-package ob-janet
   :after org
   :config
   (append '((janet . t)) org-babel-load-languages))
+#+end_src
+** Linear-emacs
+#+begin_src elisp
+(use-package linear-emacs
+  :after org
+  :commands (linear-emacs-list-issues
+             linear-emacs-new-issue
+             linear-emacs-enable-org-sync
+             linear-emacs-sync-org-to-linear)
+  :init
+  ;; Set file path before package loads
+  (setq linear-emacs-org-file-path (expand-file-name "projects/linear.org" org-directory))
+  
+  :config
+  (setq linear-emacs-api-key (auth-source-pick-first-password :host "api.linear.app"))
+
+  ;; Customize state mapping to match your workflow
+  (setq linear-emacs-issues-state-mapping
+        '(("Triage"   . "TRIAGE")
+          ("Backlog"  . "BACKLOG" )
+          ("Ready for Refinement"  . "READY-FOR-REFINEMENT")
+          ("Refined" . "REFINED")
+          ("To Do" . "TODO")
+          ("In Progress" . "IN-PROGRESS")
+          ("In Review" . "REVIEW")
+          ("Done" . "DONE")
+          ("Canceled" . "CANCELED")))
+  
+  ;; Optional: Set default team to skip selection prompt
+  ;; (setq linear-emacs-default-team-id "your-team-id")
+  
+  ;; Auto-enable sync when linear.org is opened
+  (defun my/enable-linear-org-sync ()
+    "Enable Linear-org synchronization when linear.org is opened."
+    (when (and buffer-file-name
+               (string-match-p "linear\\.org$" buffer-file-name))
+      (linear-emacs-enable-org-sync)
+      (message "Linear-org synchronization enabled for this buffer")))
+  
+  (add-hook 'find-file-hook #'my/enable-linear-org-sync)
+  
+  ;; Keybindings
+  ;; (map! :leader
+  ;;       (:prefix ("l" . "linear")
+  ;;        :desc "List Linear issues" "l" #'linear-emacs-list-issues
+  ;;        :desc "Create new issue" "n" #'linear-emacs-new-issue
+  ;;        :desc "Sync current issue" "s" #'linear-emacs-sync-org-to-linear
+  ;;        :desc "Enable org sync" "e" #'linear-emacs-enable-org-sync
+  ;;        :desc "Disable org sync" "d" #'linear-emacs-disable-org-sync
+  ;;        :desc "Test connection" "t" #'linear-emacs-test-connection
+  ;;        :desc "Toggle debug mode" "D" #'linear-emacs-toggle-debug)))
+  )
+
+#+end_src
+** Smart Jump
+#+begin_src elisp
+(use-package smart-jump
+  :ensure t
+  :config
+  (smart-jump-setup-default-registers))
+#+end_src
+** Rust
+#+begin_src elisp
+(use-package rust-mode
+  :init
+  (setq rust-mode-treesitter-derive t)
+  (add-hook 'rust-mode-hook #'lsp)
+  )
+
+
+(use-package rustic
+  :ensure t
+  :after (rust-mode)
+  :config
+  (setq rustic-format-on-save nil)
+  :custom
+  (rustic-cargo-use-last-stored-arguments t)
+  (rustic-analyzer-command '("rustup" "run" "stable" "rust-analyzer")))
 #+end_src

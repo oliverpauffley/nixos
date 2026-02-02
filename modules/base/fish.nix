@@ -17,6 +17,7 @@
         shellAliases = {
           ".." = "cd ..";
           "..." = "cd ../..";
+          "cd" = "z";
           cat = "bat";
           ls = "eza";
           grep = "rg";

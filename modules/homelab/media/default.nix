@@ -25,11 +25,6 @@
     };
 
     services = {
-      jellyfin = {
-        enable = true;
-        openFirewall = true;
-        group = "multimedia";
-      };
       # movies and tv
       sonarr = {
         enable = true;
@@ -79,12 +74,6 @@
         package = pkgs.homepage-dashboard;
         services = [{
           "Media" = [
-            {
-              "Jellyfin" = {
-                description = "media player";
-                href = "http://192.168.0.100:8096/";
-              };
-            }
             {
               "sabnzbd" = {
                 description = "nzb downloader";

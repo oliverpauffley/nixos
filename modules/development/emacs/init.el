@@ -6,9 +6,5 @@
        (config-org  (expand-file-name "config.org" dotfile-dir))
        (config-el   (expand-file-name "config.el"  dotfile-dir)))
   (require 'ob-tangle)
-  ;;tangle and load if newer than compiled
-  (if (or (not (file-exists-p config-el))
-          (file-newer-than-file-p config-org config-el))
-      (org-babel-load-file config-org t)
-    (load-file config-el)))
+      (org-babel-load-file config-org t))
 ;;; init.el ends here
