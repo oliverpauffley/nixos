@@ -58,6 +58,7 @@
           suggest
 
           # Tree-sitter grammars (from emacs-overlay)
+          treesit-auto
           tree-sitter-langs
           (treesit-grammars.with-grammars (p: [
             p.tree-sitter-bash
@@ -98,6 +99,7 @@
           haskell-mode
           geiser-chez
           terraform-mode
+          wgsl-mode
 
           exercism
 

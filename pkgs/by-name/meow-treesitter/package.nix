@@ -11,4 +11,9 @@ emacsPackages.trivialBuild rec {
   # elisp dependencies
   propagatedUserEnvPkgs = [ emacsPackages.meow ];
   buildInputs = propagatedUserEnvPkgs;
+
+  # Manually copy the queries folder to the output path
+  postInstall = ''
+    cp -r $src/queries $out/share/emacs/site-lisp/
+  '';
 }

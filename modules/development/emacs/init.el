@@ -1,10 +1,50 @@
-;; -*- lexical-binding: t -*-
-;;; Code:
-;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
-(let* ((dotfile-dir (file-name-directory (or (buffer-file-name)
-					                         load-file-name)))
-       (config-org  (expand-file-name "config.org" dotfile-dir))
-       (config-el   (expand-file-name "config.el"  dotfile-dir)))
-  (require 'ob-tangle)
-      (org-babel-load-file config-org t))
+;;; Package --- Summary
+
+;;; Commentary:
+;; Emacs init file responsible for either loading a pre-compiled configuration
+;; file or tangling and loading a literate org configuration file.
+
+;; Don't attempt to find/apply special file handlers to files loaded during
+;; startup.
+(let ((file-name-handler-alist nil))
+  ;; If config is pre-compiled, then load that
+  (if (file-exists-p (expand-file-name "config.elc" user-emacs-directory))
+      (load-file (expand-file-name "config.elc" user-emacs-directory))
+    ;; Otherwise use org-babel to tangle and load the configuration
+    (require 'org)
+    (org-babel-load-file (expand-file-name "config.org" user-emacs-directory))))
+
+;; settings for lsp booster
+
+(defun lsp-booster--advice-json-parse (old-fn &rest args)
+  "Try to parse bytecode instead of json."
+  (or
+   (when (equal (following-char) ?#)
+     (let ((bytecode (read (current-buffer))))
+       (when (byte-code-function-p bytecode)
+         (funcall bytecode))))
+   (apply old-fn args)))
+(advice-add (if (progn (require 'json)
+                       (fboundp 'json-parse-buffer))
+                'json-parse-buffer
+              'json-read)
+            :around
+            #'lsp-booster--advice-json-parse)
+
+(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+  "Prepend emacs-lsp-booster command to lsp CMD."
+  (let ((orig-result (funcall old-fn cmd test?)))
+    (if (and (not test?)                             ;; for check lsp-server-present?
+             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+             lsp-use-plists
+             (not (functionp 'json-rpc-connection))  ;; native json-rpc
+             (executable-find "emacs-lsp-booster"))
+        (progn
+          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+            (setcar orig-result command-from-exec-path))
+          (message "Using emacs-lsp-booster for %s!" orig-result)
+          (cons "emacs-lsp-booster" orig-result))
+      orig-result)))
+(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+
 ;;; init.el ends here

@@ -1,7 +1,7 @@
 #+title: Emacs Literate Config
 #+AUTHOR: Oliver Pauffley
 #+OPTIONS: toc:1
-#+PROPERTY: header-args :tangle config.el
+#+PROPERTY: header-args :tangle config.el :lexical t
 
 * Config
 ** TODO Dired backspace removes symbols not characters.
@@ -9,11 +9,9 @@
 ** TODO fix deleting first letter in parentheses deleting the parentheses
 ** Initial Setup
 #+begin_src elisp
-;; -*- lexical-binding: t -*-
 ;; disable unwanted UI elements
-(tool-bar-mode -1)
-(menu-bar-mode -1)
 (scroll-bar-mode -1)
+(setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
 
 ;; static cursor
 (blink-cursor-mode -1)
@@ -46,9 +44,9 @@
 I'm really liking the modus themes by Prot at the moment. Good using =f5= to rotate the theme is a nice way of spicing things up.
 
 #+begin_src elisp
+;; make themes safe
+(setq custom-safe-themes t)
 (use-package modus-themes
-  :init
-  (modus-themes-include-derivatives-mode 1)
   :bind
   (("<f5>" . modus-themes-rotate)
    ("C-<f5>" . modus-themes-select))
@@ -244,7 +242,6 @@ Like vim but better!
   (use-package org
     :ensure t
     :init
-    (load-file "~/.config/emacs/org/autoloads.el" )  
     (auto-fill-mode -1)
 
     :config
@@ -324,9 +321,9 @@ expand things like =<s= to src blocks
 ** Org-contacts
 #+begin_src emacs-lisp
 (use-package org-contacts
-  :after org
-  :custom (org-contacts-files '("~/org/contacts.org.gpg")
-  ))
+  :after org-agenda
+  :custom
+  (org-contacts-files '("~/org/contacts.org.gpg")))
 #+end_src
 ** Ox Markdown
 #+begin_src elisp
@@ -400,11 +397,11 @@ Reduce the number of minor modes by putting them in a menu.
     :bind (("C-c \/" . project-find-regexp)
 	   :map projectile-mode-map
          ("C-c p a" . projectile-add-known-project)
-         ("C-c p p"  . projectile-switch-project)
+         ("C-c p p"  . #'projectile-persp-switch-project)
          ("C-c p R" . projectile-run-shell-command-in-root)
          ("C-c p t" . projectile-run-vterm)
-         ("C-c p T" . projectile-test-project))
-         ("C-c p ." . find-file))
+         ("C-c p T" . projectile-test-project)
+         ("C-c p ." . find-file)))
 #+end_src
 ** Smart Parens
 #+begin_src elisp
@@ -706,21 +703,6 @@ This is to prevent possible `tramp' calls."
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 #+end_src
-** Dashboard
-#+begin_src elisp
-(use-package dashboard
-  :after org
-  :config
-  (setq dashboard-items '((bookmarks . 5)
-                        (projects  . 5)
-                        (agenda    . 5)
-                        ))
-  (setq dashboard-display-icons-p t)     ; display icons on both GUI and terminal
-  (setq dashboard-icon-type 'nerd-icons) ; use `nerd-icons' package
-  (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
-  (setq dashboard-week-agenda t)
-  (dashboard-setup-startup-hook))
-#+end_src
 ** Windows
 *** Keybinds
 #+begin_src elisp
@@ -869,7 +851,6 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
 Like yasnippet but for new files
 #+begin_src elisp
 (use-package autoinsert
-  :hook (my/startup . (lambda () (auto-insert-mode 1)))
   :config
   (use-package yatemplate)
   (yatemplate-fill-alist)
@@ -888,26 +869,38 @@ Most formatting tasks should be handled with apheleia .
 #+end_src
 *** Haskell
 #+begin_src elisp
-(use-package haskell-ts-mode
-  :custom
-  (haskell-ts-font-lock-level 4)
-  (haskell-ts-use-indent t)
-  (haskell-ts-ghci "ghci")
-  (haskell-ts-use-indent t)
-)
+;; disabling ts mode for now. Messes with indentation in an annoying way!.
+;; (use-package haskell-ts-mode
+;;   :custom
+;;   (haskell-ts-font-lock-level 4)
+;;   (haskell-ts-use-indent t)
+;;   (haskell-ts-ghci "ghci")
+;;   (haskell-ts-use-indent t)
+;; )
 
-(use-package haskell-mode)
+(use-package haskell-mode
+  :mode (("\\.hs$" . haskell-mode))
+  :config
+    (keymap-unset haskell-mode-map "C-c c")
+    (add-hook 'haskell-mode-hook 'haskell-auto-insert-module-template)
+  :hook (my/completions .
+          (lambda ()
+            (set (make-local-variable 'company-backends)
+                 (append '((company-capf company-dabbrev-code))
+                         company-backends)))))
 
-(use-package consult-hoogle)
+(use-package consult-hoogle
+  :bind (:map haskell-mode-map ("C-c c h" . hoogle-buffer)
+  ))
 
 (use-package lsp-haskell
   :custom
  (lsp-haskell-server-path "haskell-language-server-wrapper")
   :after (lsp-mode))
 
-(use-package cabal-mode
-  :mode (("\\.cabal$" . cabal-mode))
-  :defer)
+;;(use-package haskell-cabal-mode
+;;  :mode (("\\.cabal$" . cabal-mode))
+;;  :defer)
 
 
 (org-babel-do-load-languages
@@ -915,6 +908,9 @@ Most formatting tasks should be handled with apheleia .
  '((haskell . t)))
 
 #+end_src
+
+#+RESULTS:
+
 *** Go
 #+begin_src elisp
 (defun my-go-mode-setup ()
@@ -925,9 +921,13 @@ Most formatting tasks should be handled with apheleia .
   (add-hook 'before-save-hook 'gofmt nil t)
   )
 
+(use-package go-ts-mode
+  :mode (("\\.go$" . go-ts-mode))
+  :config
+  (setq go-ts-mode-indent-offset 4))
+
 (use-package go-mode
   :ensure t
-  :mode (("\\.go$" . go-mode))
   :hook ((go-mode go-mode) . my-go-mode-setup)
   :custom (gofmt-command "goimports"))
 #+end_src
@@ -975,6 +975,16 @@ Most formatting tasks should be handled with apheleia .
   :bind (:map dired-mode-map
               ("_" . dired-up-directory))
   :config
+  ;; delete words in dired buffers
+  (defun up-directory (arg)
+  "Move up a directory (delete backwards to /)."
+  (interactive "p")
+  (if (string-match-p "/." (minibuffer-contents))
+      (zap-up-to-char (- arg) ?/)
+    (delete-minibuffer-contents)))
+    
+  (define-key minibuffer-local-filename-completion-map
+            [C-backspace] #'up-directory)
   (setq dired-movement-style 'bounded
         dired-dwim-target t
         ;; Always copy/delete recursively
@@ -982,6 +992,7 @@ Most formatting tasks should be handled with apheleia .
         dired-recursive-deletes 'top
         dired-kill-when-opening-new-dired-buffer t
         dired-auto-revert-buffer #'dired-buffer-stale-p
+        lsp-dired-mode t
         dired-isearch-filenames t
         ;; Ask whether destination dirs should get created when copying/removing files.
         dired-create-destination-dirs 'ask
@@ -992,21 +1003,22 @@ Most formatting tasks should be handled with apheleia .
 #+begin_src emacs-lisp 
 (use-package perspective
   :bind
-  ("C-x C-b" . persp-list-buffers)
-  ("C-c g t" . persp-next)
+  (("C-x C-b" . persp-list-buffers)
+   ("C-c g t" . persp-next))
   :custom
   (persp-mode-prefix-key (kbd "C-c M-p")) 
-  (consult-customize consult--source-buffer :hidden t :default nil)
-  (add-to-list 'consult-buffer-sources persp-consult-source)
   :init
-  (persp-mode))
+  (persp-mode)
+  :config
+  (with-eval-after-load 'consult
+    (consult-customize consult--source-buffer :hidden t :default nil)
+    (add-to-list 'consult-buffer-sources persp-consult-source)))
 #+end_src
 We also use persp-projectile to link projectile and perspective together
 #+begin_src emacs-lisp
 (use-package persp-projectile
   :bind
-  (:map projectile-mode-map ("s-s"  . projectile-persp-switch-project)
-  ))
+  (:map projectile-mode-map ("s-s"  . projectile-persp-switch-project)))
 #+end_src
 ** Text
 #+begin_src elisp
@@ -1030,18 +1042,13 @@ We also use persp-projectile to link projectile and perspective together
 #+end_src
 ** Tree-Sitter
 #+begin_src elisp
-(use-package treesit
-  :custom
-  (treesit-font-lock-level 4))
-
-(use-package tree-sitter-langs 
-  :after tree-sitter
-  :custom (global-tree-sitter-mode t))
-
 (with-eval-after-load 'meow
   (use-package meow-tree-sitter
     :demand
     :config
+    (setq meow-tree-sitter-queries-dir 
+        (expand-file-name "queries" 
+                          (file-name-directory (locate-library "meow-tree-sitter"))))
     (meow-tree-sitter-register-defaults)))
 #+end_src
 ** Elisp
@@ -1195,10 +1202,7 @@ directory to make multiple eshell windows easier."
   :init
   ;; Set file path before package loads
   (setq linear-emacs-org-file-path (expand-file-name "projects/linear.org" org-directory))
-  
-  :config
   (setq linear-emacs-api-key (auth-source-pick-first-password :host "api.linear.app"))
-
   ;; Customize state mapping to match your workflow
   (setq linear-emacs-issues-state-mapping
         '(("Triage"   . "TRIAGE")
@@ -1262,3 +1266,27 @@ directory to make multiple eshell windows easier."
   (rustic-cargo-use-last-stored-arguments t)
   (rustic-analyzer-command '("rustup" "run" "stable" "rust-analyzer")))
 #+end_src
+** WGSL
+#+begin_src elisp
+(use-package wgsl-mode)
+#+end_src
+** Dashboard
+#+begin_src elisp
+(use-package dashboard
+  :demand t
+  :config
+  (progn 
+  (setq dashboard-items '((bookmarks . 5)
+                        (projects  . 5)
+                        (agenda    . 30)
+                        ))
+  (setq dashboard-display-icons-p t)     ; display icons on both GUI and terminal
+  (setq dashboard-icon-type 'nerd-icons) ; use `nerd-icons' package
+  (setq dashboard-projects-backend 'projectile)
+  (setq dashboard-week-agenda t)
+  ;; TODO fix this!
+  (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
+  (setq dashboard-match-agenda-entry "+Diary")
+  (dashboard-setup-startup-hook)))
+#+end_src
+

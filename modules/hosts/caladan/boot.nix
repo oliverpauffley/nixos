@@ -1,7 +1,7 @@
 { lib, ... }: {
   flake.hosts."caladan" = {
     description = "homelab";
-    ipv4 = "192.168.1.100";
+    ipv4 = "192.168.0.100";
     dnsalias = [ "caladan" "sonarr" "radarr" "dashboard" "plex" "film" "tv" ];
     isDNS = true;
   };
