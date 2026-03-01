@@ -24,7 +24,7 @@ run_if_dovi() {
 # Iterate over all files in the directory
 while IFS= read -r file; do
     # Use mediainfo to check if the file has Dolby Vision metadata
-    if mediainfo "$file" >/dev/null 2>&1 | grep -q -E "Dolby Vision|dvhe|dvh1|dovi"; then
+    if mediainfo --Output "Video" "$file" >/dev/null 2>&1 | grep -q -E "Dolby Vision|dvhe|dvh1|dovi"; then
         echo "✅ Dolby Vision detected in: $file"
         run_if_dovi "$file"
     else

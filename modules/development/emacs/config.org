@@ -8,28 +8,28 @@
 ** TODO get new files to have some pregenerated content.
 ** TODO fix deleting first letter in parentheses deleting the parentheses
 ** Initial Setup
+first disable some unwanted UI elements
 #+begin_src elisp
 ;; disable unwanted UI elements
 (scroll-bar-mode -1)
 (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
-
 ;; static cursor
 (blink-cursor-mode -1)
+#+end_src
 
-;; turn off tabs
+turn off tabs
+#+begin_src elisp
 (setq-default indent-tabs-mode nil)
-;; set indents to 4
+#+end_src
+
+set indents to 4
+#+begin_src elisp
 (setq-default tab-width 4)
 (setq-default require-final-newline "visit-save")
+#+end_src
 
-;; don't show the initial emacs screen
-(setq inhibit-startup-screen t)
-;; let me use y/n in prompts
-(fset 'yes-or-no-p 'y-or-n-p)
-;; no cowbell
-(setq visible-bell nil)
-(setq ring-bell-function #'ignore)
-;; move backup files out of the way
+sort out backup files
+#+begin_src elisp
 (setq backup-directory-alist `(("." . "~/.saves")))
 (setq create-lockfiles nil)
 (setq backup-by-copying t)
@@ -40,18 +40,37 @@
   kept-old-versions 2
   version-control t)
 #+end_src
+
+don't show the initial emacs screen
+#+begin_src elisp
+(setq inhibit-startup-screen t)
+#+end_src
+
+use y/n prompts
+#+begin_src elisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+end_src
+
+turn off cowbell
+#+begin_src elisp
+(setq visible-bell nil)
+(setq ring-bell-function #'ignore)
+#+end_src
 ** Themes
+Make themes safe
+#+begin_src elisp
+(setq custom-safe-themes t)
+#+end_src
+
 I'm really liking the modus themes by Prot at the moment. Good using =f5= to rotate the theme is a nice way of spicing things up.
 
 #+begin_src elisp
-;; make themes safe
-(setq custom-safe-themes t)
 (use-package modus-themes
+  :demand t
   :bind
   (("<f5>" . modus-themes-rotate)
    ("C-<f5>" . modus-themes-select))
   :config
-  ;; Your customizations here:
   (setq modus-themes-to-toggle '(modus-operandi-tinted modus-vivendi-tinted)
         modus-themes-to-rotate modus-themes-items
         modus-themes-mixed-fonts t
@@ -241,6 +260,7 @@ Like vim but better!
   
   (use-package org
     :ensure t
+    :demand t
     :init
     (auto-fill-mode -1)
 
@@ -321,7 +341,7 @@ expand things like =<s= to src blocks
 ** Org-contacts
 #+begin_src emacs-lisp
 (use-package org-contacts
-  :after org-agenda
+  :demand t
   :custom
   (org-contacts-files '("~/org/contacts.org.gpg")))
 #+end_src
@@ -336,6 +356,11 @@ expand things like =<s= to src blocks
 ** Ox Hugo
 #+begin_src elisp
 (use-package ox-hugo)
+#+end_src
+** Ox-slack
+slack compatible export
+#+begin_src elisp
+(use-package ox-slack)
 #+end_src
 ** Elfeed
 #+begin_src elisp
@@ -801,6 +826,7 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
 
   (defun my/lsp-mode-setup-completion ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          
           '(orderless))
     ;; Optionally configure the first word as flex filtered.
     (setq-local orderless-style-dispatchers (list #'my/orderless-dispatch-flex-first))
@@ -812,15 +838,16 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
               ("C-c c a" . #'lsp-execute-code-action)
               ("C-c c i" . #'lsp-find-implementation)
               ("C-c c r" . #'lsp-rename)
+              ("C-c c d" . #'consult-lsp-diagnostics)
               )
   :hook
   ((lsp-mode . lsp-enable-which-key-integration)
    (csharp-mode . lsp)
-   (haskell-ts-mode . lsp)
+   (haskell-mode . lsp)
    (haskell-literate-mode . lsp)
    (lsp-completion-mode . my/lsp-mode-setup-completion)
-   (go-mode . lsp)
-   (janet-mode .lsp)
+   (go-ts-mode . lsp)
+   (janet-mode . lsp)
    ))
 #+end_src
 
@@ -1284,9 +1311,41 @@ directory to make multiple eshell windows easier."
   (setq dashboard-icon-type 'nerd-icons) ; use `nerd-icons' package
   (setq dashboard-projects-backend 'projectile)
   (setq dashboard-week-agenda t)
-  ;; TODO fix this!
-  (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
-  (setq dashboard-match-agenda-entry "+Diary")
+  (setq dashboard-filter-agenda-entry
+      (lambda ()
+        (let ((scheduled (org-entry-get nil "SCHEDULED"))
+              (deadline  (org-entry-get nil "DEADLINE")))
+          (unless (or scheduled deadline)
+            (org-entry-end-position)))))
   (dashboard-setup-startup-hook)))
 #+end_src
 
+** Feature Mode
+For cucumber style testing.
+#+begin_src elisp
+(use-package feature-mode
+  :mode "\\.feature\\'"
+  :interpreter "cucumber"
+  :hook (feature-mode . my-feature-mode-setup)
+  :config
+  (setq feature-default-language "en")
+  (setq feature-i18n-file nil)
+
+  :init
+  (defun my-feature-mode-setup ()
+    (run-hooks 'prog-mode-hook)
+    (setq tab-width 2)))
+#+end_src
+** Display Buffer Rules
+We can use display buffer alist to tweak how windows are shown
+#+begin_src elisp
+(add-to-list 'display-buffer-alist
+             '(
+               ("\\*Meow Cheatsheet\\*"
+                (display-buffer-reuse-mode-window
+                 display-buffer-below-selected))
+               ("\\*vterm.*\\")
+               (display-buffer-reuse-mode-window
+                display-buffer-pop-up-window)
+               ))
+#+end_src

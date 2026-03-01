@@ -118,11 +118,13 @@
           perspective
           persp-projectile
           pkgs.local.linear-emacs
+          pkgs.local.feature-mode
 
           # Org mode
           epkgs.org
           ox-hugo
           ox-gfm
+          ox-slack
 
           org-contrib
           org-contacts

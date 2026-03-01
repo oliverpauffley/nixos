@@ -1,5 +1,6 @@
 {
-  flake.modules.nixos.hydra = {
+  flake.modules.nixos.hydra = { pkgs, ... }: {
+    environment.systemPackages = with pkgs; [ git ];
     services.hydra = {
       enable = true;
       hydraURL = "http://localhost:3000"; # externally visible URL
@@ -10,6 +11,7 @@
         allow-import-from-derivation = true
       '';
     };
+
     networking.firewall.allowedTCPPorts = [ 3000 ];
     nix.buildMachines = [{
       hostName = "localhost";
@@ -18,6 +20,10 @@
       supportedFeatures = [ "kvm" "nixos-test" "big-parallel" "benchmark" ];
       maxJobs = 8;
     }];
+    nix.distributedBuilds = true;
+    nix.settings.trusted-users = [ "hydra" "hydra-queue-runner" ];
     nix.settings.allow-import-from-derivation = true;
+    nix.settings.allowed-uris =
+      [ "github:" "https://github.com/" "git+ssh://github.com/" ];
   };
 }
