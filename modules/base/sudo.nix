@@ -1,1 +1,10 @@
-{ flake.modules.nixos.base = { security.sudo-rs.enable = true; }; }
+{
+  flake.modules.nixos.base = {
+    security.sudo-rs = {
+      enable = true;
+      extraConfig = ''
+        Defaults pwfeedback
+      '';
+    };
+  };
+}

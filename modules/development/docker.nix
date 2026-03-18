@@ -4,6 +4,6 @@
   };
 
   flake.modules.homeManager.dev = { pkgs, ... }: {
-    home.packages = with pkgs; [ dive ];
+    home.packages = with pkgs; [ dive docker-buildx ];
   };
 }

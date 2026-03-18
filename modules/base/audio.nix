@@ -1,6 +1,7 @@
 { lib, inputs, ... }: {
   flake.modules = {
-    nixos.base = {
+    nixos.base = { pkgs, ... }: {
+      environment.systemPackages = with pkgs; [ alsa-utils ];
       security.rtkit.enable = true;
 
       services = {

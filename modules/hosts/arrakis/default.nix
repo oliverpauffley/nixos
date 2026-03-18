@@ -14,7 +14,6 @@
         # Users
         ollie
         root
-        inputs.hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
 
       ]
       # Specific Home-Manager modules

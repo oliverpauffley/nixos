@@ -50,9 +50,9 @@
           lsp-haskell
 
           # Programming languages
-          # formatting
+          ## formatting
           apheleia
-          # elisp
+          ## elisp
           highlight-quoted
           highlight-defined
           suggest

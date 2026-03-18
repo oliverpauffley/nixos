@@ -46,8 +46,6 @@
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    hardware.url = "github:nixos/nixos-hardware";
-
     colmena-flake.url = "github:juspay/colmena-flake";
 
     nix-colors.url = "github:misterio77/nix-colors";

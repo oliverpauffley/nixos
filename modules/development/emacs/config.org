@@ -415,10 +415,11 @@ Reduce the number of minor modes by putting them in a menu.
     :custom
     (projectile-mode +1)
     (add-to-list 'projectile-globally-ignored-directories "/nix/store*")
+    (add-to-list 'projectile-globally-ignored-directories "*vendor*" )
     (setq
      projectile-project-search-path '(("~/code" . 5))
      projectile-enable-caching 'persistent
-     projectile-auto-discover "true")
+          projectile-auto-discover "true")
     :bind (("C-c \/" . project-find-regexp)
 	   :map projectile-mode-map
          ("C-c p a" . projectile-add-known-project)
@@ -548,9 +549,7 @@ This is to prevent possible `tramp' calls."
   ;; relevant when you use the default completion UI.
   :hook (completion-list-mode . consult-preview-at-point-mode)
 
-  ;; The :init configuration is always executed (Not lazy)
   :init
-
   ;; Tweak the register preview for `consult-register-load',
   ;; `consult-register-store' and the built-in commands.  This improves the
   ;; register formatting, adds thin separator lines, register sorting and hides
@@ -593,8 +592,8 @@ This is to prevent possible `tramp' calls."
   ;; Optionally configure the narrowing key.
   ;; Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<") ;; "C-+"
-
-)
+  :bind (:map global-map ("C-c b" . #'consult-buffer))
+  )
 #+end_src
 ** Consult GH
 #+begin_src elisp
@@ -1017,6 +1016,7 @@ Most formatting tasks should be handled with apheleia .
         ;; Always copy/delete recursively
         dired-recursive-copies 'always
         dired-recursive-deletes 'top
+        all-the-icons-dired-mode t
         dired-kill-when-opening-new-dired-buffer t
         dired-auto-revert-buffer #'dired-buffer-stale-p
         lsp-dired-mode t
@@ -1344,8 +1344,11 @@ We can use display buffer alist to tweak how windows are shown
                ("\\*Meow Cheatsheet\\*"
                 (display-buffer-reuse-mode-window
                  display-buffer-below-selected))
-               ("\\*vterm.*\\")
+               ("\\*vterm.*\\"
                (display-buffer-reuse-mode-window
-                display-buffer-pop-up-window)
-               ))
+                display-buffer-pop-up-window))
+               ("\\*compilation\\*"
+               (display-buffer-reuse-window display-buffer-at-bottom)
+               (window-height . 0.25))))
 #+end_src
+
