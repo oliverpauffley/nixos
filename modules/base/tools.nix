@@ -29,6 +29,7 @@
       btop
       calibre # ebooks
       exercism
+      claude-code
     ];
   };
 }

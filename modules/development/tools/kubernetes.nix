@@ -5,7 +5,7 @@
     in {
       package = pkgs.k9s;
       enable = true;
-      plugin = {
+      plugins = {
         # Sends logs over to jq for processing. This leverages kubectl plugin kubectl-jq.
         jqlogs = {
           shortCut = "Ctrl-J";

@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.base = { pkgs, config, lib, ... }:
+  flake.modules.homeManager.base = { pkgs, config, lib, sources, ... }:
     let
       # Modern Emacs with optimizations (primary configuration)
       emacs-base = pkgs.emacs-gtk.override {
@@ -119,12 +119,15 @@
           persp-projectile
           pkgs.local.linear-emacs
           pkgs.local.feature-mode
+          pkgs.local.emacs-claude-code
+          inheritenv
 
           # Org mode
           epkgs.org
           ox-hugo
           ox-gfm
           ox-slack
+          ob-http
 
           org-contrib
           org-contacts
@@ -217,6 +220,10 @@
       };
       home.file."/home/ollie/.config/emacs/org/autoloads.el" = {
         source = ./org/autoloads.el;
+      };
+      home.file."/home/ollie/.config/emacs/templates/" = {
+        source = ./templates;
+        recursive = true;
       };
 
       # === PACKAGES ===

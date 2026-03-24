@@ -2,11 +2,7 @@
 #+AUTHOR: Oliver Pauffley
 #+OPTIONS: toc:1
 #+PROPERTY: header-args :tangle config.el :lexical t
-
 * Config
-** TODO Dired backspace removes symbols not characters.
-** TODO get new files to have some pregenerated content.
-** TODO fix deleting first letter in parentheses deleting the parentheses
 ** Initial Setup
 first disable some unwanted UI elements
 #+begin_src elisp
@@ -237,6 +233,17 @@ Like vim but better!
     (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
     (add-to-list 'meow-mode-state-list '(eshell-mode . insert))
     (add-to-list 'meow-mode-state-list '(helpful-mode . insert))
+    ;; magit and ediff: use motion state so native keybindings pass through
+    (add-to-list 'meow-mode-state-list '(magit-mode . motion))
+    (add-to-list 'meow-mode-state-list '(magit-status-mode . motion))
+    (add-to-list 'meow-mode-state-list '(magit-diff-mode . motion))
+    (add-to-list 'meow-mode-state-list '(magit-log-mode . motion))
+    (add-to-list 'meow-mode-state-list '(magit-process-mode . motion))
+    (add-to-list 'meow-mode-state-list '(magit-revision-mode . motion))
+    (add-to-list 'meow-mode-state-list '(magit-stash-mode . motion))
+    (add-to-list 'meow-mode-state-list '(magit-refs-mode . motion))
+    (add-to-list 'meow-mode-state-list '(forge-topic-mode . motion))
+    (add-to-list 'meow-mode-state-list '(ediff-mode . motion))
     ;; keep the expand hints around a while longer
     (setq meow-expand-hint-remove-delay 3.0)
     ;; start git commits in insert mode
@@ -362,6 +369,13 @@ slack compatible export
 #+begin_src elisp
 (use-package ox-slack)
 #+end_src
+** ob-http
+run http requests from org files with org babel
+#+begin_src elisp
+(use-package ob-http
+  :init
+  (append '((http . t)) org-babel-load-languages))
+#+end_src
 ** Elfeed
 #+begin_src elisp
 (use-package elfeed
@@ -437,6 +451,11 @@ Reduce the number of minor modes by putting them in a menu.
   :hook (prog-mode text-mode markdown-mode)
   :config
   (require 'smartparens-config)
+  ;; Don't auto-delete pair delimiters on backspace
+  (setq sp-autodelete-pair nil)
+  (setq sp-autodelete-closing-pair nil)
+  (setq sp-autodelete-opening-pair nil)
+  (setq smartparens-strict-mode t)
   (let ((unless-list '(sp-point-before-word-p
                          sp-point-after-word-p
                          sp-point-before-same-p)))
@@ -765,25 +784,51 @@ This uses `split-window-right' but follows with the cursor."
 *** Keybinds
 Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git create actions.
 #+begin_src elisp
+(defvar-keymap my-git-keymap
+  :doc "git commands"
+  "g" #'magit-status
+  "s" #'magit-stage-file
+  "S" #'magit-stage-modified
+  "u" #'magit-unstage-file
+  "B" #'magit-blame-addition
+  "d" #'magit-diff-dwim
+  "l" #'magit-log-current
+  "f" #'magit-fetch-all
+  "T" #'git-timemachine-toggle
+  "L" #'git-link)
+
 (defvar-keymap my-git-create-keymap
   :doc "git create commands"
   "p" #'forge-create-pullreq
   "b" #'magit-branch-and-checkout
   "c" #'magit-commit-create)
-(define-key global-map (kbd "C-c g c") my-git-create-keymap)
-(define-key global-map (kbd "C-c g g") #'magit-status)
-(define-key global-map (kbd "C-c g T") #'git-timemachine-toggle)
+
+(defvar-keymap my-smerge-keymap
+  :doc "smerge conflict resolution"
+  "n" #'smerge-next
+  "p" #'smerge-prev
+  "u" #'smerge-keep-upper
+  "l" #'smerge-keep-lower
+  "a" #'smerge-keep-all
+  "RET" #'smerge-keep-current)
+
+(define-key my-git-keymap (kbd "c") my-git-create-keymap)
+(define-key my-git-keymap (kbd "m") my-smerge-keymap)
+(define-key global-map (kbd "C-c g") my-git-keymap)
 #+end_src
 *** Magit
 #+begin_src elisp
 (use-package magit
-  :init
   :defer t
   :config
-  (setq magit-repository-directories `(("~/code". 5)))
+  (setq magit-repository-directories '(("~/code" . 5)))
   (setq straight-vc-git-default-protocol "ssh")
-  :bind (:map magit-mode-map (("x" . magit-discard)))
-)
+  ;; Full-frame magit-status, restore windows on quit
+  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
+  (setq magit-bury-buffer-function #'magit-restore-window-configuration)
+  ;; Word-level diff highlighting in hunks
+  (setq magit-diff-refine-hunk 'all)
+  :bind (:map magit-mode-map (("x" . magit-discard))))
 #+end_src
 *** Forge
 #+begin_src elisp
@@ -793,6 +838,35 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
   :config
   (setq forge-owned-accounts '(("oliverpauffley" nil)))
   )
+#+end_src
+*** EDiff
+#+begin_src elisp
+(use-package ediff
+  :defer t
+  :config
+  ;; Single-frame EDiff (no popup control frame)
+  (setq ediff-window-setup-function #'ediff-setup-windows-plain)
+  ;; Side-by-side comparison
+  (setq ediff-split-window-function #'split-window-horizontally)
+
+  ;; Save and restore window config around EDiff sessions
+  (defvar my-ediff-saved-window-config nil)
+
+  (defun my-ediff-save-window-config ()
+    (setq my-ediff-saved-window-config (current-window-configuration)))
+
+  (defun my-ediff-restore-window-config ()
+    (when my-ediff-saved-window-config
+      (set-window-configuration my-ediff-saved-window-config)
+      (setq my-ediff-saved-window-config nil)))
+
+  (add-hook 'ediff-before-setup-hook #'my-ediff-save-window-config)
+  (add-hook 'ediff-quit-hook #'my-ediff-restore-window-config)
+  (add-hook 'ediff-suspend-hook #'my-ediff-restore-window-config)
+
+  ;; j/k navigation in ediff control panel
+  (define-key ediff-mode-map (kbd "j") #'ediff-next-difference)
+  (define-key ediff-mode-map (kbd "k") #'ediff-previous-difference))
 #+end_src
 ** Which key
 #+begin_src elisp
@@ -876,14 +950,13 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
 ** Yatemplate
 Like yasnippet but for new files
 #+begin_src elisp
-(use-package autoinsert
+(use-package yatemplate
+  :defer t
   :config
-  (use-package yatemplate)
+  (setq yatemplate-dir (expand-file-name "templates" user-emacs-directory))
   (yatemplate-fill-alist)
-  :custom
-  (yatemplate-dir (expand-file-name "templates" user-emacs-directory))
-  ;; (setq auto-insert t)
-  )
+  (auto-insert-mode t)
+  (setq auto-insert-query nil))
 #+end_src
 ** Programming Languages
 *** Formatting
@@ -1352,3 +1425,16 @@ We can use display buffer alist to tweak how windows are shown
                (window-height . 0.25))))
 #+end_src
 
+** Claude-code
+Guess this is the beginning of the end
+#+begin_src elisp
+(use-package inheritenv)
+
+(use-package claude-code
+  :config
+  (setq claude-code-terminal-backend 'vterm)
+  (claude-code-mode)
+  :bind-keymap ("C-c a" . claude-code-command-map)
+  :bind
+  (:repeat-map my-claude-code-map ("M" . claude-code-cycle-mode)))
+#+end_src

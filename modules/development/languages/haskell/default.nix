@@ -14,7 +14,6 @@
         hpkgs.zlib
         hpkgs.criterion
         hpkgs.vector
-        hpkgs.record-dot-preprocessor
         hpkgs.containers
         hpkgs.text-show
         hpkgs.cabal2nix

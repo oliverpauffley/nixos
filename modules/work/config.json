@@ -1,8 +1,8 @@
 {
     "oauth": {
         "clientID": "0oa5lj5deYlDCe8Es416",
-        "authUrl": "https://login.uw.systems/oauth2/v1/authorize",
-        "tokenUrl": "https://login.uw.systems/oauth2/v1/token"
+        "authUrl": "https://login.uw.systems/oauth2/default/v1/authorize",
+        "tokenUrl": "https://login.uw.systems/oauth2/default/v1/token"
     },
     "devices": [
         {
