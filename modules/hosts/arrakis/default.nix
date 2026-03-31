@@ -8,7 +8,7 @@
         laptop
         work
         dev
-        xmonad
+        niri
         use-external
 
         # Users
@@ -24,7 +24,9 @@
             base
             work
             dev
-            xmonad
+            niri
+            noctalia
+
           ];
       }];
   };

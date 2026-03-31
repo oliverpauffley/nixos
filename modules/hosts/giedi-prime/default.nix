@@ -6,7 +6,7 @@
         # Modules
         base
         dev
-        xmonad
+        niri
         game
 
         # Users
@@ -21,7 +21,7 @@
             base
             work
             dev
-            xmonad
+            niri
           ];
       }];
   };

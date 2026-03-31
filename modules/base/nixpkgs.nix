@@ -36,7 +36,15 @@
       };
     };
   };
-  flake.modules.nixos.base = {
+  flake.modules.nixos.base = { inputs, ... }: {
+    nixpkgs.overlays = [
+      (final: _prev: {
+        unstable = import inputs.nixpkgs-unstable {
+          system = final.stdenv.hostPlatform.system;
+          config.allowUnfree = true;
+        };
+      })
+    ];
     nixpkgs.config.allowUnfree = true;
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
   };

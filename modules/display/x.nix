@@ -1,5 +1,9 @@
 {
-  flake.modules.nixos.base = { pkgs, ... }: {
+  flake.modules.nixos.base = { ... }: {
+    services.xserver.xkb = {
+      layout = "gb";
+      options = "caps:ctrl_modifier";
+    };
     environment.sessionVariables = {
       XDG_CACHE_HOME = "$HOME/.cache";
       XDG_CONFIG_HOME = "$HOME/.config";
@@ -7,21 +11,13 @@
       XDG_STATE_HOME = "$HOME/.local/state";
     };
     hardware.graphics.enable = true;
-    services.xserver = {
-      enable = true;
-      xkb = {
-        layout = "gb";
-        options = "caps:ctrl_modifier";
-      };
-      displayManager.gdm.enable = true;
-      displayManager.gdm.wayland = false;
-      desktopManager = { xterm.enable = false; };
-    };
+    services.displayManager.gdm.enable = true;
+    services.displayManager.gdm.wayland = true;
 
   };
+
   flake.modules.homeManager.base = { pkgs, config, ... }: {
-    services.picom.enable = true;
-    home.packages = with pkgs; [ firefox feh arandr ];
+    home.packages = with pkgs; [ firefox ];
 
     # default programs
     xdg.mimeApps = {

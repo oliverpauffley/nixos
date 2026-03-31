@@ -24,6 +24,26 @@ set indents to 4
 (setq-default require-final-newline "visit-save")
 #+end_src
 
+start the emacs server for emacsclient
+#+begin_src elisp
+(server-start)
+
+;; Close frame after org-capture if it was opened for capture
+(defun my/org-capture-delete-frame ()
+  "Delete frame if it was created for org-capture."
+  (when (equal (frame-parameter nil 'name) "org-capture")
+    (delete-frame)))
+
+(add-hook 'org-capture-after-finalize-hook #'my/org-capture-delete-frame)
+
+;; Make org-capture fill the entire frame
+(add-hook 'org-capture-mode-hook #'delete-other-windows)
+
+;; Make org-capture template selection fullscreen
+(add-to-list 'display-buffer-alist
+             '("\\*Org Select\\*" (display-buffer-full-frame)))
+#+end_src
+
 sort out backup files
 #+begin_src elisp
 (setq backup-directory-alist `(("." . "~/.saves")))
@@ -272,7 +292,11 @@ Like vim but better!
     (auto-fill-mode -1)
 
     :config
-    (setq org-hide-leading-stars             t
+    (setq org-default-notes-file "~/org/todo.org"
+          org-capture-templates
+          '(("t" "Todo" entry (file+headline "~/org/todo.org" "Inbox")
+             "* TODO %?\n%U\n" :empty-lines 1))
+          org-hide-leading-stars             t
           org-hide-macro-markers             t
           org-ellipsis                       " ⤵"
           org-image-actual-width             600
@@ -420,8 +444,9 @@ Reduce the number of minor modes by putting them in a menu.
   :if (executable-find "direnv")
   :init
   (setq envrc-debug t)
-  (add-hook 'after-init-hook (lambda () (envrc-global-mode 1)))
-  (advice-add 'cider-jack-in :around #'envrc-propagate-environment))
+  (advice-add 'cider-jack-in :around #'envrc-propagate-environment)
+  :config 
+  (envrc-global-mode))
 #+end_src
 ** Projectile
 #+begin_src elisp
@@ -816,6 +841,14 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
 (define-key my-git-keymap (kbd "m") my-smerge-keymap)
 (define-key global-map (kbd "C-c g") my-git-keymap)
 #+end_src
+*** Git-Timemachine
+#+begin_src elisp
+(use-package git-timemachine
+  :defer t
+  :bind (:map git-timemachine-mode-map
+              ("C-p" . git-timemachine-show-previous-revision)
+              ("C-n" . git-timemachine-show-next-revision)))
+#+end_src
 *** Magit
 #+begin_src elisp
 (use-package magit
@@ -828,7 +861,9 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
   (setq magit-bury-buffer-function #'magit-restore-window-configuration)
   ;; Word-level diff highlighting in hunks
   (setq magit-diff-refine-hunk 'all)
-  :bind (:map magit-mode-map (("x" . magit-discard))))
+  :bind (:map magit-mode-map
+              ("x" . magit-discard)
+              ("Y" . magit-copy-buffer-revision)))
 #+end_src
 *** Forge
 #+begin_src elisp
@@ -910,6 +945,7 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
               ("C-c g d" . #'xref-find-definitions)
               ("C-c c a" . #'lsp-execute-code-action)
               ("C-c c i" . #'lsp-find-implementation)
+              ("C-c c r" . #'lsp-find-references)
               ("C-c c r" . #'lsp-rename)
               ("C-c c d" . #'consult-lsp-diagnostics)
               )
@@ -1434,7 +1470,7 @@ Guess this is the beginning of the end
   :config
   (setq claude-code-terminal-backend 'vterm)
   (claude-code-mode)
-  :bind-keymap ("C-c a" . claude-code-command-map)
+  :bind-keymap ("C-c y" . claude-code-command-map)
   :bind
   (:repeat-map my-claude-code-map ("M" . claude-code-cycle-mode)))
 #+end_src

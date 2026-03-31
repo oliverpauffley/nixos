@@ -2,11 +2,15 @@
   description = "ollie pauffley nix config";
   nixConfig = {
     allow-import-from-derivation = "true";
-    extra-substituters =
-      [ "https://nix-community.cachix.org" "https://cache.iog.io" ];
+    extra-substituters = [
+      "https://nix-community.cachix.org"
+      "https://cache.iog.io"
+      "https://noctalia.cachix.org"
+    ];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
     ];
   };
 
@@ -50,6 +54,11 @@
 
     nix-colors.url = "github:misterio77/nix-colors";
     treefmt-nix.url = "github:numtide/treefmt-nix";
+
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     # all systems
     systems.url = "github:nix-systems/default";

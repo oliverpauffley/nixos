@@ -5,6 +5,7 @@
         inputs.sops-nix.nixosModules.sops
         # Modules
         base
+        niri
         media
         coredns
         traefik
@@ -21,6 +22,7 @@
           with config.flake.modules.homeManager; [
             inputs.sops-nix.homeManagerModules.sops
             base
+            niri
           ];
       }];
   };
