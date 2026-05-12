@@ -1,7 +1,6 @@
 {
-  flake.modules.nixos.work = { pkgs, ... }: {
+  flake.modules.nixos.work = {
     networking.extraHosts = "10.91.9.5 webappint.tp.private";
-    environment.systemPackages = with pkgs.local; [ strongbox ];
   };
 
   flake.modules.homeManager.work = { pkgs, ... }: {

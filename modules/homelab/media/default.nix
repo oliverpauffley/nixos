@@ -9,18 +9,12 @@
     systemd.tmpfiles.rules = [ "d /mnt/media 0770 - multimedia - -" ];
 
     # jellyfin graphics config
-    nixpkgs.config.packageOverrides = pkgs: {
-      vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-    };
-    hardware.graphics.enable = true;
-    hardware.opengl = {
+    hardware.graphics = {
+      enable = true;
       extraPackages = with pkgs; [
         intel-media-driver
-        vaapiIntel
-        vaapiVdpau
         libvdpau-va-gl
         intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
-        intel-media-sdk # QSV up to 11th gen
       ];
     };
 
@@ -101,7 +95,7 @@
             {
               "deluge" = {
                 description = "torrent downloader";
-                href = "http://192.168.0.100:58846/";
+                href = "http://192.168.0.100:8112/";
               };
             }
             {

@@ -28,6 +28,7 @@
 
         settings = {
           bar = {
+            showCapsule = false;
             position = "top";
             floating = false;
             backgroundOpacity = 0.9;
@@ -53,7 +54,7 @@
           };
           ui = {
             fontDefault = config.fontProfiles.monospace.family;
-            fontFixed = config.fontProfiles.regular.family;
+            fontFixed = config.fontProfiles.monospace.family;
           };
           location = { name = "Bournemouth"; };
         };

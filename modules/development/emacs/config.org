@@ -271,6 +271,24 @@ Like vim but better!
     (meow-global-mode 1)
           (meow-setup))
 #+end_src
+** Repeat-FU
+getting vim like repetition of commands
+#+begin_src elisp
+(use-package repeat-fu
+  :commands (repeat-fu-mode repeat-fu-execute)
+
+  :config
+  (setq repeat-fu-preset 'meow)
+
+  :hook
+  ((meow-mode)
+   .
+   (lambda ()
+     (when (and (not (minibufferp)) (not (derived-mode-p 'special-mode)))
+       (repeat-fu-mode)
+       (define-key meow-normal-state-keymap (kbd "C-,") 'repeat-fu-execute)
+       (define-key meow-insert-state-keymap (kbd "C-,") 'repeat-fu-execute)))))
+#+end_src
 ** Font
 #+begin_src elisp
 ;; Main typeface
@@ -291,11 +309,16 @@ Like vim but better!
     :init
     (auto-fill-mode -1)
 
+    :bind
+    (:map global-map ("C-c C" . #'org-capture))
+
     :config
     (setq org-default-notes-file "~/org/todo.org"
           org-capture-templates
           '(("t" "Todo" entry (file+headline "~/org/todo.org" "Inbox")
-             "* TODO %?\n%U\n" :empty-lines 1))
+             "* TODO %?\n%U\n" :empty-lines 1)
+            ("b" "Brag List" entry (file+olp+datetree "~/org/work/performance_and_pay.org" "Achievements")
+             "* %? %^g" :time-prompt t :tree-type week))
           org-hide-leading-stars             t
           org-hide-macro-markers             t
           org-ellipsis                       " ⤵"
@@ -317,22 +340,26 @@ Like vim but better!
           org-src-tab-acts-natively          t
           org-src-preserve-indentation       t
           org-log-done                       'time
-  	    diary-file "~/org/diary"
-  	    org-agenda-diary-file 'diary-file
-  	    org-agenda-include-diary t
-  	    diary-show-holidays-flag nil
-  	    org-agenda-file-regexp "\\`[^.].*\\.org\\\(\\.gpg\\\)?\\'"
+          org-log-into-drawer t
+  	      diary-file "~/org/diary"
+  	      org-agenda-diary-file 'diary-file
+  	      org-agenda-include-diary t
+  	      diary-show-holidays-flag nil
+  	      org-agenda-file-regexp "\\`[^.].*\\.org\\\(\\.gpg\\\)?\\'"
           org-directory "~/org"
-          org-refile-targets '((nil :maxlevel . 3) (org-agenda-files :maxlevel . 10))
+          org-refile-targets '((org-agenda-files :maxlevel . 10))
+          org-refile-use-outline-path 'file
+          org-agenda-prefix-format  '((agenda . " %i %?-12t% s") (todo . " %i %-12:c") (tags . " %i %-12:c") (search . " %i %-12:c"))
+          org-agenda-span 'month
           org-agenda-files (list
                             "~/org/todo.org"
                             "~/org/work/todo.org"
-                            "~/org/programming/todo.org"
-                            "~/org/rpgs/todo.org"
+                            ;; not including this currently"~/org/programming/todo.org"
+                            ;;"~/org/rpgs/todo.org"
                             "~/org/contacts.org.gpg")
           calendar-date-style 'european
-          org-todo-keywords '((sequence "TRIAGE(e)" "BACKLOG(b)" "READY-FOR-REFINEMENT(i)" "REFINED(r)" "TO-DO(t)" "IN-PROGRESS(p)" "REVIEW(w)" "|" "DONE(D)" "CANCELED(c)"))
-         mark-diary-entries-in-calendar t
+          org-todo-keywords '((sequence "TRIAGE(e)" "BACKLOG(b)" "READY-FOR-REFINEMENT(i)" "REFINED(r)" "TODO(t)" "IN-PROGRESS(p)" "REVIEW(w)" "|" "DONE(d!)" "CANCELED(c)"))
+          mark-diary-entries-in-calendar t
           org-confirm-babel-evaluate nil)
     :hook (org-mode . global-org-modern-mode)
           (org-mode . (lambda ()
@@ -340,6 +367,14 @@ Like vim but better!
                            (setq-local apheleia-format-on-save nil)))
 
     )
+#+end_src
+
+I want to start emacs with org agenda (month view) open
+#+begin_src elisp
+(add-hook 'after-init-hook '(lambda () (progn
+                                         (org-agenda nil "n")
+                                         (delete-other-windows)
+                                         )))
 #+end_src
 ** Org latex
 ox-latex is used to handle exporting latex from org files.
@@ -362,6 +397,10 @@ ox-latex is used to handle exporting latex from org files.
   :config
     (ox-extras-activate '(latex-header-blocks ignore-headlines)))
 #+end_src
+** Org tree slide
+#+begin_src elisp
+(use-package org-tree-slide)
+#+end_src
 ** Org tempo
 expand things like =<s= to src blocks
 #+begin_src emacs-lisp 
@@ -375,6 +414,60 @@ expand things like =<s= to src blocks
   :demand t
   :custom
   (org-contacts-files '("~/org/contacts.org.gpg")))
+#+end_src
+** Summarize Achievements
+Summarize my work achievements brag list. Must be run from the file
+#+begin_src elisp
+(defun my-org-summarize-achievements (start-date end-date)
+  "Summarize Org achievements by tag between START-DATE and END-DATE."
+  (interactive
+   (list
+    (org-read-date nil nil nil "Start date: ")
+    (org-read-date nil nil nil "End date: ")))
+  
+  (let ((tag-groups (make-hash-table :test 'equal)))
+    
+    (org-map-entries
+     (lambda ()
+       (when (= (org-outline-level) 5)
+         (let* ((title (nth 4 (org-heading-components)))
+                (tags (org-get-tags))
+                (date-str (save-excursion
+                            (when (org-up-heading-safe)
+                              (let* ((parent-title (nth 4 (org-heading-components)))
+                                     (parsed-time (parse-time-string parent-title))
+                                     (day (nth 3 parsed-time))
+                                     (month (nth 4 parsed-time))
+                                     (year (nth 5 parsed-time)))
+                                (when (and year month day)
+                                  (format "%04d-%02d-%02d" year month day))))))
+                (body (org-get-entry)))
+           
+           (when (and date-str
+                      (not (string< date-str start-date))
+                      (not (string< end-date date-str)))
+             (let ((entry-data (list :date date-str :title title :body body)))
+               (setq tags (or tags '("untagged")))
+               (dolist (tag tags)
+                 (puthash tag (cons entry-data (gethash tag tag-groups)) tag-groups)))))))
+     nil 'file)
+    
+    (let ((buf (get-buffer-create "*Achievements Summary*")))
+      (with-current-buffer buf
+        (erase-buffer)
+        (org-mode)
+        (insert (format "#+TITLE: Achievements Summary (%s to %s)\n\n" start-date end-date))
+        (maphash
+         (lambda (tag entries)
+           (insert (format "* %s\n" (upcase tag)))
+           (dolist (entry (reverse entries))
+             (insert (format "** [%s] %s\n" (plist-get entry :date) (plist-get entry :title)))
+             (let ((body (plist-get entry :body)))
+               (when (and body (not (string-empty-p (string-trim body))))
+                 (insert (format "%s\n\n" (string-trim body)))))))
+         tag-groups)
+        (goto-char (point-min)))
+      (switch-to-buffer buf))))
 #+end_src
 ** Ox Markdown
 #+begin_src elisp
@@ -407,14 +500,14 @@ run http requests from org files with org babel
   :config (elfeed-set-max-connections 64))
 
 (use-package elfeed-org
-  :defer t
+  :after elfeed
   :config
   (progn
     (elfeed-org)
     (setq rmh-elfeed-org-files (list "~/org/rss.org"))))
 
 (use-package elfeed-goodies
-  :defer t
+  :after elfeed
   :config (elfeed-goodies/setup))
 #+end_src
 ** Modeline
@@ -914,6 +1007,11 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
 #+begin_src elisp
 (use-package all-the-icons)
 #+end_src
+** Log view
+used to view logs nicely
+#+begin_src elisp
+(use-package logview)
+#+end_src
 ** LSP
 #+begin_src elisp
 (use-package lsp-mode
@@ -1406,29 +1504,6 @@ directory to make multiple eshell windows easier."
 #+begin_src elisp
 (use-package wgsl-mode)
 #+end_src
-** Dashboard
-#+begin_src elisp
-(use-package dashboard
-  :demand t
-  :config
-  (progn 
-  (setq dashboard-items '((bookmarks . 5)
-                        (projects  . 5)
-                        (agenda    . 30)
-                        ))
-  (setq dashboard-display-icons-p t)     ; display icons on both GUI and terminal
-  (setq dashboard-icon-type 'nerd-icons) ; use `nerd-icons' package
-  (setq dashboard-projects-backend 'projectile)
-  (setq dashboard-week-agenda t)
-  (setq dashboard-filter-agenda-entry
-      (lambda ()
-        (let ((scheduled (org-entry-get nil "SCHEDULED"))
-              (deadline  (org-entry-get nil "DEADLINE")))
-          (unless (or scheduled deadline)
-            (org-entry-end-position)))))
-  (dashboard-setup-startup-hook)))
-#+end_src
-
 ** Feature Mode
 For cucumber style testing.
 #+begin_src elisp
@@ -1473,4 +1548,15 @@ Guess this is the beginning of the end
   :bind-keymap ("C-c y" . claude-code-command-map)
   :bind
   (:repeat-map my-claude-code-map ("M" . claude-code-cycle-mode)))
+#+end_src
+
+** Elm mode
+#+begin_src elisp
+(use-package elm-mode)
+#+end_src
+
+** Decide-mode
+Dice rolling and selecting from random tables
+#+begin_src elisp
+(use-package decide)
 #+end_src

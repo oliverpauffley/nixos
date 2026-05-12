@@ -7,8 +7,7 @@
       };
     };
   };
-  flake.modules.homeManager.base = { pkgs, config, inputs, ... }: {
-    nixpkgs.overlays = [ inputs.self.overlays.default ];
+  flake.modules.homeManager.base = { pkgs, config, ... }: {
     home.packages = with pkgs; [
       local.strongbox
       local.gomerge
@@ -18,17 +17,23 @@
     programs.git = {
       enable = true;
       lfs.enable = true;
-      userEmail = "mrpauffley@gmail.com";
-      userName = "oliverpauffley";
       attributes = [ "go.mod linguist-generated" "go.sum linguist-generated" ];
       ignores = [ ".envrc" ".direnv/*" ];
-      extraConfig = {
+      signing = {
+        signByDefault = true;
+        key = "898E9AF3BA558BBD27CCEC76776333D265A54BED";
+      };
+      settings = {
+        user = {
+          email = "mrpauffley@gmail.com";
+          name = "oliverpauffley";
+        };
         github.user = "oliverpauffley";
         credential.helper = "${
             pkgs.git.override { withLibsecret = true; }
           }/bin/git-credential-libsecret";
-        init = { defaultBranch = "main"; };
-        url = { "git@github.com:" = { insteadOf = "https://github.com/"; }; };
+        init.defaultBranch = "main";
+        url."git@github.com:".insteadOf = "https://github.com/";
         filter.strongbox = {
           clean = "strongbox -clean %f";
           smudge = "strongbox -smudge %f";
@@ -38,10 +43,6 @@
         merge.conflictStyle = "diff3";
         merge.strongbox.driver =
           "strongbox -merge-file %O -merge-file %A -merge-file %B -merge-file %L -merge-file %P -merge-file %S -merge-file %X -merge-file %Y";
-      };
-      signing = {
-        signByDefault = true;
-        key = "898E9AF3BA558BBD27CCEC76776333D265A54BED";
       };
     };
 

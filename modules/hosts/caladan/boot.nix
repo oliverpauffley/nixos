@@ -15,13 +15,7 @@
     hardware.cpu.intel.updateMicrocode = lib.mkDefault true;
     hardware.enableRedistributableFirmware = true;
 
-    hardware.opengl = {
-      extraPackages = with pkgs; [
-        nvidia-vaapi-driver
-        vaapiVdpau
-        libvdpau-va-gl
-      ];
-    };
+    hardware.opengl = { extraPackages = with pkgs; [ libvdpau-va-gl ]; };
     hardware.opengl = { driSupport32Bit = true; };
 
     nixpkgs.config.nvidia.acceptLicense = true;

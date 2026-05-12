@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.base = { pkgs, config, lib, sources, ... }:
+  flake.modules.homeManager.dev = { pkgs, config, lib, sources, ... }:
     let
       # Modern Emacs with optimizations (primary configuration)
       emacs-base = pkgs.emacs-gtk.override {
@@ -16,6 +16,7 @@
           bind-key
           pdf-tools
           envrc
+          better-defaults
 
           # Modern completion framework (Vertico ecosystem)
           vertico
@@ -41,8 +42,11 @@
 
           # keys
           meow
+          repeat-fu
           pkgs.local.meow-treesitter
           which-key
+
+          logview
 
           # LSP integration (Pure Corfu approach - no LSP-UI)
           lsp-mode
@@ -81,6 +85,7 @@
             p.tree-sitter-proto
             p.tree-sitter-scheme
             p.tree-sitter-janet-simple
+            p.tree-sitter-elm
           ]))
 
           pkgs.local.ob-janet
@@ -100,6 +105,7 @@
           geiser-chez
           terraform-mode
           wgsl-mode
+          elm-mode
 
           exercism
 
@@ -128,6 +134,7 @@
           ox-gfm
           ox-slack
           ob-http
+          org-tree-slide
 
           org-contrib
           org-contacts
@@ -158,8 +165,8 @@
           yasnippet
           yasnippet-snippets
           yatemplate
-          eshell-z
           smart-jump
+          pkgs.local.decide
 
           # My packages
           pkgs.local.vaarn
@@ -184,22 +191,16 @@
       # Development tools and LSP servers
       devPackages = with pkgs; [
         # LSP servers and tools
-        gopls
         nodePackages.eslint
         nixd
-        nil # Alternative Nix LSP server
 
         # LSP Performance booster (2-10x faster LSP)
         emacs-lsp-booster
 
         # Formatters
-        gofumpt
         nodePackages.prettier
 
         # Essential tools
-        ripgrep
-        fd
-        sqlite
         silver-searcher
 
         # latex
@@ -210,18 +211,14 @@
       # === PRIMARY CONFIGURATION: Nix-Vanilla (Modern Terminal-First Emacs) ===
 
       # Install nix-vanilla configuration files
-      home.file."/home/ollie/.config/emacs/init.el" = { source = ./init.el; };
-      home.file."/home/ollie/.config/emacs/config.org" = {
+      home.file.".config/emacs/init.el".source = ./init.el;
+      home.file.".config/emacs/config.org" = {
         source = ./config.org;
         force = true;
       };
-      home.file."/home/ollie/.config/emacs/early-init.el" = {
-        source = ./early-init.el;
-      };
-      home.file."/home/ollie/.config/emacs/org/autoloads.el" = {
-        source = ./org/autoloads.el;
-      };
-      home.file."/home/ollie/.config/emacs/templates/" = {
+      home.file.".config/emacs/early-init.el".source = ./early-init.el;
+      home.file.".config/emacs/org/autoloads.el".source = ./org/autoloads.el;
+      home.file.".config/emacs/templates" = {
         source = ./templates;
         recursive = true;
       };

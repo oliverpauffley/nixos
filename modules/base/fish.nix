@@ -50,9 +50,6 @@
                 scheme = config.colorScheme;
               }
             }
-            # Disable greeting
-            set fish_greeting
-
 
             # Cargo use git to fetch
             set -Ux CARGO_NET_GIT_FETCH_WITH_CLI true

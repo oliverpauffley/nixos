@@ -90,8 +90,8 @@
 
                     focus-ring {
                         width 2
-                        active-color "#${colors.accent}"
-                        inactive-color "#${colors.inactive}"
+                        active-gradient from="#${colors.accent}" to="#${colors.accentAlt}" angle=45
+                        inactive-gradient from="#${colors.inactive}" to="#${colors.warning}" angle=45
                     }
 
                     border {
@@ -102,12 +102,6 @@
                         urgent-color "#${colors.urgent}"
                     }
 
-                    shadow {
-                        softness 30
-                        spread 5
-                        offset x=0 y=5
-                        color "#0007"
-                    }
 
                     struts {
                         top 3
@@ -170,6 +164,7 @@
                 window-rule {
                     match app-id=r#"^Slack$"#
                     open-on-workspace "slack"
+                    block-out-from "screencast"
                 }
 
                 binds {

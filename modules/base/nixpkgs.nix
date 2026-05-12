@@ -3,14 +3,8 @@
   perSystem = { system, ... }: {
     _module.args.pkgs = import inputs.nixpkgs {
       inherit system;
-      config = { allowUnfreePredicate = _pkg: true; };
+      config.allowUnfree = true;
       overlays = [
-        (final: _prev: {
-          master = import inputs.nixpkgs-master {
-            inherit (final) config;
-            inherit system;
-          };
-        })
         (final: _prev: {
           unstable = import inputs.nixpkgs-unstable {
             inherit (final) config;
@@ -29,11 +23,8 @@
   };
   flake.modules.homeManager.base = {
     config = {
-      nix.settings.experimental-features = "nix-command flakes pipe-operators";
-      nixpkgs.config = {
-        allowUnfree = true;
-        allowUnfreePredicate = _: true;
-      };
+      nix.settings.experimental-features = "nix-command flakes";
+      nixpkgs.config.allowUnfree = true;
     };
   };
   flake.modules.nixos.base = { inputs, ... }: {

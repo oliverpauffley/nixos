@@ -1,4 +1,4 @@
-{ lib, inputs, ... }: {
+{
   flake.modules = {
     nixos.base = { pkgs, ... }: {
       environment.systemPackages = with pkgs; [ alsa-utils ];
