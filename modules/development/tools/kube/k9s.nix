@@ -71,6 +71,7 @@
         # json
         jsonlogs = {
           shortCut = "Shift-L";
+          confirm = false;
           command = "sh";
           description = "Pretty json logs";
           scopes = [
@@ -82,10 +83,13 @@
             "service"
             "statefulset"
             "log"
+            "container"
           ];
           args = [
             "-c"
-            "kubectl logs --follow --context=$CONTEXT --namespace=$NAMESPACE $RESOURCE_NAME/$NAME | hl --paging=never"
+            ''
+              ${pkgs.kubectl}/bin/kubectl logs pod/"$POD" --context="$CONTEXT" --namespace="$NAMESPACE" -c "$NAME" | ${pkgs.jq}/bin/jq -SR "try fromjson catch ." | ${pkgs.less}/bin/less
+            ''
           ];
 
         };

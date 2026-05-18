@@ -167,6 +167,7 @@
           yatemplate
           smart-jump
           pkgs.local.decide
+          pkgs.local.structured-log-mode
 
           # My packages
           pkgs.local.vaarn

@@ -1560,3 +1560,9 @@ Dice rolling and selecting from random tables
 #+begin_src elisp
 (use-package decide)
 #+end_src
+
+** Structured logs
+#+begin_src elisp
+(use-package structured-log-mode
+  :commands structured-log-mode)
+#+end_src

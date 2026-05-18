@@ -19,6 +19,7 @@
         hpkgs.cabal2nix
         hpkgs.doctest
         hpkgs.fourmolu
+        hpkgs.quickcheck-classes
       ]))
       haskellPackages.haskell-language-server
       haskellPackages.hoogle
