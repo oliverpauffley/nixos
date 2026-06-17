@@ -18,8 +18,16 @@
         description = config.flake.meta.users.ollie.name;
         isNormalUser = true;
         createHome = true;
-        extraGroups =
-          [ "audio" "input" "networkmanager" "sound" "tty" "wheel" "docker" ];
+        extraGroups = [
+          "audio"
+          "input"
+          "networkmanager"
+          "sound"
+          "tty"
+          "wheel"
+          "docker"
+          "lpadmin" # printers
+        ];
         shell = pkgs.fish;
         openssh.authorizedKeys.keys =
           config.flake.meta.users.ollie.authorizedKeys;
@@ -28,7 +36,6 @@
 
       nix.settings.trusted-users =
         [ config.flake.meta.users.ollie.username "root" ];
-
 
       home-manager.users.ollie = {
         home.file = {

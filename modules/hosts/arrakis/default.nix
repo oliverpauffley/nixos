@@ -9,7 +9,6 @@
         work
         dev
         niri
-        use-external
 
         # Users
         ollie

@@ -126,6 +126,11 @@ Like vim but better!
       :doc "insert"
       "u" 'insert-char
       )
+    ;; This is to "clear" the "C-d" keybinding so it doesn't do page down
+    (defun meow-C-d ()
+    (interactive)
+    (call-interactively #'delete-char))
+    
     (define-key global-map (kbd "C-c i") my-insert-map)
     (meow-motion-define-key
      '("j" . meow-next)
@@ -1055,6 +1060,7 @@ used to view logs nicely
    (lsp-completion-mode . my/lsp-mode-setup-completion)
    (go-ts-mode . lsp)
    (janet-mode . lsp)
+   (dhall-mode . lsp)
    ))
 #+end_src
 
@@ -1364,12 +1370,6 @@ directory to make multiple eshell windows easier."
 #+begin_src emacs-lisp 
 (use-package vaarn)
 #+end_src
-** Hyperbole 
-#+begin_src emacs-lisp 
-(use-package hyperbole
-  :init
-  (hyperbole-mode))
-#+end_src
 ** PDF-Tools
 #+begin_src emacs-lisp 
 (use-package pdf-tools
@@ -1558,11 +1558,48 @@ Guess this is the beginning of the end
 ** Decide-mode
 Dice rolling and selecting from random tables
 #+begin_src elisp
-(use-package decide)
+(defun my-decide-insert (what result)
+  (let ((s (cond ((stringp decide-output-format)
+                  (format decide-output-format what result))
+                 ((functionp decide-output-format)
+                  (funcall decide-output-format what result))
+                 (t (error "decide-output-format must be string or function")))))
+    (when s (progn (kill-new s)
+                   (minibuffer-message s)))))
+
+(defun my-decide-roll (spec-string)
+  "Roll some dice. insert into minibuffer and clipboard."
+  (interactive
+   (list
+    (read-string "Roll: " "d")))
+  (let ((spec (decide-make-dice-spec spec-string)))
+    (my-decide-insert 
+    (format "[%s]" (decide-describe-dice-spec spec))
+    (apply 'decide-roll-dice-spec spec))))
+  
+(use-package decide
+  :bind (:map global-map ("C-c d" . #'my-decide-roll))
+  )
 #+end_src
 
 ** Structured logs
 #+begin_src elisp
 (use-package structured-log-mode
   :commands structured-log-mode)
+#+end_src
+** Dhall Mode
+#+begin_src elisp
+(use-package dhall-mode
+  :ensure t
+  :config
+  (setq
+    ;; uncomment the next line to disable automatic format
+    ;; dhall-format-at-save nil
+
+    ;; comment the next line to use unicode syntax
+    dhall-format-arguments (\` ("--ascii"))
+
+    ;; header-line is obsoleted by lsp-mode
+    dhall-use-header-line nil))
+
 #+end_src

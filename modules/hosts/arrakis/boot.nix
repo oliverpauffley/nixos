@@ -9,6 +9,16 @@ in {
   flake.modules.nixos."hosts/${name}" = {
     nixpkgs.hostPlatform = "x86_64-linux";
 
+    # backup to caladan.
+    services.borgbackup.jobs.home-ollie = {
+      paths = "/home/ollie";
+      encryption.mode = "none";
+      environment.BORG_RSH = "ssh -i /home/ollie/.ssh/id_rsa";
+      repo = "ssh://ollie@caladan:23/home/ollie/backup/";
+      compression = "none";
+      startAt = "daily";
+    };
+
     services.xserver = { videoDrivers = [ "displaylink" "modesetting" ]; };
     powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
     networking.hostName = name;

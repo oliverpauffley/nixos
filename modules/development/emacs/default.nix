@@ -106,6 +106,7 @@
           terraform-mode
           wgsl-mode
           elm-mode
+          dhall-mode
 
           exercism
 
@@ -143,8 +144,6 @@
           elfeed
           elfeed-org
           elfeed-goodies
-
-          hyperbole
 
           # UI enhancements
           modus-themes
