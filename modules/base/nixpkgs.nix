@@ -1,42 +1,49 @@
 { inputs, withSystem, ... }: {
   imports = [ inputs.pkgs-by-name-for-flake-parts.flakeModule ];
+  flake = {
+    overlays.default =
+      final: prev:
+      withSystem prev.stdenv.hostPlatform.system (
+        { config, ... }: {
+          local = config.packages;
+          unstable = import inputs.nixpkgs-unstable {
+            inherit (final.stdenv.hostPlatform) system;
+            inherit (final) config;
+          };
+          pnpm_9_15_9 = final.pnpm_10;
+          pnpm_10_29_2 = final.pnpm_10;
+        }
+      );
+  };
+
   perSystem = { system, ... }: {
     _module.args.pkgs = import inputs.nixpkgs {
       inherit system;
       config.allowUnfree = true;
       overlays = [
-        (final: _prev: {
-          unstable = import inputs.nixpkgs-unstable {
-            inherit (final) config;
-            inherit system;
-          };
-        })
+        inputs.self.overlays.default
       ];
     };
     pkgsDirectory = ../../pkgs/by-name;
   };
 
-  flake = {
-    overlays.default = _final: prev:
-      withSystem prev.stdenv.hostPlatform.system
-      ({ config, ... }: { local = config.packages; });
-  };
   flake.modules.homeManager.base = {
     config = {
       nix.settings.experimental-features = "nix-command flakes";
       nixpkgs.config.allowUnfree = true;
+      nixpkgs.overlays = [
+        inputs.self.overlays.default
+      ];
     };
   };
   flake.modules.nixos.base = { inputs, ... }: {
     nixpkgs.overlays = [
-      (final: _prev: {
-        unstable = import inputs.nixpkgs-unstable {
-          system = final.stdenv.hostPlatform.system;
-          config.allowUnfree = true;
-        };
-      })
+      inputs.self.overlays.default
     ];
     nixpkgs.config.allowUnfree = true;
-    nix.settings.experimental-features = [ "nix-command" "flakes" ];
+    nix.settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
   };
 }

@@ -30,6 +30,10 @@
       calibre # ebooks
       exercism
       claude-code
+      act # github actions locally
+      gnuplot
+
+      local.vcv-rack # make music
     ];
   };
 }

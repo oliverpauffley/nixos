@@ -11,8 +11,18 @@
       XDG_STATE_HOME = "$HOME/.local/state";
     };
     hardware.graphics.enable = true;
-    services.displayManager.gdm.enable = true;
-    services.displayManager.gdm.wayland = true;
+    services.displayManager.ly = {
+      enable = true;
+      settings = {
+        animation = "matrix";
+        bigclock = "none";
+        brightness_down_key = "null";
+        brightness_up_key = "null";
+        clear_password = true;
+        default_input = "password";
+        hide_version_string = true;
+      };
+    };
 
   };
 
@@ -23,7 +33,10 @@
     xdg.mimeApps = {
       enable = true;
       defaultApplications = {
-        "application/pdf" = [ "zathura.desktop" "firefox.desktop" ];
+        "application/pdf" = [
+          "zathura.desktop"
+          "firefox.desktop"
+        ];
         "image/png" = [ "feh.desktop" ];
         "text/plain" = [ "emacs.desktop" ];
         "x-scheme-handler/http" = [ "firefox.desktop" ];

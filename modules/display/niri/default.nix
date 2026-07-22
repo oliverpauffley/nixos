@@ -10,7 +10,8 @@
     ];
   };
 
-  flake.modules.homeManager.niri = { config, pkgs, ... }:
+  flake.modules.homeManager.niri =
+    { config, pkgs, ... }:
     let
       inherit (config.colorScheme) palette;
       colors = {
@@ -54,6 +55,12 @@
                 }
 
                 output "DVI-I-1" {
+                    mode "2560x1440@99.946"
+                    scale 1.2
+                    transform "normal"
+                }
+
+                output "DP-3" {
                     mode "2560x1440@99.946"
                     scale 1.2
                     transform "normal"
@@ -109,7 +116,7 @@
                 }
 
                 spawn-at-startup "swaybg" "-i" "${config.home.homeDirectory}/.background-image" "-m" "fill"
-                spawn-at-startup "noctalia-shell"
+                spawn-at-startup "noctalia"
                 spawn-at-startup "emacs"
                 spawn-at-startup "kitty"
                 spawn-at-startup "firefox"
@@ -171,7 +178,7 @@
                     Mod+Shift+Slash { show-hotkey-overlay; }
 
                     Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
-                    Mod+D hotkey-overlay-title="Open Application Launcher" { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+                    Mod+D hotkey-overlay-title="Open Application Launcher" { spawn "noctalia" "msg" "panel-open" "launcher"; }
                     Mod+E hotkey-overlay-title="Org Capture" { spawn "emacsclient" "-c" "-F" "((name . \"org-capture\"))" "-e" "(org-capture)"; }
                     Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
 
@@ -327,7 +334,8 @@
             backdrop-color "#${colors.background}"
         }
       '';
-    in {
+    in
+    {
       xdg.configFile."niri/config.kdl".text = niriConfig;
 
     };

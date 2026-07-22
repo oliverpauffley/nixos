@@ -222,7 +222,7 @@ Like vim but better!
      '("x" . meow-line)
      '("X" . meow-goto-line)
      '("y" . meow-save)
-     '("Y" . meow-sync-grab)
+     '("Y" . meow-sync-grab)[(uw.otel.v1.attribute) = { name: "basket_id" } ]
      '("z" . meow-pop-selection)
      '("'" . repeat)
      '("<escape>" . ignore)
@@ -307,12 +307,13 @@ getting vim like repetition of commands
 #+end_src
 ** Org
 #+begin_src elisp
-  
+
   (use-package org
     :ensure t
     :demand t
     :init
     (auto-fill-mode -1)
+
 
     :bind
     (:map global-map ("C-c C" . #'org-capture))
@@ -347,6 +348,7 @@ getting vim like repetition of commands
           org-log-done                       'time
           org-log-into-drawer t
   	      diary-file "~/org/diary"
+          diary-date-forms diary-european-date-forms
   	      org-agenda-diary-file 'diary-file
   	      org-agenda-include-diary t
   	      diary-show-holidays-flag nil
@@ -364,7 +366,6 @@ getting vim like repetition of commands
                             "~/org/contacts.org.gpg")
           calendar-date-style 'european
           org-todo-keywords '((sequence "TRIAGE(e)" "BACKLOG(b)" "READY-FOR-REFINEMENT(i)" "REFINED(r)" "TODO(t)" "IN-PROGRESS(p)" "REVIEW(w)" "|" "DONE(d!)" "CANCELED(c)"))
-          mark-diary-entries-in-calendar t
           org-confirm-babel-evaluate nil)
     :hook (org-mode . global-org-modern-mode)
           (org-mode . (lambda ()
@@ -419,6 +420,15 @@ expand things like =<s= to src blocks
   :demand t
   :custom
   (org-contacts-files '("~/org/contacts.org.gpg")))
+#+end_src
+** Gnu Plot
+#+begin_src elisp
+(use-package gnuplot
+  :init
+  (org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((gnuplot . t)))
+  )
 #+end_src
 ** Summarize Achievements
 Summarize my work achievements brag list. Must be run from the file
@@ -490,6 +500,87 @@ Summarize my work achievements brag list. Must be run from the file
 slack compatible export
 #+begin_src elisp
 (use-package ox-slack)
+#+end_src
+** Slack
+Using slack from within emacs
+
+Some dependencies first
+#+begin_src elisp
+(use-package alert
+  :commands (alert)
+  :init
+  (setq alert-default-style 'notifier))
+#+end_src
+
+#+begin_src elisp
+(use-package circe)
+#+end_src
+
+#+begin_src elisp
+(use-package emojify
+  :hook (after-init . global-emojify-mode))
+#+end_src
+
+#+begin_src elisp
+(use-package oauth2)
+#+end_src
+
+#+begin_src elisp
+(use-package request)
+#+end_src
+
+#+begin_src elisp
+(use-package websocket)
+#+end_src
+
+#+begin_src elisp
+(use-package slack
+  :bind (("C-c S K" . slack-stop)
+         ("C-c S c" . slack-select-rooms)
+         ("C-c S u" . slack-select-unread-rooms)
+         ("C-c S U" . slack-user-select)
+         ("C-c S s" . slack-search-from-messages)
+         ("C-c S J" . slack-jump-to-browser)
+         ("C-c S j" . slack-jump-to-app)
+         ("C-c S e" . slack-insert-emoji)
+         ("C-c S E" . slack-message-edit)
+         ("C-c S r" . slack-message-add-reaction)
+         ("C-c S t" . slack-thread-show-or-create)
+         ("C-c S g" . slack-message-redisplay)
+         ("C-c S G" . slack-conversations-list-update-quick)
+         ("C-c S q" . slack-quote-and-reply)
+         ("C-c S Q" . slack-quote-and-reply-with-link)
+         (:map slack-mode-map
+               (("@" . slack-message-embed-mention)
+                ("#" . slack-message-embed-channel)))
+         (:map slack-thread-message-buffer-mode-map
+               (("C-c '" . slack-message-write-another-buffer)
+                ("@" . slack-message-embed-mention)
+                ("#" . slack-message-embed-channel)))
+         (:map slack-message-buffer-mode-map
+               (("C-c '" . slack-message-write-another-buffer)))
+         (:map slack-message-compose-buffer-mode-map
+               (("C-c '" . slack-message-send-from-buffer)))
+         )
+  :custom
+  (slack-extra-subscribed-channels (mapcar 'intern (list "technology")))
+  :config
+  (slack-register-team
+     :name "utilitywarehouse"
+     :token (auth-source-pick-first-password
+             :host "utilitywarehouse.slack.com"
+             :user "opauffley@uw.co.uk")
+     :cookie (auth-source-pick-first-password
+              :host "utilitywarehouse.slack.com"
+              :user "opauffley@uw.co.uk^cookie")
+     :full-and-display-names t
+     :default t
+     )
+  (setq slack-prefer-current-team t)
+  (setq lui-time-stamp-format "[%Y-%m-%d %H:%M]")
+  (setq lui-time-stamp-only-when-changed-p t)
+  (setq lui-time-stamp-position 'right)
+  )
 #+end_src
 ** ob-http
 run http requests from org files with org babel
@@ -963,6 +1054,19 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
               ("x" . magit-discard)
               ("Y" . magit-copy-buffer-revision)))
 #+end_src
+*** Pr reviews
+Review prs from within emacs!
+#+begin_src elisp
+(use-package pr-review
+  :config
+  (setq pr-review-search-predefined-queries
+        '(("is:pr review-requested:@me state:open archived:false sort:updated-desc -author:dependabot[bot] -author:stepsecurity-app[bot]" . "Requests")
+          ("is:pr author:@me state:open archived:false sort:updated-desc" . "Mine")
+          ))
+  (setq pr-review-forges-alist
+      '(("github.com"                . (github nil nil)))) 
+)
+#+end_src
 *** Forge
 #+begin_src elisp
 (use-package forge
@@ -1250,9 +1354,7 @@ Most formatting tasks should be handled with apheleia .
   :init
   (persp-mode)
   :config
-  (with-eval-after-load 'consult
-    (consult-customize consult--source-buffer :hidden t :default nil)
-    (add-to-list 'consult-buffer-sources persp-consult-source)))
+  )
 #+end_src
 We also use persp-projectile to link projectile and perspective together
 #+begin_src emacs-lisp
@@ -1301,7 +1403,7 @@ We also use persp-projectile to link projectile and perspective together
 (use-package protobuf-ts-mode
   :mode (("\\.proto" . protobuf-ts-mode)))
 #+end_src
-** COMMENT Eshell
+** Eshell
 #+begin_src elisp
 (defun eshell-here ()
   "Opens up a new shell in the directory associated with the
@@ -1328,7 +1430,6 @@ directory to make multiple eshell windows easier."
   (eshell-send-input)
   (delete-window))
 
-(use-package eshell-z)
 
 (use-package eshell
   :bind (("C-c o t" . eshell-here)
@@ -1341,9 +1442,7 @@ directory to make multiple eshell windows easier."
                     (corfu-mode)))
    (eshell-mode . (lambda ()
                     (setenv "TERM" "xterm-256color")))
-   (eshell-mode .
-          (lambda ()
-            (require 'eshell-z)))))
+   ))
 #+end_src
 ** Ws-Butler
 #+begin_src elisp
@@ -1555,33 +1654,12 @@ Guess this is the beginning of the end
 (use-package elm-mode)
 #+end_src
 
-** Decide-mode
-Dice rolling and selecting from random tables
+** Solo-RPG
 #+begin_src elisp
-(defun my-decide-insert (what result)
-  (let ((s (cond ((stringp decide-output-format)
-                  (format decide-output-format what result))
-                 ((functionp decide-output-format)
-                  (funcall decide-output-format what result))
-                 (t (error "decide-output-format must be string or function")))))
-    (when s (progn (kill-new s)
-                   (minibuffer-message s)))))
-
-(defun my-decide-roll (spec-string)
-  "Roll some dice. insert into minibuffer and clipboard."
-  (interactive
-   (list
-    (read-string "Roll: " "d")))
-  (let ((spec (decide-make-dice-spec spec-string)))
-    (my-decide-insert 
-    (format "[%s]" (decide-describe-dice-spec spec))
-    (apply 'decide-roll-dice-spec spec))))
-  
-(use-package decide
-  :bind (:map global-map ("C-c d" . #'my-decide-roll))
-  )
+(use-package solo-rpg
+  :ensure t
+  :bind (("C-c r" . solo-rpg-menu)))
 #+end_src
-
 ** Structured logs
 #+begin_src elisp
 (use-package structured-log-mode
@@ -1602,4 +1680,9 @@ Dice rolling and selecting from random tables
     ;; header-line is obsoleted by lsp-mode
     dhall-use-header-line nil))
 
+#+end_src
+** Rainbow mode
+show rgb colours highlighted with their colour in buffers.
+#+begin_src elisp
+(use-package rainbow-mode)
 #+end_src

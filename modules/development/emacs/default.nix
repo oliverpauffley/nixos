@@ -1,5 +1,12 @@
 {
-  flake.modules.homeManager.dev = { pkgs, config, lib, sources, ... }:
+  flake.modules.homeManager.dev =
+    {
+      pkgs,
+      config,
+      lib,
+      sources,
+      ...
+    }:
     let
       # Modern Emacs with optimizations (primary configuration)
       emacs-base = pkgs.emacs-gtk.override {
@@ -8,8 +15,8 @@
         withSQLite3 = true;
       };
 
-      emacsPackages = epkgs:
-        with epkgs; [
+      emacsPackages =
+        epkgs: with epkgs; [
           # Core framework
           use-package
           minions
@@ -112,6 +119,7 @@
 
           # Git integration
           magit
+          pr-review
           magit-section
           git-timemachine
           forge
@@ -144,12 +152,16 @@
           elfeed
           elfeed-org
           elfeed-goodies
+          gnuplot
+          slack
+          oauth2
 
           # UI enhancements
           modus-themes
           doom-modeline
           all-the-icons
           all-the-icons-dired
+          rainbow-mode
 
           # Terminal integration
           vterm
@@ -165,7 +177,7 @@
           yasnippet-snippets
           yatemplate
           smart-jump
-          pkgs.local.decide
+          solo-rpg
           pkgs.local.structured-log-mode
 
           # My packages
@@ -175,30 +187,32 @@
       packageOverrides = self: super: { org = super.elpaPackages.org; };
 
       # Build final Emacs with all packages
-      myEmacs = ((pkgs.emacsPackagesFor emacs-base).overrideScope
-        packageOverrides).emacsWithPackages emacsPackages;
+      myEmacs = ((pkgs.emacsPackagesFor emacs-base).overrideScope packageOverrides).emacsWithPackages emacsPackages;
 
-      tex = (pkgs.texlive.combined.scheme-full.withPackages (ps:
-        with ps; [
-          dvisvgm
-          dvipng # for preview and export as html
-          wrapfig
-          amsmath
-          ulem
-          hyperref
-          capt-of
-        ]));
+      tex = (
+        pkgs.texlive.combined.scheme-full.withPackages (
+          ps: with ps; [
+            dvisvgm
+            dvipng # for preview and export as html
+            wrapfig
+            amsmath
+            ulem
+            hyperref
+            capt-of
+          ]
+        )
+      );
       # Development tools and LSP servers
       devPackages = with pkgs; [
         # LSP servers and tools
-        nodePackages.eslint
+        eslint
         nixd
 
         # LSP Performance booster (2-10x faster LSP)
         emacs-lsp-booster
 
         # Formatters
-        nodePackages.prettier
+        prettier
 
         # Essential tools
         silver-searcher
@@ -207,7 +221,8 @@
         tex
       ];
 
-    in {
+    in
+    {
       # === PRIMARY CONFIGURATION: Nix-Vanilla (Modern Terminal-First Emacs) ===
 
       # Install nix-vanilla configuration files

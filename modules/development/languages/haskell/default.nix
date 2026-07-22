@@ -28,6 +28,7 @@
       ghcid
       nix-prefetch-git
       niv
+      haskellPackages.threadscope
     ];
   };
 }

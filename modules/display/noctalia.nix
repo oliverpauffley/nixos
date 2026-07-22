@@ -1,81 +1,133 @@
 {
-  flake.modules.homeManager.noctalia = { inputs, config, pkgs, ... }:
+  flake.modules.homeManager.noctalia =
+    {
+      inputs,
+      config,
+      pkgs,
+      ...
+    }:
     let
       inherit (config.colorScheme) palette;
-      colors = {
-        mPrimary = palette.base04;
-        mOnPrimary = palette.base00;
-        mSecondary = palette.base0F;
-        mOnSecondary = palette.base00;
-        mTertiary = palette.base0D;
-        mOnTertiary = palette.base00;
-        mSurface = palette.base00;
-        mOnSurface = palette.base05;
-        mSurfaceVariant = palette.base01;
-        mOnSurfaceVariant = palette.base05;
-        mHover = palette.base02;
-        mOnHover = palette.base05;
-        mError = palette.base04;
-        mOnError = palette.base00;
-        mOutline = palette.base06;
-        mShadow = palette.base00;
-      };
-    in {
-      imports = [ inputs.noctalia.homeModules.default ];
-
-      programs.noctalia-shell = {
-        enable = true;
-
-        settings = {
-          bar = {
-            showCapsule = false;
-            position = "top";
-            floating = false;
-            backgroundOpacity = 0.9;
-            widgets = {
-              left = [
-                { id = "Launcher"; }
-                { id = "Clock"; }
-                { id = "ActiveWindow"; }
-                { id = "MediaMini"; }
-              ];
-              center = [{ id = "Workspace"; }];
-              right =
-                [ { id = "Tray"; } { id = "Battery"; } { id = "Volume"; } ];
+      vivendi = {
+        dark = {
+          mPrimary = "#${palette.base04}";
+          mOnPrimary = "#${palette.base05}";
+          mSecondary = "#${palette.base03}";
+          mOnSecondary = "#${palette.base04}";
+          mTertiary = "#${palette.base0D}";
+          mOnTertiary = "#${palette.base00}";
+          mSurface = "#${palette.base00}";
+          mOnSurface = "#${palette.base05}";
+          mSurfaceVariant = "#${palette.base01}";
+          mOnSurfaceVariant = "#${palette.base05}";
+          mHover = "#${palette.base02}";
+          mOnHover = "#${palette.base05}";
+          mError = "#${palette.base04}";
+          mOnError = "#${palette.base00}";
+          mOutline = "#${palette.base06}";
+          mShadow = "#${palette.base00}";
+          terminal = {
+            background = "#${palette.base00}";
+            foreground = "#${palette.base05}";
+            cursor = "#${palette.base04}";
+            cursorText = "#${palette.base04}";
+            selectionBg = "#${palette.base0F}";
+            selectionFg = "#${palette.base0E}";
+            normal = {
+              black = "#${palette.base00}";
+              red = "#${palette.base04}";
+              green = "#${palette.base0C}";
+              yellow = "#${palette.base0A}";
+              blue = "#${palette.base0B}";
+              magenta = "#${palette.base0D}";
+              cyan = "#${palette.base08}";
+              white = "#${palette.base05}";
+            };
+            bright = {
+              black = "#${palette.base00}";
+              red = "#${palette.base04}";
+              green = "#${palette.base0C}";
+              yellow = "#${palette.base0A}";
+              blue = "#${palette.base0B}";
+              magenta = "#${palette.base0D}";
+              cyan = "#${palette.base08}";
+              white = "#${palette.base05}";
             };
           };
-          general = {
-            animationSpeed = 1.0;
-            radiusRatio = 0.2;
-          };
-          colorSchemes = {
-            darkMode = true;
-            useWallpaperColors = false;
-          };
-          ui = {
-            fontDefault = config.fontProfiles.monospace.family;
-            fontFixed = config.fontProfiles.monospace.family;
-          };
-          location = { name = "Bournemouth"; };
         };
+      };
+    in
+    {
+      imports = [ inputs.noctalia.homeModules.default ];
 
-        colors = {
-          mPrimary = "#${colors.mPrimary}";
-          mOnPrimary = "#${colors.mOnPrimary}";
-          mSecondary = "#${colors.mSecondary}";
-          mOnSecondary = "#${colors.mOnSecondary}";
-          mTertiary = "#${colors.mTertiary}";
-          mOnTertiary = "#${colors.mOnTertiary}";
-          mSurface = "#${colors.mSurface}";
-          mOnSurface = "#${colors.mOnSurface}";
-          mSurfaceVariant = "#${colors.mSurfaceVariant}";
-          mOnSurfaceVariant = "#${colors.mOnSurfaceVariant}";
-          mHover = "#${colors.mHover}";
-          mOnHover = "#${colors.mOnHover}";
-          mError = "#${colors.mError}";
-          mOnError = "#${colors.mOnError}";
-          mOutline = "#${colors.mOutline}";
-          mShadow = "#${colors.mShadow}";
+      programs.noctalia = {
+        enable = true;
+        customPalettes.vivendi = vivendi;
+        settings = {
+          bar.default = {
+            center = [
+              "group:g1"
+              "cat"
+            ];
+            end = [
+              "notifications"
+              "volume"
+              "brightness"
+              "battery"
+              "control-center"
+              "session"
+            ];
+            margin_edge = 0;
+            margin_ends = 0;
+            padding = 12;
+            radius = 0;
+            scale = 1.0;
+            start = [
+              "workspaces"
+              "launcher"
+              "wallpaper"
+              "network"
+            ];
+            thickness = 23;
+            widget_spacing = 9;
+
+            capsule_group = [
+              {
+                fill = "surface_variant";
+                id = "g1";
+                members = [
+                  "clock"
+                ];
+                opacity = 1.0;
+                padding = 6.0;
+              }
+            ];
+            dock.monitors = [ "eDP-1" ];
+            corner_radius_scale = 0.0;
+            font_family = config.fontProfiles.monospace.family;
+            polkit_agent = true;
+            settings_show_advanced = true;
+            ui_scale = 1.35;
+
+            animation.speed = 1.5;
+
+            panel = {
+              clipboard_placement = "attached";
+              launcher_placement = "attached";
+              launcher_session_search = true;
+            };
+
+            shadow.alpha = 0.5;
+
+          };
+          theme = {
+            source = "custom";
+            custom_palette = "vivendi.json";
+            templates = {
+              enable_builtin_templates = false;
+              enable_community_templates = false;
+            };
+          };
         };
       };
     };

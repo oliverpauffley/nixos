@@ -12,48 +12,52 @@
       };
     };
 
-    modules.nixos.ollie = local@{ pkgs, ... }: {
-      programs.fish.enable = true;
-      users.users.ollie = {
-        description = config.flake.meta.users.ollie.name;
-        isNormalUser = true;
-        createHome = true;
-        extraGroups = [
-          "audio"
-          "input"
-          "networkmanager"
-          "sound"
-          "tty"
-          "wheel"
-          "docker"
-          "lpadmin" # printers
+    modules.nixos.ollie =
+      local@{ pkgs, ... }:
+      {
+        programs.fish.enable = true;
+        users.users.ollie = {
+          description = config.flake.meta.users.ollie.name;
+          isNormalUser = true;
+          createHome = true;
+          extraGroups = [
+            "audio"
+            "input"
+            "networkmanager"
+            "wpa_supplicant"
+            "sound"
+            "tty"
+            "wheel"
+            "docker"
+            "lpadmin" # printers
+          ];
+          shell = pkgs.fish;
+          openssh.authorizedKeys.keys = config.flake.meta.users.ollie.authorizedKeys;
+          hashedPasswordFile = local.config.sops.secrets.ollie_passwd.path;
+        };
+
+        nix.settings.trusted-users = [
+          config.flake.meta.users.ollie.username
+          "root"
         ];
-        shell = pkgs.fish;
-        openssh.authorizedKeys.keys =
-          config.flake.meta.users.ollie.authorizedKeys;
-        hashedPasswordFile = local.config.sops.secrets.ollie_passwd.path;
-      };
 
-      nix.settings.trusted-users =
-        [ config.flake.meta.users.ollie.username "root" ];
-
-      home-manager.users.ollie = {
-        home.file = {
-          ".face" = {
-            source = ../../../files/home/ollie/.face;
-            recursive = true;
-          };
-          ".face.icon" = {
-            source = ../../../files/home/ollie/.face;
-            recursive = true;
-          };
-          # Credits to https://store.kde.org/p/1272202
-          "Pictures/Backgrounds/" = {
-            source = ../../../files/home/ollie/Pictures/Backgrounds;
-            recursive = true;
+        home-manager.users.ollie = {
+          home.file = {
+            ".face" = {
+              source = ../../../files/home/ollie/.face;
+              recursive = true;
+            };
+            ".face.icon" = {
+              source = ../../../files/home/ollie/.face;
+              recursive = true;
+            };
+            # Credits to https://store.kde.org/p/1272202
+            "Pictures/Backgrounds/" = {
+              source = ../../../files/home/ollie/Pictures/Backgrounds;
+              recursive = true;
+            };
           };
         };
       };
-    };
   };
 }

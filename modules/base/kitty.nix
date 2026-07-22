@@ -3,7 +3,7 @@
     programs.kitty = {
       shellIntegration.enableFishIntegration = true;
       font = {
-        name = config.fontProfiles.monospace.family;
+        name = config.fontProfiles.regular.family;
         size = 14;
       };
       enable = true;

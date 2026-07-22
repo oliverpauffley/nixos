@@ -16,7 +16,7 @@
 
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixpkgs-unstable.url = "github:/nixos/nixpkgs/nixpkgs-unstable";
 
@@ -29,8 +29,7 @@
     # import all modules
     import-tree.url = "github:vic/import-tree";
     # make my own packages
-    pkgs-by-name-for-flake-parts.url =
-      "github:drupol/pkgs-by-name-for-flake-parts";
+    pkgs-by-name-for-flake-parts.url = "github:drupol/pkgs-by-name-for-flake-parts";
 
     # For secrets
     sops-nix.url = "github:Mic92/sops-nix";
@@ -41,13 +40,12 @@
 
     # my secrets repo
     mysecrets = {
-      url =
-        "git+ssh://git@github.com/oliverpauffley/nix-secrets.git?shallow=1&ref=main";
+      url = "git+ssh://git@github.com/oliverpauffley/nix-secrets.git?shallow=1&ref=main";
       flake = false;
     };
 
     # Home manager
-    home-manager.url = "github:nix-community/home-manager/release-25.11";
+    home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     colmena-flake.url = "github:juspay/colmena-flake";
@@ -64,7 +62,5 @@
     systems.url = "github:nix-systems/default";
   };
 
-  outputs = inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; }
-    (inputs.import-tree ./modules);
+  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 }

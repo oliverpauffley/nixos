@@ -17,8 +17,14 @@
     programs.git = {
       enable = true;
       lfs.enable = true;
-      attributes = [ "go.mod linguist-generated" "go.sum linguist-generated" ];
-      ignores = [ ".envrc" ".direnv/*" ];
+      attributes = [
+        "go.mod linguist-generated"
+        "go.sum linguist-generated"
+      ];
+      ignores = [
+        ".envrc"
+        ".direnv/*"
+      ];
       signing = {
         signByDefault = true;
         key = "898E9AF3BA558BBD27CCEC76776333D265A54BED";
@@ -29,9 +35,7 @@
           name = "oliverpauffley";
         };
         github.user = "oliverpauffley";
-        credential.helper = "${
-            pkgs.git.override { withLibsecret = true; }
-          }/bin/git-credential-libsecret";
+        credential.helper = "${pkgs.git.override { withLibsecret = true; }}/bin/git-credential-libsecret";
         init.defaultBranch = "main";
         url."git@github.com:".insteadOf = "https://github.com/";
         filter.strongbox = {
@@ -41,8 +45,7 @@
         };
         diff.strongbox.textconv = "strongbox -diff";
         merge.conflictStyle = "diff3";
-        merge.strongbox.driver =
-          "strongbox -merge-file %O -merge-file %A -merge-file %B -merge-file %L -merge-file %P -merge-file %S -merge-file %X -merge-file %Y";
+        merge.strongbox.driver = "strongbox -merge-file %O -merge-file %A -merge-file %B -merge-file %L -merge-file %P -merge-file %S -merge-file %X -merge-file %Y";
       };
     };
 
@@ -52,6 +55,9 @@
     };
 
     # better merge conflicts
-    programs.mergiraf.enable = true;
+    programs.mergiraf = {
+      enable = true;
+      enableGitIntegration = true;
+    };
   };
 }

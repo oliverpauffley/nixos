@@ -1,5 +1,5 @@
 {
-  flake.module.nixos.base = { pkgs, lib }: {
+  flake.modules.nixos.base = { pkgs, lib, ... }: {
     services.printing = {
       enable = true;
       drivers = with pkgs; [
@@ -12,20 +12,10 @@
 
       ];
     };
-    # hardware = let
-    #   brother = "Brother_HL-3170CDW_NixOS";
-    #   hostName = "printer.home.hoeg.com";
-    # in {
-    #   printers = {
-    #     ensureDefaultPrinter = brother;
-    #     ensurePrinters = [{
-    #       name = brother;
-    #       deviceUri = "ipp://${hostName}/ipp";
-    #       model = "everywhere";
-    #       description = lib.replaceStrings [ "_" ] [ " " ] brother;
-    #       location = "Study";
-    #     }];
-    #   };
-    # };
+    services.avahi = {
+      enable = true;
+      nssmdns4 = true;
+      openFirewall = true;
+    };
   };
 }

@@ -7,6 +7,7 @@
       dhall-yaml
       dhall-docs
       dhall-nix
+      dhallPackages.dhall-kubernetes
     ];
   };
 }
