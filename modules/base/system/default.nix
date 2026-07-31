@@ -8,6 +8,10 @@
         home = { inherit stateVersion; };
       };
 
+      homeManager.darwin = {
+        home = { inherit stateVersion; };
+      };
+
       nixos.base = {
         system = {
           # This value determines the NixOS release from which the default

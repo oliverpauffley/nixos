@@ -59,5 +59,34 @@
           };
         };
       };
+
+    # nix-darwin doesn't create macOS accounts - it only configures an
+    # existing one, so this is much smaller than the nixos module above.
+    # uid must match the account's real macOS uid, and the user must be
+    # listed in users.knownUsers, or nix-darwin creates a fresh near-unusable
+    # account (home /var/empty, shell /usr/bin/false) instead of managing it.
+    modules.darwin.ollie = { pkgs, ... }: {
+      programs.fish.enable = true;
+      users.knownUsers = [ config.flake.meta.users.ollie.username ];
+      users.users.ollie = {
+        name = config.flake.meta.users.ollie.username;
+        uid = 501;
+        home = "/Users/${config.flake.meta.users.ollie.username}";
+        shell = pkgs.fish;
+      };
+
+      home-manager.users.ollie = {
+        home.file = {
+          ".face" = {
+            source = ../../../files/home/ollie/.face;
+            recursive = true;
+          };
+          ".face.icon" = {
+            source = ../../../files/home/ollie/.face;
+            recursive = true;
+          };
+        };
+      };
+    };
   };
 }

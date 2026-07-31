@@ -1,6 +1,9 @@
 install NAME:
     sudo nixos-rebuild switch --flake .#{{NAME}}
 
+darwin NAME:
+    darwin-rebuild switch --flake .#{{NAME}}
+
 upgrade NAME:
     nh os switch . -u -H {{NAME}}
 
