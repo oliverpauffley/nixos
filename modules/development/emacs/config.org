@@ -118,7 +118,12 @@ Like vim but better!
         meow-keypad-literal-prefix nil
         meow-use-cursor-position-hack t
         meow-use-dynamic-face-color nil
-        )
+        meow-selection-command-fallback '((meow-change . meow-change-char)
+                                          (meow-kill . meow-C-k)
+                                          (meow-cancel-selection . keyboard-quit)
+                                          (meow-pop-selection . meow-pop-grab)
+                                          (meow-beacon-change . meow-beacon-change-char)
+                                          ))
     (with-eval-after-load 'org
     ;; for use with meow movement
     (modify-syntax-entry ?@ "_" org-mode-syntax-table))
@@ -126,10 +131,6 @@ Like vim but better!
       :doc "insert"
       "u" 'insert-char
       )
-    ;; This is to "clear" the "C-d" keybinding so it doesn't do page down
-    (defun meow-C-d ()
-    (interactive)
-    (call-interactively #'delete-char))
     
     (define-key global-map (kbd "C-c i") my-insert-map)
     (meow-motion-define-key
@@ -830,6 +831,34 @@ This is to prevent possible `tramp' calls."
 #+end_src
 ** Consult GH
 #+begin_src elisp
+(defun my/get-github-repo-name ()
+  "Get the username/repo string from the Magit origin remote."
+  (let ((url (magit-get "remote" "origin" "url")))
+    (if (and url (string-match "github\\.com[:/]\\(.*?\\)\\(\\.git\\)?$" url))
+        (let ((repo-name (match-string 1 url)))
+          repo-name)
+      (message "Not a GitHub repository or no origin remote."))))
+
+(defun my/get-push-branch-no-remote ()
+  "Get the push target branch name without the remote prefix."
+  (let* ((full-push (magit-get-push-branch))  ;; e.g., "origin/feature/auth"
+         (remote    (magit-get-push-remote))) ;; e.g., "origin"
+    (when (and full-push remote)
+      (let ((prefix (concat remote "/")))
+        (if (string-prefix-p prefix full-push)
+            ;; Strip the "origin/" prefix
+            (let ((branch-only (substring full-push (length prefix))))
+              branch-only)
+          (message "could not strip remote name"))))))
+
+(defun my/get-current-repo-run-list ()
+  (interactive)
+  (let* ((repo (my/get-github-repo-name))
+        (branch (my/get-push-branch-no-remote))
+        (initial-prompt (format "%s --branch %s" repo branch)))
+    (if repo
+        (consult-gh-run-list initial-prompt nil nil nil nil))))
+
 (use-package consult-gh
   :after consult
   :custom
@@ -851,7 +880,9 @@ This is to prevent possible `tramp' calls."
   (add-to-list 'savehist-additional-variables 'consult-gh--known-orgs-list)
   (add-to-list 'savehist-additional-variables 'consult-gh--known-repos-list)
   ;; Enable default keybindings (e.g. for commenting on issues, prs, ...)
-  (consult-gh-enable-default-keybindings))
+  (consult-gh-enable-default-keybindings)
+  :bind (:map my-git-keymap ("r" . #'my/get-current-repo-run-list))
+  )
 
 
 ;; Install `consult-gh-embark' for embark actions
@@ -865,6 +896,7 @@ This is to prevent possible `tramp' calls."
  :config
  (consult-gh-forge-mode +1)
  (setq consult-gh-forge-timeout-seconds 20))
+
 #+end_src
 ** Consult-LSP
 #+begin_src elisp
