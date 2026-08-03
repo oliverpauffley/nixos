@@ -1,6 +1,6 @@
 {
   # TODO this works for my laptop but not in general!
-  flake.modules.homeManager.base = { pkgs, ... }: {
+  flake.modules.homeManager.linux = { pkgs, ... }: {
     programs.autorandr = let
       eDP-1-mode = "2160x1350";
       DVI-I-1-1-mode = "2560x1440";

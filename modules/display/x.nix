@@ -28,7 +28,9 @@
 
   flake.modules.homeManager.base = { pkgs, config, ... }: {
     home.packages = with pkgs; [ firefox ];
+  };
 
+  flake.modules.homeManager.linux = {
     # default programs
     xdg.mimeApps = {
       enable = true;

@@ -1,14 +1,15 @@
 {
-  flake.modules.homeManager.dev = { pkgs, ... }: {
+  flake.modules.homeManager.dev = { pkgs, lib, ... }: {
     home.packages = with pkgs; [
       # haskell
       stack
       cabal-install
       zlib
-      (haskellPackages.ghcWithPackages (hpkgs: [
+      (haskellPackages.ghcWithPackages (hpkgs: lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         hpkgs.xmobar
         hpkgs.xmonad
         hpkgs.xmonad-contrib
+      ] ++ [
         hpkgs.random
         hpkgs.scotty
         hpkgs.zlib

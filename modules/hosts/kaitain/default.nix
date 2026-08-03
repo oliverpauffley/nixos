@@ -9,7 +9,7 @@
     # Specific Home-Manager modules
     ++ [{
       home-manager.users.ollie.imports =
-        with config.flake.modules.homeManager; [ darwin ];
+        with config.flake.modules.homeManager; [ base dev ];
     }];
   };
 }

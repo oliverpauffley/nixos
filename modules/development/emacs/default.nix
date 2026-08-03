@@ -241,14 +241,16 @@
       # === PACKAGES ===
 
       home.packages = devPackages ++ [ myEmacs ];
-
-      xdg.desktopEntries.vanilla-emacs = {
-        name = "Vanilla Emacs";
-        genericName = "Emacs with nix";
-        exec = "emacs --init-directory .config/emacs/";
-        terminal = false;
-        categories = [ "System" ];
-        mimeType = [ "text/org" ];
-      };
     };
+
+  flake.modules.homeManager.linux = {
+    xdg.desktopEntries.vanilla-emacs = {
+      name = "Vanilla Emacs";
+      genericName = "Emacs with nix";
+      exec = "emacs --init-directory .config/emacs/";
+      terminal = false;
+      categories = [ "System" ];
+      mimeType = [ "text/org" ];
+    };
+  };
 }

@@ -56,17 +56,4 @@
       "flakes"
     ];
   };
-
-  # homeManager.base pulls in every home-manager module tagged "base" across
-  # the repo, several of which are Linux-only (udiskie, xdg.mimeApps, ...).
-  # darwin hosts use this instead rather than trying to filter that down.
-  flake.modules.homeManager.darwin = {
-    config = {
-      nix.settings.experimental-features = "nix-command flakes";
-      nixpkgs.config.allowUnfree = true;
-      nixpkgs.overlays = [
-        inputs.self.overlays.default
-      ];
-    };
-  };
 }

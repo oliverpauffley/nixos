@@ -12,7 +12,7 @@
       local.strongbox
       local.gomerge
       libsecret
-      ssh-askpass-fullscreen
+      #ssh-askpass-fullscreen
     ];
     programs.git = {
       enable = true;

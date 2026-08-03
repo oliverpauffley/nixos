@@ -22,6 +22,7 @@
           with config.flake.modules.homeManager; [
             inputs.sops-nix.homeManagerModules.sops
             base
+            linux
             niri
           ];
       }];

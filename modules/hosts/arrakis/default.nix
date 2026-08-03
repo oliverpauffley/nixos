@@ -1,6 +1,7 @@
 { config, inputs, ... }: {
   flake.modules.nixos."hosts/arrakis" = {
-    imports = with config.flake.modules.nixos;
+    imports =
+      with config.flake.modules.nixos;
       [
         inputs.sops-nix.nixosModules.sops
         # Modules
@@ -9,6 +10,7 @@
         work
         dev
         niri
+        linux
 
         # Users
         ollie
@@ -16,17 +18,19 @@
 
       ]
       # Specific Home-Manager modules
-      ++ [{
-        home-manager.users.ollie.imports =
-          with config.flake.modules.homeManager; [
+      ++ [
+        {
+          home-manager.users.ollie.imports = with config.flake.modules.homeManager; [
             inputs.sops-nix.homeManagerModules.sops
             base
+            linux
             work
             dev
             niri
             noctalia
 
           ];
-      }];
+        }
+      ];
   };
 }

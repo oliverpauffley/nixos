@@ -1,6 +1,6 @@
 {
   flake.modules = {
-    nixos.base = { pkgs, ... }: {
+    nixos.linux = { pkgs, ... }: {
       environment.systemPackages = with pkgs; [ alsa-utils ];
       security.rtkit.enable = true;
 
@@ -10,7 +10,9 @@
           enable = true;
           extraConfig = {
             pipewire."99-silent-bell.conf" = {
-              "context.properties" = { "module.x11.bell" = false; };
+              "context.properties" = {
+                "module.x11.bell" = false;
+              };
             };
           };
           alsa = {
@@ -23,8 +25,14 @@
       };
     };
 
-    homeManager.base = { pkgs, config, ... }: {
-      home.packages = (with pkgs; [ pavucontrol qpwgraph ]);
+    homeManager.linux = { pkgs, config, ... }: {
+      home.packages = (
+        with pkgs;
+        [
+          pavucontrol
+          qpwgraph
+        ]
+      );
     };
   };
 }

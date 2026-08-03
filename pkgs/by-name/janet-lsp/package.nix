@@ -1,4 +1,10 @@
-{ lib, stdenv, fetchurl, janet, makeWrapper, }:
+{
+  lib,
+  stdenv,
+  fetchurl,
+  janet,
+  makeWrapper,
+}:
 
 stdenv.mkDerivation rec {
   pname = "janet-lsp";
@@ -6,10 +12,8 @@ stdenv.mkDerivation rec {
 
   # This points directly at the .jimage file in the GitHub release
   src = fetchurl {
-    url =
-      "https://github.com/CFiggers/janet-lsp/releases/download/v${version}/janet-lsp.jimage";
-    sha256 =
-      "15vn4l20i43qkryqkyslhixn0p5qlxd235dxyznamx8g2dcdx5ai"; # nix-prefetch-url this once
+    url = "https://github.com/CFiggers/janet-lsp/releases/download/v${version}/janet-lsp.jimage";
+    sha256 = "15vn4l20i43qkryqkyslhixn0p5qlxd235dxyznamx8g2dcdx5ai"; # nix-prefetch-url this once
   };
 
   nativeBuildInputs = [ makeWrapper ];
@@ -34,6 +38,6 @@ stdenv.mkDerivation rec {
     description = "Language Server (LSP) for the Janet programming language";
     homepage = "https://github.com/CFiggers/janet-lsp";
     license = lib.licenses.mit;
-    platforms = lib.platforms.linux;
+    platforms = lib.platforms.all;
   };
 }
