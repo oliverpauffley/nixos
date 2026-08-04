@@ -1,7 +1,11 @@
 {
   flake.modules.nixos.media = { pkgs, inputs, ... }: {
     nixpkgs.overlays = [ inputs.self.overlays.default ];
-    environment.systemPackages = with pkgs; [ ffmpeg local.dovi-convert ];
+    environment.systemPackages = with pkgs; [
+      ffmpeg
+      local.dovi-convert
+      borgbackup
+    ];
 
     users.groups.multimedia = { };
     users.users.ollie.extraGroups = [ "multimedia" ];
@@ -56,56 +60,59 @@
       suwayomi-server = {
         enable = true;
         openFirewall = true;
-        settings = { port = "1111"; };
+        settings = {
+          port = "1111";
+        };
         group = "multimedia";
       };
       homepage-dashboard = {
         enable = true;
         listenPort = 8082;
-        allowedHosts =
-          "localhost:8082,127.0.0.1:8082,192.168.0.100:8082,dashboard.home.lab";
+        allowedHosts = "localhost:8082,127.0.0.1:8082,192.168.0.100:8082,dashboard.home.lab";
         openFirewall = true;
         package = pkgs.homepage-dashboard;
-        services = [{
-          "Media" = [
-            {
-              "sabnzbd" = {
-                description = "nzb downloader";
-                href = "http://192.168.0.100:8080/";
-              };
-            }
-            {
-              "radarr" = {
-                description = "film downloader";
-                href = "http://192.168.0.100:7878/";
-              };
-            }
-            {
-              "sonarr" = {
-                description = "tv downloader";
-                href = "http://192.168.0.100:8989/";
-              };
-            }
-            {
-              "prowlarr" = {
-                description = "index manager";
-                href = "http://192.168.0.100:9696/";
-              };
-            }
-            {
-              "deluge" = {
-                description = "torrent downloader";
-                href = "http://192.168.0.100:8112/";
-              };
-            }
-            {
-              "plex" = {
-                description = "media player";
-                href = "http://192.168.0.100:32400/web";
-              };
-            }
-          ];
-        }];
+        services = [
+          {
+            "Media" = [
+              {
+                "sabnzbd" = {
+                  description = "nzb downloader";
+                  href = "http://192.168.0.100:8080/";
+                };
+              }
+              {
+                "radarr" = {
+                  description = "film downloader";
+                  href = "http://192.168.0.100:7878/";
+                };
+              }
+              {
+                "sonarr" = {
+                  description = "tv downloader";
+                  href = "http://192.168.0.100:8989/";
+                };
+              }
+              {
+                "prowlarr" = {
+                  description = "index manager";
+                  href = "http://192.168.0.100:9696/";
+                };
+              }
+              {
+                "deluge" = {
+                  description = "torrent downloader";
+                  href = "http://192.168.0.100:8112/";
+                };
+              }
+              {
+                "plex" = {
+                  description = "media player";
+                  href = "http://192.168.0.100:32400/web";
+                };
+              }
+            ];
+          }
+        ];
       };
     };
 

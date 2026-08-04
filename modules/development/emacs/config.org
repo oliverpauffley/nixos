@@ -361,8 +361,6 @@ getting vim like repetition of commands
           org-agenda-span 'month
           org-agenda-files (list
                             "~/org/todo.org"
-                            "~/org/work/todo.org"
-                            ;; not including this currently"~/org/programming/todo.org"
                             ;;"~/org/rpgs/todo.org"
                             "~/org/contacts.org.gpg")
           calendar-date-style 'european

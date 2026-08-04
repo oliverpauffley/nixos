@@ -11,6 +11,7 @@
         dev
         niri
         linux
+        backup
 
         # Users
         ollie

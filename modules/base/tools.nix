@@ -32,6 +32,7 @@
         claude-code
         act # github actions locally
         gnuplot
+        dust
 
         local.vcv-rack # make music
       ]
