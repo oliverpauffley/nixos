@@ -2,13 +2,10 @@ install NAME:
     sudo nixos-rebuild switch --flake .#{{NAME}}
 
 darwin NAME:
-    darwin-rebuild switch --flake .#{{NAME}}
+    sudo darwin-rebuild switch --flake .#{{NAME}}
 
 upgrade NAME:
     nh os switch . -u -H {{NAME}}
-
-servers:
-    colmena apply --impure
-
+    
 clean:
     nh clean all -k 2

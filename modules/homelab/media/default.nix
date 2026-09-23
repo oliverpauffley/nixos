@@ -48,6 +48,11 @@
         };
         dataDir = "/mnt/media/torrent";
       };
+      readarr = {
+        enable = true;
+        group = "multimedia";
+        openFirewall = true;
+      };
       sabnzbd = {
         enable = true;
         group = "multimedia";
@@ -55,14 +60,6 @@
       plex = {
         enable = true;
         openFirewall = true;
-        group = "multimedia";
-      };
-      suwayomi-server = {
-        enable = true;
-        openFirewall = true;
-        settings = {
-          port = "1111";
-        };
         group = "multimedia";
       };
       homepage-dashboard = {
@@ -108,6 +105,12 @@
                 "plex" = {
                   description = "media player";
                   href = "http://192.168.0.100:32400/web";
+                };
+              }
+              {
+                "readarr" = {
+                  description = "books downloading";
+                  href = "http://192.168.0.100:8787";
                 };
               }
             ];

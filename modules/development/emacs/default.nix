@@ -8,12 +8,19 @@
       ...
     }:
     let
-      # Modern Emacs with optimizations (primary configuration)
-      emacs-base = pkgs.emacs-gtk.override {
-        withNativeCompilation = true;
-        withTreeSitter = true;
-        withSQLite3 = true;
-      };
+      emacs-base =
+        if pkgs.stdenv.hostPlatform.isDarwin then
+          pkgs.emacs-macport.override {
+            withNativeCompilation = true;
+            withTreeSitter = true;
+            withSQLite3 = true;
+          }
+        else
+          pkgs.emacs-gtk.override {
+            withNativeCompilation = true;
+            withTreeSitter = true;
+            withSQLite3 = true;
+          };
 
       emacsPackages =
         epkgs: with epkgs; [
@@ -98,6 +105,7 @@
           pkgs.local.ob-janet
           janet-mode
           go-mode
+          lua-mode
           rust-mode
           rustic
           web-mode
@@ -134,7 +142,6 @@
           persp-projectile
           pkgs.local.linear-emacs
           pkgs.local.feature-mode
-          pkgs.local.emacs-claude-code
           inheritenv
 
           # Org mode
@@ -143,6 +150,7 @@
           ox-gfm
           ox-slack
           ob-http
+          ob-sql-mode
           org-tree-slide
 
           org-contrib
@@ -162,6 +170,9 @@
           all-the-icons
           all-the-icons-dired
           rainbow-mode
+
+          # AI
+          agent-shell
 
           # Terminal integration
           vterm
@@ -223,7 +234,7 @@
 
     in
     {
-      # === PRIMARY CONFIGURATION: Nix-Vanilla (Modern Terminal-First Emacs) ===
+      home.packages = devPackages ++ [ myEmacs ];
 
       # Install nix-vanilla configuration files
       home.file.".config/emacs/init.el".source = ./init.el;
@@ -238,9 +249,17 @@
         recursive = true;
       };
 
-      # === PACKAGES ===
+      launchd.agents."emacs" = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+        enable = true;
+        config = {
+          ProgramArguments = [
+            "${myEmacs}/Application/Emacs.app/Contents/MacOS/Emacs"
+            "--fg-daemon"
+          ];
+          KeepAlive = true;
+        };
+      };
 
-      home.packages = devPackages ++ [ myEmacs ];
     };
 
   flake.modules.homeManager.linux = {

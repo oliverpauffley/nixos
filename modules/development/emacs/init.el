@@ -15,7 +15,6 @@
     (org-babel-load-file (expand-file-name "config.org" user-emacs-directory))))
 
 ;; settings for lsp booster
-
 (defun lsp-booster--advice-json-parse (old-fn &rest args)
   "Try to parse bytecode instead of json."
   (or

@@ -4,6 +4,12 @@
   };
 
   flake.modules.homeManager.dev = { pkgs, ... }: {
-    home.packages = with pkgs; [ dive docker-buildx ];
+    home.packages = with pkgs; [
+      dive
+      docker-buildx
+      podman
+      podman-desktop
+      podman-compose
+    ];
   };
 }

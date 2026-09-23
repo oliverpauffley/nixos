@@ -1,4 +1,11 @@
 {
+  flake.modules.nixos.base = { pkgs, ... }: {
+    environment.systemPackages = with pkgs; [
+      fd
+      vlc
+    ];
+
+  };
   flake.modules.homeManager.base = { pkgs, inputs, ... }: {
     nixpkgs.overlays = [ inputs.self.overlays.default ];
     home.packages =
@@ -18,7 +25,7 @@
         procs # instead of ps
         imagemagick
         gifsicle
-        zathura
+        #zathura
         pkg-config
         dnsutils
         eclint
@@ -30,15 +37,16 @@
         btop
         exercism
         claude-code
+        claude-agent-acp
         act # github actions locally
-        gnuplot
         dust
-
-        local.vcv-rack # make music
+        gnupg
+        postgresql.pg_config
       ]
       ++ lib.optionals stdenv.hostPlatform.isLinux [
         vlc
         calibre
-      ];
+      ]
+      ++ lib.optionals stdenv.hostPlatform.isDarwin [ pngpaste ];
   };
 }

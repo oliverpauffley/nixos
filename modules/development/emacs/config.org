@@ -1,7 +1,7 @@
 #+title: Emacs Literate Config
 #+AUTHOR: Oliver Pauffley
 #+OPTIONS: toc:1
-#+PROPERTY: header-args :tangle config.el :lexical t
+#+PROPERTY: header-args :tangle config.el 
 * Config
 ** Initial Setup
 first disable some unwanted UI elements
@@ -22,6 +22,14 @@ set indents to 4
 #+begin_src elisp
 (setq-default tab-width 4)
 (setq-default require-final-newline "visit-save")
+#+end_src
+
+for mac we need some additional settings
+#+begin_src elisp
+(when (eq system-type 'darwin)
+  (setq mac-option-modifier 'meta)
+  (add-to-list 'exec-path "/etc/profiles/per-user/ollie/bin")
+)
 #+end_src
 
 start the emacs server for emacsclient
@@ -67,11 +75,18 @@ use y/n prompts
 (fset 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
+setup custom-file
+#+begin_src elisp
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file)
+#+end_src
+
 turn off cowbell
 #+begin_src elisp
 (setq visible-bell nil)
 (setq ring-bell-function #'ignore)
 #+end_src
+
 ** Themes
 Make themes safe
 #+begin_src elisp
@@ -227,7 +242,6 @@ Like vim but better!
      '("z" . meow-pop-selection)
      '("'" . repeat)
      '("<escape>" . ignore)
-     '("C-c g d" . smart-jump-go)
      '("C-o" . smart-jump-back)
      '("C-d" . meow-page-down)
      '("C-u" . meow-page-up)
@@ -298,13 +312,13 @@ getting vim like repetition of commands
 ** Font
 #+begin_src elisp
 ;; Main typeface
-(set-face-attribute 'default nil :family "Mononoki Nerd Font Mono" :height 130)
+(set-face-attribute 'default nil :family "Mononoki Nerd Font Propo" :height 200)
 
 ;; Proportionately spaced typeface
 (set-face-attribute 'variable-pitch nil :family "DepartureMono Nerd Font" :height 0.8)
 
 ;; Monospaced typeface
-(set-face-attribute 'fixed-pitch nil :family "Mononoki Nerd Font Mono" :height 1.0)
+(set-face-attribute 'fixed-pitch nil :family "Mononoki Nerd Font Propo" :height 1.0)
 #+end_src
 ** Org
 #+begin_src elisp
@@ -325,7 +339,12 @@ getting vim like repetition of commands
           '(("t" "Todo" entry (file+headline "~/org/todo.org" "Inbox")
              "* TODO %?\n%U\n" :empty-lines 1)
             ("b" "Brag List" entry (file+olp+datetree "~/org/work/performance_and_pay.org" "Achievements")
-             "* %? %^g" :time-prompt t :tree-type week))
+             "* %? %^g" :time-prompt t :tree-type week)
+            ("j" "Journal Entry"
+              entry (file+datetree "~/org/journal.org.gpg")
+               "* Entry: %?\n\n  %i\n"
+         :empty-lines 1)
+            )
           org-hide-leading-stars             t
           org-hide-macro-markers             t
           org-ellipsis                       " ⤵"
@@ -355,8 +374,8 @@ getting vim like repetition of commands
   	      diary-show-holidays-flag nil
   	      org-agenda-file-regexp "\\`[^.].*\\.org\\\(\\.gpg\\\)?\\'"
           org-directory "~/org"
-          org-refile-targets '((org-agenda-files :maxlevel . 10))
-          org-refile-use-outline-path 'file
+          org-refile-targets '((org-agenda-files :maxlevel . 5))
+          org-refile-use-outline-path nil
           org-agenda-prefix-format  '((agenda . " %i %?-12t% s") (todo . " %i %-12:c") (tags . " %i %-12:c") (search . " %i %-12:c"))
           org-agenda-span 'month
           org-agenda-files (list
@@ -364,7 +383,7 @@ getting vim like repetition of commands
                             ;;"~/org/rpgs/todo.org"
                             "~/org/contacts.org.gpg")
           calendar-date-style 'european
-          org-todo-keywords '((sequence "TRIAGE(e)" "BACKLOG(b)" "READY-FOR-REFINEMENT(i)" "REFINED(r)" "TODO(t)" "IN-PROGRESS(p)" "REVIEW(w)" "|" "DONE(d!)" "CANCELED(c)"))
+          org-todo-keywords '((sequence "TODO(t)" "IN-PROGRESS(i)" "|" "DONE(d)" "CANCELED(c)"))
           org-confirm-babel-evaluate nil)
     :hook (org-mode . global-org-modern-mode)
           (org-mode . (lambda ()
@@ -580,6 +599,12 @@ Some dependencies first
   (setq lui-time-stamp-only-when-changed-p t)
   (setq lui-time-stamp-position 'right)
   )
+#+end_src
+** ob-sql
+#+begin_src elisp
+(use-package ob-sql
+  :init
+  (append '((sql t)) org-babel-load-languages))
 #+end_src
 ** ob-http
 run http requests from org files with org babel
@@ -879,7 +904,6 @@ This is to prevent possible `tramp' calls."
   (add-to-list 'savehist-additional-variables 'consult-gh--known-repos-list)
   ;; Enable default keybindings (e.g. for commenting on issues, prs, ...)
   (consult-gh-enable-default-keybindings)
-  :bind (:map my-git-keymap ("r" . #'my/get-current-repo-run-list))
   )
 
 
@@ -1153,53 +1177,71 @@ used to view logs nicely
 #+end_src
 ** LSP
 #+begin_src elisp
+;; work emacs mode for .art files
+(load-file "~/code/work/brossa/tools/emacs/art-mode.el")
+(defun config-brossa-lsp-server (workspace)
+  (with-lsp-workspace workspace
+    (lsp--set-configuration
+     `(:brossa
+       (:languageServer
+        (:inlayHints
+         (:cutoff 999999)))))))
+
 (use-package lsp-mode
   :demand t
-  :commands lsp
+  :commands (lsp lsp-deferred)
 
   :init
   ;; keep session file tidy
   ;;(setq lsp-session-file (concat user-cache-directory "lsp-session-v1"))
   ;; don't show the top breadcrumbs by default
   (setq lsp-headerline-breadcrumb-enable nil)
+  (setq lsp-inlay-hints-mode t)
   ;; keep more log data
   (setq lsp-log-max 10000)
   (setq lsp-completion-provider :none) ;; we use Corfu!
+  (setq lsp-response-timeout nil)
   :init
   (defun my/orderless-dispatch-flex-first (_pattern index _total)
     (and (eq index 0) 'orderless-flex))
 
   (defun my/lsp-mode-setup-completion ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          
-          '(orderless))
+                    '(orderless))
+    
     ;; Optionally configure the first word as flex filtered.
     (setq-local orderless-style-dispatchers (list #'my/orderless-dispatch-flex-first))
     ;; Optionally configure the cape-capf-buster.
     (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point))))
 
+  :config
+  (setq lsp-file-watch-threshold 10000)
+  (add-to-list 'lsp-language-id-configuration '(art-mode . "brossa"))
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection "~/.local/bin/brossa-lsp-server")
+    :activation-fn (lsp-activate-on "brossa")
+    :initialized-fn 'config-brossa-lsp-server
+    :server-id 'brossa-lsp))
   :bind (:map global-map
-              ("C-c g d" . #'xref-find-definitions)
+              ("C-c g d" . #'lsp-find-definition)
               ("C-c c a" . #'lsp-execute-code-action)
               ("C-c c i" . #'lsp-find-implementation)
               ("C-c c r" . #'lsp-find-references)
-              ("C-c c r" . #'lsp-rename)
               ("C-c c d" . #'consult-lsp-diagnostics)
               )
   :hook
   ((lsp-mode . lsp-enable-which-key-integration)
    (csharp-mode . lsp)
-   (haskell-mode . lsp)
+   (haskell-mode . lsp-deferred)
    (haskell-literate-mode . lsp)
    (lsp-completion-mode . my/lsp-mode-setup-completion)
    (go-ts-mode . lsp)
    (janet-mode . lsp)
    (dhall-mode . lsp)
+   (art-mode . lsp)
    ))
 #+end_src
-
-#+RESULTS:
-: lsp-rename
 
 ** Snippets
 #+begin_src elisp
@@ -1242,14 +1284,6 @@ Most formatting tasks should be handled with apheleia .
 #+end_src
 *** Haskell
 #+begin_src elisp
-;; disabling ts mode for now. Messes with indentation in an annoying way!.
-;; (use-package haskell-ts-mode
-;;   :custom
-;;   (haskell-ts-font-lock-level 4)
-;;   (haskell-ts-use-indent t)
-;;   (haskell-ts-ghci "ghci")
-;;   (haskell-ts-use-indent t)
-;; )
 
 (use-package haskell-mode
   :mode (("\\.hs$" . haskell-mode))
@@ -1269,11 +1303,10 @@ Most formatting tasks should be handled with apheleia .
 (use-package lsp-haskell
   :custom
  (lsp-haskell-server-path "haskell-language-server-wrapper")
+ :config
+ (setq lsp-haskell-session-loading "multipleComponents")
+ (setq lsp-rename-use-prepare nil)
   :after (lsp-mode))
-
-;;(use-package haskell-cabal-mode
-;;  :mode (("\\.cabal$" . cabal-mode))
-;;  :defer)
 
 
 (org-babel-do-load-languages
@@ -1665,18 +1698,14 @@ We can use display buffer alist to tweak how windows are shown
                (window-height . 0.25))))
 #+end_src
 
-** Claude-code
-Guess this is the beginning of the end
+** Agent Shell
+integration with AI
 #+begin_src elisp
-(use-package inheritenv)
-
-(use-package claude-code
+(use-package agent-shell
   :config
-  (setq claude-code-terminal-backend 'vterm)
-  (claude-code-mode)
-  :bind-keymap ("C-c y" . claude-code-command-map)
-  :bind
-  (:repeat-map my-claude-code-map ("M" . claude-code-cycle-mode)))
+  (setq agent-shell-anthropic-authentication
+        (agent-shell-anthropic-make-authentication :login t))
+  )
 #+end_src
 
 ** Elm mode
@@ -1715,4 +1744,8 @@ Guess this is the beginning of the end
 show rgb colours highlighted with their colour in buffers.
 #+begin_src elisp
 (use-package rainbow-mode)
+#+end_src
+** Lua mode
+#+begin_src elisp
+(use-package lua-mode)
 #+end_src

@@ -1,11 +1,5 @@
 {
   flake.modules.nixos.base = { config, ... }: {
-    nix = {
-      envVars = {
-        NIX_GITHUB_PRIVATE_USERNAME = config.sops.secrets.github_username.path;
-        NIX_GITHUB_PRIVATE_PASSWORD = config.sops.secrets.github_token.path;
-      };
-    };
   };
   flake.modules.homeManager.base = { pkgs, config, ... }: {
     home.packages = with pkgs; [

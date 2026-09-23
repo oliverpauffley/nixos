@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.base = { ... }: {
+  flake.modules.nixos.ui = { ... }: {
     services.xserver.xkb = {
       layout = "gb";
       options = "caps:ctrl_modifier";
@@ -30,7 +30,7 @@
     home.packages = with pkgs; [ firefox ];
   };
 
-  flake.modules.homeManager.linux = {
+  flake.modules.homeManager.ui = {
     # default programs
     xdg.mimeApps = {
       enable = true;

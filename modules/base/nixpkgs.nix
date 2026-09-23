@@ -1,17 +1,44 @@
-{ inputs, withSystem, ... }: {
-  imports = [ inputs.pkgs-by-name-for-flake-parts.flakeModule ];
+{ inputs, withSystem, ... }:
+
+let
+  overlays = [
+    inputs.self.overlays.default
+  ];
+
+  nixpkgsConfig = {
+    allowUnfree = true;
+  };
+
+  nixSettings = {
+    substituters = [
+      "https://cache.nixos.org"
+      "https://rqube.cachix.org"
+      "https://cache.iog.io"
+    ];
+
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "rqube.cachix.org-1:POl2bnMMKa9/iw4KKBQHr0iysHG/iKOnHN62UMyxNxI="
+      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+    ];
+  };
+
+  experimentalFeatures = [
+    "nix-command"
+    "flakes"
+  ];
+in
+{
+  imports = [
+    inputs.pkgs-by-name-for-flake-parts.flakeModule
+  ];
+
   flake = {
     overlays.default =
       final: prev:
       withSystem prev.stdenv.hostPlatform.system (
         { config, ... }: {
           local = config.packages;
-          unstable = import inputs.nixpkgs-unstable {
-            inherit (final.stdenv.hostPlatform) system;
-            inherit (final) config;
-          };
-          pnpm_9_15_9 = final.pnpm_10;
-          pnpm_10_29_2 = final.pnpm_10;
         }
       );
   };
@@ -19,41 +46,57 @@
   perSystem = { system, ... }: {
     _module.args.pkgs = import inputs.nixpkgs {
       inherit system;
-      config.allowUnfree = true;
-      overlays = [
-        inputs.self.overlays.default
-      ];
+      config = nixpkgsConfig;
+      inherit overlays;
     };
+
     pkgsDirectory = ../../pkgs/by-name;
   };
 
+  # ---------------------------------------------------------------------------
+  # Home Manager
+  # ---------------------------------------------------------------------------
+
   flake.modules.homeManager.base = {
-    config = {
-      nix.settings.experimental-features = "nix-command flakes";
-      nixpkgs.config.allowUnfree = true;
-      nixpkgs.overlays = [
-        inputs.self.overlays.default
-      ];
+    nixpkgs = {
+      config = nixpkgsConfig;
+      inherit overlays;
+    };
+
+    nix.settings = nixSettings // {
+      experimental-features = experimentalFeatures;
+      trusted-users = [ "ollie" ];
     };
   };
-  flake.modules.nixos.base = { inputs, ... }: {
-    nixpkgs.overlays = [
-      inputs.self.overlays.default
-    ];
-    nixpkgs.config.allowUnfree = true;
-    nix.settings.experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
+
+  # ---------------------------------------------------------------------------
+  # NixOS
+  # ---------------------------------------------------------------------------
+
+  flake.modules.nixos.base = {
+    nixpkgs = {
+      config = nixpkgsConfig;
+      inherit overlays;
+    };
+
+    nix.settings = nixSettings // {
+      experimental-features = experimentalFeatures;
+      ssl-cert-file = /etc/ssl/cert.pem;
+    };
   };
-  flake.modules.darwin.base = { inputs, ... }: {
-    nixpkgs.overlays = [
-      inputs.self.overlays.default
-    ];
-    nixpkgs.config.allowUnfree = true;
-    nix.settings.experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
+
+  # ---------------------------------------------------------------------------
+  # nix-darwin
+  # ---------------------------------------------------------------------------
+
+  flake.modules.darwin.base = {
+    nixpkgs = {
+      config = nixpkgsConfig;
+      inherit overlays;
+    };
+
+    nix.settings = nixSettings // {
+      experimental-features = experimentalFeatures;
+    };
   };
 }

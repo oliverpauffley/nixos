@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;;; Code:
 (setq frame-resize-pixelwise t
-      frame-inhibit-implied-resize 'force
+      frame-inhibit-implied-resize nil
       frame-title-format '("%b")
       ring-bell-function 'ignore
       use-dialog-box nil ; only for mouse events, which I seldom use
@@ -9,7 +9,7 @@
       use-short-answers t
       inhibit-splash-screen t
       inhibit-startup-screen t
-      inhibit-x-resources t
+      inhibit-x-resources nil
       inhibit-startup-echo-area-message user-login-name ; read the docstring
       inhibit-startup-buffer-menu t
       native-comp-async-report-warnings-errors 'silent
@@ -23,7 +23,7 @@
                             (scroll-bar-width . 6)
                             (width . (text-pixels . 800))
                             (height . (text-pixels . 900))
-                            (undecorated . t)
+                            (undecorated . nil)
                             (border-width . 5)
                             ,@(list '(fullscreen . maximized))))
 
@@ -42,6 +42,6 @@
                                                          (scroll-bar-width . 6)
                                                          (width . (text-pixels . 800))
                                                          (height . (text-pixels . 900))
-                                                         (undecorated . t)
+                                                         (undecorated . nil)
                                                          (border-width . 5)
                                                          ,@(list '(fullscreen . maximized))))))

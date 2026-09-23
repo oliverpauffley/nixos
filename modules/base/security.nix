@@ -1,4 +1,13 @@
 {
+  flake.modules.homeManager.mac = { pkgs, ... }: {
+    home.packages = with pkgs; [ pinentry_mac ];
+
+    services.gpg-agent = {
+      enable = true;
+      enableSshSupport = true;
+      pinentry.package = pkgs.pinentry_mac; # Requires pinentry-mac for macOS GUI prompts
+    };
+  };
   flake.modules.nixos.linux = { pkgs, ... }: {
     security.polkit.enable = true;
 

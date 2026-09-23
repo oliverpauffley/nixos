@@ -1,5 +1,11 @@
 {
-  flake.modules.homeManager.base = { inputs, config, pkgs, ... }:
+  flake.modules.homeManager.linux =
+    {
+      inputs,
+      config,
+      pkgs,
+      ...
+    }:
     let
       nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
       wallpaper = nix-colors-lib.nixWallpaperFromScheme {
@@ -8,7 +14,8 @@
         height = 1080;
         logoScale = 3.0;
       };
-    in {
+    in
+    {
       home.file.".cache/noctalia/wallpapers.json" = {
         text = builtins.toJSON {
           defaultWallpaper = wallpaper;
