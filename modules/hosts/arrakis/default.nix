@@ -12,6 +12,7 @@
         niri
         linux
         backup
+        dev
 
         # Users
         ollie
@@ -29,6 +30,7 @@
             dev
             niri
             noctalia
+            dev
 
           ];
         }
