@@ -801,6 +801,7 @@ This is to prevent possible `tramp' calls."
 #+begin_src elisp
 ;; Example configuration for Consult
 (use-package consult
+  :after pr-review
 
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
@@ -1108,9 +1109,173 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
               ("x" . magit-discard)
               ("Y" . magit-copy-buffer-revision)))
 #+end_src
+*** Worktree includes
+Copy untracked files (env files, local config, etc.) listed in
+=.worktreeinclude= into newly created worktrees, whether they're
+created by Magit directly or by our own PR review code below.
+#+begin_src elisp
+(defcustom magit-worktree-include-file ".worktreeinclude"
+  "Name of the file listing untracked paths to copy into new worktrees.
+Lines are glob patterns relative to the repository root, one per
+line; blank lines and lines starting with # are ignored."
+  :type 'string
+  :group 'magit-worktree)
+
+(defun magit-worktree--include-patterns (source)
+  "Return the glob patterns listed in SOURCE's include file, if any."
+  (let ((file (expand-file-name magit-worktree-include-file source)))
+    (when (file-readable-p file)
+      (with-temp-buffer
+        (insert-file-contents file)
+        (seq-remove
+         (lambda (line) (or (string-empty-p line) (string-prefix-p "#" line)))
+         (split-string (buffer-string) "\n" t "[ \t]+"))))))
+
+(defun magit-worktree-copy-includes (source worktree)
+  "Copy files matching SOURCE's include-file patterns into WORKTREE."
+  (dolist (pattern (magit-worktree--include-patterns source))
+    (dolist (file (file-expand-wildcards (expand-file-name pattern source) t))
+      (let* ((relative (file-relative-name file source))
+             (dest (expand-file-name relative worktree)))
+        (make-directory (file-name-directory dest) t)
+        (if (file-directory-p file)
+            (copy-directory file dest t t)
+          (copy-file file dest t t))))))
+
+(define-advice magit-worktree-checkout (:around (fn directory commit) copy-includes)
+  "Copy `.worktreeinclude' entries into worktrees created via Magit."
+  (let ((source default-directory))
+    (prog1 (funcall fn directory commit)
+      (when (file-directory-p directory)
+        (magit-worktree-copy-includes source directory)))))
+
+(define-advice magit-worktree-branch (:around (fn directory branch start-point) copy-includes)
+  "Copy `.worktreeinclude' entries into worktrees created via Magit."
+  (let ((source default-directory))
+    (prog1 (funcall fn directory branch start-point)
+      (when (file-directory-p directory)
+        (magit-worktree-copy-includes source directory)))))
+#+end_src
 *** Pr reviews
 Review prs from within emacs!
 #+begin_src elisp
+;; custom stuff for checking out a review.
+(defcustom pr-review-worktree-parent-directory nil
+  "Parent directory in which PR review worktrees are created.
+When nil, worktrees are created alongside the main repository."
+  :type '(choice (const :tag "Alongside repository" nil)
+                 directory)
+  :group 'pr-review)
+
+(defun pr-review--file-at-point ()
+  "Return the PR file at point."
+  (or
+   ;; We're on a file heading.
+   (when-let ((section (magit-current-section)))
+     (when (magit-file-section-p section)
+       (oref section value)))
+
+   ;; We're somewhere in a diff.
+   (when-let ((info (pr-review--get-diff-line-info (point))))
+     (cadr info))
+
+   (user-error "Point is not on a PR file or diff")))
+
+(defun pr-review--local-repository ()
+  "Return the local checkout of the repository being reviewed.
+If Forge doesn't already know a worktree for it, prompt for one and
+remember the answer (via Forge) so future calls don't ask again."
+  (let* ((repo-spec (list pr-review--host
+                          (nth 0 pr-review--pr-path)
+                          (nth 1 pr-review--pr-path)))
+         (repo (or (ignore-errors
+                     (forge-get-repository repo-spec nil :known?))
+                   (user-error "Forge does not know about %s/%s"
+                               (nth 0 pr-review--pr-path)
+                               (nth 1 pr-review--pr-path)))))
+    (or (forge-get-worktree repo)
+        (let* ((dir (read-directory-name
+                     (format "Local checkout of %s/%s: "
+                             (nth 0 pr-review--pr-path)
+                             (nth 1 pr-review--pr-path))))
+               (toplevel (magit-toplevel dir)))
+          (unless toplevel
+            (user-error "%s is not a Git repository" dir))
+          (oset repo worktree toplevel)
+          toplevel))))
+
+(defun pr-review--worktree-for-branch (repo-root branch)
+  "Return existing worktree for BRANCH within REPO-ROOT, or nil."
+  (let ((default-directory repo-root))
+    (seq-find
+     (lambda (worktree)
+       (equal branch (nth 1 worktree)))
+     (magit-list-worktrees))))
+
+(defun pr-review--fetch-commit (repo-root commit)
+  "Ensure COMMIT is available in REPO-ROOT, fetching it if necessary.
+The PR's commits usually aren't in the local clone's object database
+yet, since reviewing a PR doesn't require ever fetching it."
+  (let ((default-directory repo-root))
+    (unless (magit-commit-p commit)
+      (let ((remote (or (magit-get-some-remote)
+                        (user-error "No git remote configured in %s" repo-root))))
+        (unless (zerop (magit-call-git "fetch" remote commit))
+          (user-error "Could not fetch commit %s from %s" commit remote))))))
+
+(defun pr-review-checkout-file-in-branch ()
+  "Create a worktree for the current PR commit and visit the current file."
+  (interactive)
+  (unless (derived-mode-p 'pr-review-mode)
+    (user-error "Current buffer is not a pr-review buffer"))
+
+  (let* ((filepath (pr-review--file-at-point))
+         (commit (pr-review--current-commit-head))
+         (repo-root (pr-review--local-repository))
+         (pr-id (nth 2 pr-review--pr-path))
+         (branch (format "pr-review/%s" pr-id))
+         (existing (pr-review--worktree-for-branch repo-root branch))
+         (worktree
+          (if existing
+              (car existing)
+            (let* ((parent
+                    (or pr-review-worktree-parent-directory
+                        (file-name-directory
+                         (directory-file-name repo-root))))
+                   (directory
+                    (let ((default-directory parent))
+                      (read-directory-name
+                       (format "Worktree for PR #%s: " pr-id)
+                       parent
+                       (expand-file-name
+                        (format "%s-pr-%s"
+                                (file-name-nondirectory
+                                 (directory-file-name repo-root))
+                                pr-id)
+                        parent)
+                       nil))))
+              (pr-review--fetch-commit repo-root commit)
+              (let ((default-directory repo-root))
+                (unless
+                    (zerop
+                     (magit-call-git
+                      "worktree" "add"
+                      "-b" branch
+                      (expand-file-name directory)
+                      commit))
+                  (user-error "Could not create worktree")))
+              (magit-worktree-copy-includes repo-root (expand-file-name directory))
+              (expand-file-name directory)))))
+
+    (let ((file (expand-file-name filepath worktree)))
+      (if (file-exists-p file)
+          (find-file file)
+        (user-error
+         "File %s does not exist at commit %s"
+         filepath
+         (substring commit 0 12))))))
+
+
 (use-package pr-review
   :config
   (setq pr-review-search-predefined-queries
@@ -1120,6 +1285,7 @@ Review prs from within emacs!
   (setq pr-review-forges-alist
       '(("github.com"                . (github nil nil)))) 
 )
+
 #+end_src
 *** Forge
 #+begin_src elisp

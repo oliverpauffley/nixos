@@ -16,7 +16,6 @@
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
     # import all modules
     import-tree.url = "github:vic/import-tree";
-    import-tree.inputs.nixpkgs.follows = "nixpkgs";
 
     # make my own packages
     pkgs-by-name-for-flake-parts.url = "github:drupol/pkgs-by-name-for-flake-parts";
@@ -39,7 +38,6 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-colors.url = "github:misterio77/nix-colors";
-    nix-colors.inputs.nixpkgs.follows = "nixpkgs";
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";

@@ -53,6 +53,28 @@
         group = "multimedia";
         openFirewall = true;
       };
+
+      calibre-web = {
+        enable = true;
+        group = "multimedia";
+        openFirewall = true;
+        listen.port = 8008;
+        options = {
+          calibreLibrary = "/mnt/media/books";
+          enableBookConversion = true;
+          enableBookUploading = true;
+        };
+      };
+
+      calibre-server = {
+        enable = true;
+        openFirewall = true;
+        port = 8009;
+        libraries = [
+          "/mnt/media/books"
+        ];
+      };
+
       sabnzbd = {
         enable = true;
         group = "multimedia";

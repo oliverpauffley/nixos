@@ -195,7 +195,10 @@
           pkgs.local.vaarn
         ];
 
-      packageOverrides = self: super: { org = super.elpaPackages.org; };
+      packageOverrides = self: super: {
+        org = super.elpaPackages.org;
+        pr-review = pkgs.local.pr-review;
+      };
 
       # Build final Emacs with all packages
       myEmacs = ((pkgs.emacsPackagesFor emacs-base).overrideScope packageOverrides).emacsWithPackages emacsPackages;
