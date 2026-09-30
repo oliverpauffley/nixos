@@ -13,6 +13,12 @@ first disable some unwanted UI elements
 (blink-cursor-mode -1)
 #+end_src
 
+scroll nicely
+#+begin_src elisp
+(setq scroll-conservatively 10
+      scroll-margin 15)
+#+end_src
+
 turn off tabs
 #+begin_src elisp
 (setq-default indent-tabs-mode nil)
