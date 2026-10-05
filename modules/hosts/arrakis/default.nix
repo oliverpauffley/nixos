@@ -31,6 +31,7 @@
             niri
             noctalia
             dev
+	    ui
 
           ];
         }

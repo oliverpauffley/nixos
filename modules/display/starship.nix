@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.base = { config, lib, pkgs, nix-colors, ... }: {
+  flake.modules.homeManager.ui = { config, lib, pkgs, nix-colors, ... }: {
     programs.starship = let inherit (config.colorscheme) palette;
     in {
       enable = true;

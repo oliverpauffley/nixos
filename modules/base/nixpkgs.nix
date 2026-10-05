@@ -81,7 +81,6 @@ in
 
     nix.settings = nixSettings // {
       experimental-features = experimentalFeatures;
-      ssl-cert-file = /etc/ssl/cert.pem;
     };
   };
 

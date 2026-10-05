@@ -48,11 +48,6 @@
         };
         dataDir = "/mnt/media/torrent";
       };
-      readarr = {
-        enable = true;
-        group = "multimedia";
-        openFirewall = true;
-      };
 
       calibre-web = {
         enable = true;

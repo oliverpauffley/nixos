@@ -18,6 +18,7 @@
 
              path add "${config.home.homeDirectory}/.nix-profile/bin"
              path add "/etc/profiles/per-user/${config.home.username}/bin"
+	     path add "/run/wrappers/bin"
 
         '';
         extraConfig = ''
@@ -49,10 +50,10 @@
       };
       programs.direnv.enableNushellIntegration = true;
       programs.nix-index.enableNushellIntegration = true;
-      programs.starship.enableNushellIntegration = true;
       programs.zoxide.enableNushellIntegration = true;
       home.shell.enableNushellIntegration = true;
 
       services.gpg-agent.enableNushellIntegration = true;
+
     };
 }

@@ -9,7 +9,6 @@
     nixpkgs.hostPlatform = "x86_64-linux";
 
     # TODO move these?
-    powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
     networking.hostName = "caladan";
     networking.hostId = "347b26dc"; # required for zfs
     hardware.cpu.intel.updateMicrocode = lib.mkDefault true;
@@ -30,7 +29,6 @@
       package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
     };
     services.openssh.settings.PermitRootLogin = lib.mkForce "yes";
-    security.pam.enableSSHAgentAuth = true;
     services.openssh.enable = true;
 
     boot = {

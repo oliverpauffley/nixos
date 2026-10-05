@@ -10,7 +10,8 @@
     nixpkgs.overlays = [ inputs.self.overlays.default ];
     home.packages =
       with pkgs;
-      [
+     [
+        cacert
         jq
         rq
         gnuplot

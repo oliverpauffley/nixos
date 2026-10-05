@@ -20,6 +20,7 @@
           isNormalUser = true;
           createHome = true;
           extraGroups = [
+	    "sudo"
             "audio"
             "input"
             "networkmanager"
@@ -30,7 +31,7 @@
             "docker"
             "lpadmin" # printers
           ];
-          shell = pkgs.nushell;
+          shell = pkgs.bash;
           openssh.authorizedKeys.keys = config.flake.meta.users.ollie.authorizedKeys;
         };
 

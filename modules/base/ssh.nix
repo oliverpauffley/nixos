@@ -6,7 +6,7 @@
       settings = {
         X11Forwarding = true;
         StreamLocalBindUnlink = "yes";
-        PermitRootLogin = "no";
+        PermitRootLogin = "yes";
       };
     };
   };
