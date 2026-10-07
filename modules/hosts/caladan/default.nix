@@ -20,6 +20,7 @@
             # inputs.sops-nix.homeManagerModules.sops
             base
             linux
+            dev
           ];
         }
       ];
