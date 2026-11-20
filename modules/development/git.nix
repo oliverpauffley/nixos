@@ -35,11 +35,13 @@
       };
     };
 
+    # TODO move to it's own file
     programs.gh = {
       enable = true;
       gitCredentialHelper.enable = true;
     };
 
+    # TODO move to it's own file
     # better merge conflicts
     programs.mergiraf = {
       enable = true;

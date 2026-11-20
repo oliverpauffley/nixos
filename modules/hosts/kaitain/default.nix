@@ -4,6 +4,7 @@
       with config.flake.modules.darwin;
       [
         base
+        work
 
         # Users
         ollie

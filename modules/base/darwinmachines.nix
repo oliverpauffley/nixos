@@ -1,15 +1,27 @@
-{ inputs, lib, config, ... }:
-let prefix = "hosts/";
-in {
+{
+  inputs,
+  lib,
+  config,
+  ...
+}:
+let
+  prefix = "hosts/";
+in
+{
   flake.darwinConfigurations = lib.pipe config.flake.modules.darwin [
     (lib.filterAttrs (name: _: lib.hasPrefix prefix name))
-    (lib.mapAttrs' (name: module:
+    (lib.mapAttrs' (
+      name: module:
       let
         specialArgs = {
           inherit inputs;
-          hostConfig = { name = lib.removePrefix prefix name; };
+          hostConfig = {
+            name = lib.removePrefix prefix name;
+          };
         };
-      in {
+      in
+      {
+
         name = lib.removePrefix prefix name;
         value = inputs.nix-darwin.lib.darwinSystem {
           inherit specialArgs;
@@ -23,6 +35,7 @@ in {
             }
           ];
         };
-      }))
+      }
+    ))
   ];
 }

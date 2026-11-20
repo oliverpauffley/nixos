@@ -289,6 +289,7 @@ Like vim but better!
     (add-to-list 'meow-mode-state-list '(magit-stash-mode . motion))
     (add-to-list 'meow-mode-state-list '(magit-refs-mode . motion))
     (add-to-list 'meow-mode-state-list '(forge-topic-mode . motion))
+    (add-to-list 'meow-mode-state-list '(majustsu-mode . motion))
     (add-to-list 'meow-mode-state-list '(ediff-mode . motion))
     ;; keep the expand hints around a while longer
     (setq meow-expand-hint-remove-delay 3.0)
@@ -337,7 +338,8 @@ getting vim like repetition of commands
 
 
     :bind
-    (:map global-map ("C-c C" . #'org-capture))
+    (:map global-map ("C-c C" . #'org-capture)
+                     ("C-c o a" . #'org-agenda))
 
     :config
     (setq org-default-notes-file "~/org/todo.org"
@@ -390,6 +392,9 @@ getting vim like repetition of commands
                             "~/org/contacts.org.gpg")
           calendar-date-style 'european
           org-todo-keywords '((sequence "TODO(t)" "IN-PROGRESS(i)" "|" "DONE(d)" "CANCELED(c)"))
+          org-todo-keywords-for-agenda '(#("CANCELED" 0 8 (face org-done)) #("DONE" 0 4 (face org-done))
+ #("IN-PROGRESS" 0 11 (face org-verbatim)) #("TODO" 0 4 (face org-todo)))
+
           org-confirm-babel-evaluate nil)
     :hook (org-mode . global-org-modern-mode)
           (org-mode . (lambda ()
@@ -891,6 +896,7 @@ This is to prevent possible `tramp' calls."
 
 (use-package consult-gh
   :after consult
+  :bind (:map global-map ("C-c g r" . my/get-current-repo-run-list))
   :custom
   (consult-gh-default-clone-directory "~/code")
   (consult-gh-show-preview t)
@@ -1115,6 +1121,13 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
               ("x" . magit-discard)
               ("Y" . magit-copy-buffer-revision)))
 #+end_src
+*** Majutsu
+#+begin_src elisp
+(use-package majutsu
+  :config
+  (majutsu-forge-mode 1)
+)
+#+end_src
 *** Worktree includes
 Copy untracked files (env files, local config, etc.) listed in
 =.worktreeinclude= into newly created worktrees, whether they're
@@ -1283,10 +1296,12 @@ yet, since reviewing a PR doesn't require ever fetching it."
 
 
 (use-package pr-review
+  :bind (:map global-map ("C-c o r" . #'pr-review-search))
   :config
   (setq pr-review-search-predefined-queries
         '(("is:pr review-requested:@me state:open archived:false sort:updated-desc -author:dependabot[bot] -author:stepsecurity-app[bot]" . "Requests")
           ("is:pr author:@me state:open archived:false sort:updated-desc" . "Mine")
+          ("is:pr involves:@me" . "Involved")
           ))
   (setq pr-review-forges-alist
       '(("github.com"                . (github nil nil)))) 
@@ -1412,6 +1427,7 @@ used to view logs nicely
    (janet-mode . lsp)
    (dhall-mode . lsp)
    (art-mode . lsp)
+   (typescript-ts-mode . lsp)
    ))
 #+end_src
 
@@ -1452,7 +1468,9 @@ Most formatting tasks should be handled with apheleia .
 #+begin_src elisp
 (use-package apheleia
   :config
-  (apheleia-global-mode t))
+  (apheleia-global-mode t)
+  (setf (alist-get 'haskell-mode apheleia-mode-alist) 'ormolu)
+  (setf (alist-get 'haskell-ts-mode apheleia-mode-alist) 'ormolu))
 #+end_src
 *** Haskell
 #+begin_src elisp
@@ -1462,6 +1480,7 @@ Most formatting tasks should be handled with apheleia .
   :config
     (keymap-unset haskell-mode-map "C-c c")
     (add-hook 'haskell-mode-hook 'haskell-auto-insert-module-template)
+    (advice-add 'compilation-start :around #'envrc-propagate-environment)
   :hook (my/completions .
           (lambda ()
             (set (make-local-variable 'company-backends)
@@ -1488,7 +1507,12 @@ Most formatting tasks should be handled with apheleia .
 #+end_src
 
 #+RESULTS:
-
+*** TypeScript
+#+begin_src elisp
+(use-package typescript-ts-mode
+  :mode (("\\.ts$" . typescript-ts-mode)
+         ("\\.tsx$" . tsx-ts-mode)))
+#+end_src
 *** Go
 #+begin_src elisp
 (defun my-go-mode-setup ()
@@ -1637,47 +1661,6 @@ We also use persp-projectile to link projectile and perspective together
 #+begin_src emacs-lisp
 (use-package protobuf-ts-mode
   :mode (("\\.proto" . protobuf-ts-mode)))
-#+end_src
-** Eshell
-#+begin_src elisp
-(defun eshell-here ()
-  "Opens up a new shell in the directory associated with the
-current buffer's file. The eshell is renamed to match that
-directory to make multiple eshell windows easier."
-  (interactive)
-  (let* ((parent (if (buffer-file-name)
-                     (file-name-directory (buffer-file-name))
-                   default-directory))
-         (height (/ (window-total-height) 3))
-         (name   (car (last (split-string parent "/" t)))))
-    (split-window-vertically (- height))
-    (other-window 1)
-    (eshell "new")
-    (rename-buffer (concat "*eshell: " name "*"))
-
-    (insert (concat "ls"))
-    (eshell-send-input)))
-
-
-(defun eshell/x ()
-  (interactive)
-  (insert "exit")
-  (eshell-send-input)
-  (delete-window))
-
-
-(use-package eshell
-  :bind (("C-c o t" . eshell-here)
-         ("C-c e t" . eshell/x))
-  :config
-  (setq mode-line-format nil)
-  :hook
-  ((eshell-mode . (lambda ()
-                    (setq-local corfu-auto nil)
-                    (corfu-mode)))
-   (eshell-mode . (lambda ()
-                    (setenv "TERM" "xterm-256color")))
-   ))
 #+end_src
 ** Ws-Butler
 #+begin_src elisp
@@ -1880,6 +1863,17 @@ integration with AI
   )
 #+end_src
 
+** Compilation mode
+#+begin_src elisp
+(use-package fancy-compilation
+  :commands (fancy-compilation-mode)
+  :custom
+  (fancy-compilation-override-colors nil))
+
+(with-eval-after-load 'compile
+  (fancy-compilation-mode))
+#+end_src
+
 ** Elm mode
 #+begin_src elisp
 (use-package elm-mode)
@@ -1920,4 +1914,24 @@ show rgb colours highlighted with their colour in buffers.
 ** Lua mode
 #+begin_src elisp
 (use-package lua-mode)
+#+end_src
+** Ansi Color
+#+begin_src elisp
+(use-package ansi-color
+  :hook
+  (shell-mode . ansi-color-for-comint-mode-on)
+  :config
+  (add-hook 'comint-output-filter-functions #'ansi-color-process-output))
+#+end_src
+** Nushell
+#+begin_src elisp
+(use-package nushell-ts-mode
+  :config
+  (require 'nushell-ts-babel)
+  (defun my/nushell/mode-hook ()
+    (corfu-mode 1)
+    (highlight-parentheses-mode 1)
+    (electric-pair-local-mode 1)
+    (electric-indent-local-mode 1))
+  (add-hook 'nushell-ts-mode-hook 'hfj/nushell/mode-hook))
 #+end_src

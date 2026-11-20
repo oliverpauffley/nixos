@@ -10,15 +10,19 @@
     {
       programs.nushell = {
         enable = true;
+        environmentVariables = {
+          "NODE_EXTRA_CA_CERTS" = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+        };
         extraEnv = ''
-          use std "path add"
+                    use std "path add"
 
-             path add "/run/current-system/sw/bin"
-             path add "/nix/var/nix/profiles/default/bin"
+                    path add "/run/current-system/sw/bin"
+                    path add "/nix/var/nix/profiles/default/bin"
 
-             path add "${config.home.homeDirectory}/.nix-profile/bin"
-             path add "/etc/profiles/per-user/${config.home.username}/bin"
-	     path add "/run/wrappers/bin"
+                    path add "${config.home.homeDirectory}/.nix-profile/bin"
+                    path add "/etc/profiles/per-user/${config.home.username}/bin"
+          	        path add "/run/wrappers/bin"
+                    path add "~/.local/bin"
 
         '';
         extraConfig = ''

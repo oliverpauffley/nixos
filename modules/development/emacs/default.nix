@@ -100,6 +100,9 @@
             p.tree-sitter-scheme
             p.tree-sitter-janet-simple
             p.tree-sitter-elm
+            p.tree-sitter-tsx
+            p.tree-sitter-typescript
+            p.tree-sitter-nu
           ]))
 
           pkgs.local.ob-janet
@@ -122,6 +125,8 @@
           wgsl-mode
           elm-mode
           dhall-mode
+          fancy-compilation
+          nushell-ts-mode
 
           exercism
 
@@ -133,6 +138,7 @@
           forge
           git-link
           diff-hl
+          pkgs.local.majutsu
 
           # Project management
           projectile

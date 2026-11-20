@@ -10,7 +10,7 @@
     nixpkgs.overlays = [ inputs.self.overlays.default ];
     home.packages =
       with pkgs;
-     [
+      [
         cacert
         jq
         rq
@@ -31,6 +31,7 @@
         act # github actions locally
         dust
         gnupg
+        nh
       ]
       ++ lib.optionals stdenv.hostPlatform.isDarwin [ pngpaste ];
   };
