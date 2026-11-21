@@ -1,5 +1,4 @@
 {
-  # TODO this works for my laptop but not in general!
   flake.modules.homeManager.ui = { pkgs, ... }: {
     programs.autorandr =
       let
