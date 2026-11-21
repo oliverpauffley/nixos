@@ -11,3 +11,8 @@ nix flake update
 #+begin_src shell
 sudo nixos-rebuild switch --flake .#<hostname>
 #+end_src
+
+- darwin
+  #+begin_src shell
+  sudo darwin-rebuild switch --flake .#<hostname>
+  #+end_src
