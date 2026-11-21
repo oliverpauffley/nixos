@@ -14,5 +14,5 @@ sudo nixos-rebuild switch --flake .#<hostname>
 
 - darwin
   #+begin_src shell
-  sudo darwin-rebuild switch --flake .#<robot>
+  sudo darwin-rebuild switch --flake .#<hostname>
   #+end_src
