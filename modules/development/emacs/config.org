@@ -688,7 +688,7 @@ Reduce the number of minor modes by putting them in a menu.
          ("C-c p a" . projectile-add-known-project)
          ("C-c p p"  . #'projectile-persp-switch-project)
          ("C-c p R" . projectile-run-shell-command-in-root)
-         ("C-c p t" . projectile-run-vterm)
+         ("C-c p t" . ghostel-project)
          ("C-c p T" . projectile-test-project)
          ("C-c p ." . find-file)))
 #+end_src
@@ -1067,7 +1067,7 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
 #+begin_src elisp
 (defvar-keymap my-git-keymap
   :doc "git commands"
-  "g" #'magit-status
+  "g" #'majutsu
   "s" #'magit-stage-file
   "S" #'magit-stage-modified
   "u" #'magit-unstage-file
@@ -1934,4 +1934,69 @@ show rgb colours highlighted with their colour in buffers.
     (electric-pair-local-mode 1)
     (electric-indent-local-mode 1))
   (add-hook 'nushell-ts-mode-hook 'hfj/nushell/mode-hook))
+#+end_src
+
+** Ghostel
+#+begin_src elisp
+(use-package ghostel
+  :vc (:url "https://github.com/dakra/ghostel"
+       :lisp-dir "lisp"
+       :rev :newest))
+  :hook (after-init . ghostel-status-indicator-mode)
+  :bind (("C-x m" . ghostel)
+         :map ghostel-semi-char-mode-map
+         ("C-s"  . consult-line)
+         ("C-k"  . my/ghostel-send-C-k-and-kill)
+         ;; I'm used to go up/down the shell history with M-n/p from eshell
+         ;; Simulate this behavior in ghostel by sending C-p and C-n
+         ("M-p" . (lambda () (interactive) (ghostel-send-key "p" "ctrl")))
+         ("M-n" . (lambda () (interactive) (ghostel-send-key "n" "ctrl"))))
+  :config
+  (defun my/ghostel-send-C-k-and-kill ()
+    "Send `C-k' to ghostel.
+Like normal Emacs `C-k'.  Kill to end of line and put content in kill-ring."
+    (interactive)
+    (kill-ring-save (point) (line-end-position))
+    (ghostel-send-key "k" "ctrl"))
+
+  (add-to-list 'ghostel-eval-cmds '("magit-status-setup-buffer" magit-status-setup-buffer)))
+
+(use-package ghostel-project
+  :bind (:map project-prefix-map
+         ("m" . ghostel-project)
+         ("M" . ghostel-project-list-buffers))
+  :config
+  (add-to-list 'project-switch-commands '(ghostel-project "Ghostel") t)
+  (add-to-list 'project-switch-commands '(ghostel-project-list-buffers "Ghostel buffers") t)
+  ;; Have `project-kill-buffers' (C-x p k) kill the project's terminals too
+  (add-to-list 'project-kill-buffer-conditions '(derived-mode . ghostel-mode)))
+#+end_src
+
+Run all compile commands in a Ghostel buffer.
+#+begin_src elisp
+(use-package ghostel-compile
+  :hook (after-init . ghostel-compile-global-mode))
+#+end_src
+
+Replace async-shell-command with a Ghostel version.
+#+begin_src elisp
+(use-package ghostel-shell-command
+  :hook (after-init . ghostel-shell-command-global-mode))
+#+end_src
+
+Replace comint's built-in ansi-color-process-output with Ghostel's VT parser.
+#+begin_src elisp
+(use-package ghostel-comint
+  :hook (after-init . ghostel-comint-global-mode))
+#+end_src
+
+Pick a Ghostel terminal via consult with live preview (and create-on-miss) with the consult-ghostel extension; with a prefix argument the pickers behave like ghostel / ghostel-project (C-u creates a new terminal):
+#+begin_src elisp
+(use-package consult-ghostel
+  :hook (after-init . consult-ghostel-mode)
+  :bind (("C-x m" . consult-ghostel)
+         :map project-prefix-map
+         ("m" . consult-ghostel-project)
+         :map ghostel-semi-char-mode-map
+         ("C-c h" . consult-ghostel-history)))
 #+end_src
