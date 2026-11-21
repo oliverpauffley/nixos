@@ -34,12 +34,5 @@
         merge.conflictStyle = "diff3";
       };
     };
-
-    # TODO move to it's own file
-    # better merge conflicts
-    programs.mergiraf = {
-      enable = true;
-      enableGitIntegration = true;
-    };
   };
 }
