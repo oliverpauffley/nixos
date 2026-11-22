@@ -1,7 +1,6 @@
 #+TITLE: Nixos
 
-Dotfiles for nixos install
-
+Nixos configuration for all of my home and work machines.
 ** Commands
 - update
 #+begin_src shell
