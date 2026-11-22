@@ -1067,7 +1067,6 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
 #+begin_src elisp
 (defvar-keymap my-git-keymap
   :doc "git commands"
-  "g" #'majutsu
   "s" #'magit-stage-file
   "S" #'magit-stage-modified
   "u" #'magit-unstage-file
@@ -1124,7 +1123,9 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
 *** Majutsu
 #+begin_src elisp
 (use-package majutsu
-   :bind (:map majutsu-mode-map
+   :bind
+   (:map global-map ("C-c g g" . majutsu))
+   (:map majutsu-mode-map
               ("x" . majutsu-abandon))
 )
 (use-package majutsu-forge
@@ -1929,6 +1930,10 @@ show rgb colours highlighted with their colour in buffers.
 #+end_src
 ** Nushell
 #+begin_src elisp
+(use-package nushell-ts-babel
+  :vc (:url "https://github.com/herbertjones/nushell-ts-babel"
+            :rev :newest)
+  )
 (use-package nushell-ts-mode
   :config
   (require 'nushell-ts-babel)
@@ -1945,10 +1950,8 @@ show rgb colours highlighted with their colour in buffers.
 (use-package ghostel
   :vc (:url "https://github.com/dakra/ghostel"
        :lisp-dir "lisp"
-       :rev :newest))
-  :hook (after-init . ghostel-status-indicator-mode)
-  :bind (("C-x m" . ghostel)
-         :map ghostel-semi-char-mode-map
+       :rev :newest)
+  :bind (:map ghostel-semi-char-mode-map
          ("C-s"  . consult-line)
          ("C-k"  . my/ghostel-send-C-k-and-kill)
          ;; I'm used to go up/down the shell history with M-n/p from eshell
@@ -1997,6 +2000,8 @@ Replace comint's built-in ansi-color-process-output with Ghostel's VT parser.
 Pick a Ghostel terminal via consult with live preview (and create-on-miss) with the consult-ghostel extension; with a prefix argument the pickers behave like ghostel / ghostel-project (C-u creates a new terminal):
 #+begin_src elisp
 (use-package consult-ghostel
+  :after (ghostel consult)
+  :ensure nil
   :hook (after-init . consult-ghostel-mode)
   :bind (("C-x m" . consult-ghostel)
          :map project-prefix-map
