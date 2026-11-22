@@ -1124,9 +1124,13 @@ Copying some bits from DOOM. Bind "C-m" for git actions and "C-m c" for git crea
 *** Majutsu
 #+begin_src elisp
 (use-package majutsu
-  :config
-  (majutsu-forge-mode 1)
+   :bind (:map majutsu-mode-map
+              ("x" . majutsu-abandon))
 )
+(use-package majutsu-forge
+  :after (majutsu forge)
+  :config
+  (majutsu-forge-mode 1))
 #+end_src
 *** Worktree includes
 Copy untracked files (env files, local config, etc.) listed in
